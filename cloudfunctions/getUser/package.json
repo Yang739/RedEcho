@@ -1,0 +1,9 @@
+{
+  "name": "getUser",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: getUser",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

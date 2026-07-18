@@ -1,0 +1,9 @@
+{
+  "name": "getShowRoom",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: getShowRoom",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

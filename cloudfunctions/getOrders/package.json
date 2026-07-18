@@ -1,0 +1,9 @@
+{
+  "name": "getOrders",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: getOrders",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

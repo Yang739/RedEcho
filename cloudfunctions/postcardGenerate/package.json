@@ -1,0 +1,10 @@
+{
+  "name": "postcardGenerate",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: postcardGenerate (AIGC 明信片，接腾讯云 AI 绘画文生图)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest",
+    "tencentcloud-sdk-nodejs-aiart": "^4.0.0"
+  }
+}

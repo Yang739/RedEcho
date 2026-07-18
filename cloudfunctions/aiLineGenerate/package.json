@@ -1,0 +1,10 @@
+{
+  "name": "aiLineGenerate",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: aiLineGenerate (演员 AI 台词助手，接腾讯云混元大模型)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest",
+    "tencentcloud-sdk-nodejs-hunyuan": "^4.0.0"
+  }
+}

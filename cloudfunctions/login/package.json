@@ -1,0 +1,12 @@
+{
+  "name": "login",
+  "version": "1.0.0",
+  "description": "RedEcho 登录 / 通用示例云函数（演示云函数内 npm 依赖与云数据库访问）",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"云函数无需单测\" && exit 0"
+  },
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
