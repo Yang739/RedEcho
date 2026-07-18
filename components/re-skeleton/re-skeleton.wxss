@@ -1,0 +1,2 @@
+.re-skeleton { display: flex; flex-direction: column; gap: 18rpx; }
+.re-skeleton__row { border-radius: var(--r-sm); }

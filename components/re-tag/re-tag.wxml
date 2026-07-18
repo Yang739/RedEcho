@@ -1,0 +1,3 @@
+<view class="re-tag re-tag--{{type}} {{solid ? 're-tag--solid' : ''}}">
+  <slot></slot>
+</view>

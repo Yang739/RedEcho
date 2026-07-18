@@ -1,0 +1,8 @@
+<view class="re-skeleton">
+  <view
+    wx:for="{{rows}}"
+    wx:key="index"
+    class="re-skeleton__row skeleton"
+    style="width: {{item}}; height: {{rowHeight}};"
+  ></view>
+</view>

@@ -1,0 +1,9 @@
+<view class="re-card {{bordered ? 're-card--bordered' : ''}} {{tappable ? 'tap' : ''}}" bindtap="onTap">
+  <view wx:if="{{title}}" class="re-card__head">
+    <view class="re-card__title">{{title}}</view>
+    <slot name="extra"></slot>
+  </view>
+  <view class="re-card__body">
+    <slot></slot>
+  </view>
+</view>

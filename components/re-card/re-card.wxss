@@ -1,0 +1,21 @@
+.re-card {
+  background: var(--c-surface);
+  border-radius: var(--r-md);
+  padding: 28rpx;
+  box-shadow: var(--s-1);
+}
+.re-card--bordered {
+  border: 2rpx solid var(--c-border);
+  box-shadow: none;
+}
+.re-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18rpx;
+}
+.re-card__title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--c-text);
+}
