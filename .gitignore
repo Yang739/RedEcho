@@ -1,0 +1,16 @@
+node_modules/
+miniprogram_npm/
+.project
+*.log
+
+# 上传私钥（含账号权限，切勿提交）
+keys/
+
+# 文档与部署脚本中非必要产物
+*.key
+
+# 助手本地记忆（非项目源码，含工作记录与技能）
+.workbuddy/
+
+# 微信开发者工具私有配置（本机路径/编译设置，不进仓库）
+project.private.config.json

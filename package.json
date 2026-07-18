@@ -1,0 +1,12 @@
+{
+  "name": "RedEcho",
+  "version": "1.0.0",
+  "description": "RedEcho——红色旧址沉浸式互动演出（微信小程序原生 + 云开发）",
+  "private": true,
+  "scripts": {
+    "deploy": "node deploy/upload.js"
+  },
+  "devDependencies": {
+    "miniprogram-ci": "^1.9.19"
+  }
+}
