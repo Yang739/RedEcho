@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E23B3F"/>
+      <stop offset="0.55" stop-color="#C8161D"/>
+      <stop offset="1" stop-color="#9E0B12"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F6C95E"/>
+      <stop offset="0.5" stop-color="#E8A33D"/>
+      <stop offset="1" stop-color="#D68C24"/>
+    </linearGradient>
+    <radialGradient id="sheen" cx="0.32" cy="0.22" r="0.75">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="tileClip">
+      <rect x="0" y="0" width="512" height="512" rx="112" ry="112"/>
+    </clipPath>
+    <filter id="starShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#5A0408" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <g clip-path="url(#tileClip)">
+    <!-- 革命红圆角方块 -->
+    <rect x="0" y="0" width="512" height="512" rx="112" ry="112" fill="url(#redGrad)"/>
+    <!-- 顶部柔光，增加现代体积感 -->
+    <rect x="0" y="0" width="512" height="512" rx="112" ry="112" fill="url(#sheen)"/>
+
+    <!-- 金色回响波纹（同心圆，由内到外递减透明度） -->
+    <circle cx="256" cy="256" r="224" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-opacity="0.30"/>
+    <circle cx="256" cy="256" r="188" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-opacity="0.55"/>
+    <circle cx="256" cy="256" r="150" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-opacity="0.90"/>
+
+    <!-- 中心五角星（革命意象 + 暖金品牌色） -->
+    <polygon points="256,152 279.5,223.6 354.9,223.9 294,268.4 317.1,340.1 256,296 194.9,340.1 218,268.4 157.1,223.9 232.5,223.6"
+             fill="url(#goldGrad)" filter="url(#starShadow)"/>
+  </g>
+</svg>
