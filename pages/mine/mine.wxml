@@ -1,0 +1,56 @@
+<view class="page">
+  <!-- 个人信息 -->
+  <view class="profile bg-grid fade-up">
+    <view class="profile__avatar">{{user.avatarText}}</view>
+    <view class="flex-1">
+      <view class="profile__name">{{user.nickname}}</view>
+      <re-tag type="accent" solid>{{user.level}}</re-tag>
+    </view>
+  </view>
+
+  <!-- 积分 -->
+  <view class="points tap" bindtap="onPoints">
+    <view class="points__col">
+      <view class="points__num">{{points}}</view>
+      <view class="points__label">当前积分</view>
+    </view>
+    <view class="points__divider"></view>
+    <view class="points__col">
+      <view class="points__num">{{todayGain}}</view>
+      <view class="points__label">今日获得</view>
+    </view>
+    <view class="points__cta">明细 ›</view>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats">
+    <view
+      class="stats__item tap"
+      wx:for="{{statsList}}"
+      wx:key="key"
+      bindtap="onStat"
+      data-key="{{item.key}}"
+    >
+      <view class="stats__num">{{item.value}}</view>
+      <view class="stats__label text-3 xs">{{item.label}}</view>
+    </view>
+  </view>
+
+  <!-- 服务菜单 -->
+  <re-card title="我的服务">
+    <view class="menu">
+      <view
+        class="menu__item tap"
+        wx:for="{{menus}}"
+        wx:key="key"
+        bindtap="onMenu"
+        data-key="{{item.key}}"
+      >
+        <text class="menu__name">{{item.name}}</text>
+        <text class="menu__arrow">›</text>
+      </view>
+    </view>
+  </re-card>
+
+  <view class="footer-tip text-3 xs">红色回响 · 红色旧址沉浸式互动演出</view>
+</view>

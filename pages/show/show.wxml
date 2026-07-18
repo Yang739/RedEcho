@@ -1,0 +1,46 @@
+<view class="page">
+  <!-- 分段筛选 -->
+  <view class="seg">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="seg__item {{filter === item.key ? 'seg__item--active' : ''}}"
+      bindtap="onFilter"
+      data-key="{{item.key}}"
+    >{{item.label}}</view>
+  </view>
+
+  <block wx:if="{{loading}}">
+    <view class="card" wx:for="{{[1,2]}}" wx:key="*this" style="margin-bottom:20rpx">
+      <re-skeleton rows="{{['40%','70%','30%']}}" rowHeight="26rpx"></re-skeleton>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view wx:if="{{!list.length}}" class="empty">暂无相关演出</view>
+    <view
+      class="show tap"
+      wx:for="{{list}}"
+      wx:key="id"
+      bindtap="goRoom"
+      data-id="{{item.id}}"
+    >
+      <view class="show__cover" style="background:{{item.gradient}}">
+        <view wx:if="{{item.status === 'live'}}" class="live__badge">
+          <view class="live-dot"></view><text>直播中</text>
+        </view>
+      </view>
+      <view class="show__body flex-1">
+        <view class="show__title ellipsis">{{item.title}}</view>
+        <view class="show__venue text-3 sm">{{item.venue}}</view>
+        <view class="show__foot between">
+          <text class="text-3 xs">{{item.date}}</text>
+          <re-tag
+            type="{{item.status === 'live' ? 'live' : (item.status === 'upcoming' ? 'accent' : 'default')}}"
+            solid="{{item.status === 'live'}}"
+          >{{statusText[item.status]}}</re-tag>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

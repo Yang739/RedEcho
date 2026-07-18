@@ -1,0 +1,82 @@
+<view class="page">
+  <!-- 顶部 Hero -->
+  <view class="hero bg-grid fade-up">
+    <view class="hero__top">
+      <view class="flex-1">
+        <view class="hero__greet">{{home.greeting}}，{{nickname}}</view>
+        <view class="hero__sub">重温红色记忆，点亮信仰之光</view>
+      </view>
+      <view class="hero__avatar">{{avatarText}}</view>
+    </view>
+    <view class="hero__points tap" bindtap="goPoints">
+      <view class="hero__points-num">{{home.points}}</view>
+      <view class="hero__points-label">积分 · 今日 +{{home.todayGain}}</view>
+    </view>
+  </view>
+
+  <!-- 为你推荐 -->
+  <view class="section-title">为你推荐</view>
+  <block wx:if="{{loading}}">
+    <view class="card" wx:for="{{[1,2,3]}}" wx:key="*this" style="margin-bottom:20rpx">
+      <re-skeleton rows="{{['55%','90%','45%']}}" rowHeight="28rpx"></re-skeleton>
+    </view>
+  </block>
+  <block wx:else>
+    <view
+      class="rec tap"
+      wx:for="{{home.recommend}}"
+      wx:key="id"
+      bindtap="onRead"
+      data-id="{{item.id}}"
+    >
+      <view class="rec__cover" style="background:{{item.gradient}}">
+        <text class="rec__cover-tag">{{item.tag}}</text>
+      </view>
+      <view class="rec__body flex-1">
+        <view class="rec__title ellipsis">{{item.title}}</view>
+        <view class="rec__sub text-3 sm">{{item.subtitle}}</view>
+        <view class="rec__desc text-2 sm ellipsis-2">{{item.desc}}</view>
+        <view class="rec__meta">
+          <re-tag type="{{item.read ? 'success' : 'primary'}}">{{item.read ? '已读' : item.minutes + ' 分钟'}}</re-tag>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 红色足迹 -->
+  <view class="section-title">红色足迹</view>
+  <re-card title="我的阅读">
+    <view wx:if="{{!home.reading.length}}" class="empty">还没有阅读记录，去首页挑一篇吧</view>
+    <view wx:for="{{home.reading}}" wx:key="id" class="trace">
+      <view class="trace__cover" style="background:{{item.gradient}}"></view>
+      <view class="flex-1">
+        <view class="between">
+          <text class="subtitle ellipsis">{{item.title}}</text>
+          <text class="text-3 xs">{{item.last}}</text>
+        </view>
+        <view class="trace__bar"><view class="trace__bar-fill" style="width:{{item.progress}}%"></view></view>
+        <view class="text-3 xs" style="margin-top:6rpx">已读 {{item.progress}}%</view>
+      </view>
+    </view>
+  </re-card>
+
+  <!-- 正在直播 -->
+  <view class="section-title" wx:if="{{home.liveShow}}">正在直播</view>
+  <view
+    wx:if="{{home.liveShow}}"
+    class="live tap"
+    bindtap="goRoom"
+    data-id="{{home.liveShow.id}}"
+  >
+    <view class="live__cover" style="background:{{home.liveShow.gradient}}">
+      <view class="live__badge"><view class="live-dot"></view><text>直播中</text></view>
+    </view>
+    <view class="live__info flex-1">
+      <view class="subtitle ellipsis">{{home.liveShow.title}}</view>
+      <view class="text-3 sm">{{home.liveShow.segment}} · {{home.liveShow.online}} 人在线</view>
+    </view>
+    <view class="live__arrow">进入 ›</view>
+  </view>
+
+  <view class="footer-tip text-3 xs">{{footerText}}</view>
+</view>

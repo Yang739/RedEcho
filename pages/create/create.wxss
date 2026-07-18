@@ -1,0 +1,38 @@
+.page { padding: 20rpx 28rpx 60rpx; }
+
+.intro {
+  padding: 36rpx 32rpx; border-radius: var(--r-lg);
+  background:
+    radial-gradient(120% 120% at 85% 0%, rgba(255,255,255,.12), transparent 60%),
+    linear-gradient(135deg, #9E0B11 0%, #C8161D 100%);
+  color: #fff; box-shadow: var(--s-2); margin-bottom: 8rpx;
+}
+.intro__title { font-size: 38rpx; font-weight: 800; }
+.intro__desc { font-size: 25rpx; opacity: .88; margin-top: 10rpx; line-height: 1.6; }
+
+/* 场景网格 */
+.scenes { display: grid; grid-template-columns: 1fr 1fr; gap: 20rpx; }
+.scene { background: var(--c-surface); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--s-1); }
+.scene__cover {
+  position: relative; height: 200rpx;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 16rpx;
+}
+.scene__go {
+  background: rgba(0,0,0,.35); color: #fff; font-size: 22rpx;
+  padding: 6rpx 18rpx; border-radius: var(--r-pill);
+}
+.scene__name { font-size: 28rpx; font-weight: 700; padding: 16rpx 20rpx 4rpx; }
+.scene__desc { padding: 0 20rpx 20rpx; }
+
+/* 作品画廊 */
+.gallery { white-space: nowrap; margin-top: 8rpx; }
+.pc {
+  display: inline-flex; flex-direction: column; justify-content: space-between;
+  width: 280rpx; height: 380rpx; padding: 28rpx;
+  border-radius: var(--r-md); margin-right: 20rpx; color: #fff;
+  box-shadow: var(--s-1); vertical-align: top;
+}
+.pc__scene { font-size: 30rpx; font-weight: 800; }
+.pc__quote { font-size: 27rpx; line-height: 1.6; font-style: italic; }
+.pc__date { font-size: 20rpx; opacity: .8; }

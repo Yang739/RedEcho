@@ -1,0 +1,52 @@
+<view class="page">
+  <!-- 引导 -->
+  <view class="intro bg-grid fade-up">
+    <view class="intro__title">创作红色记忆</view>
+    <view class="intro__desc">选择一处旧址场景，AI 为你生成专属金句明信片，带走这份信仰的温度。</view>
+  </view>
+
+  <!-- 场景选择 -->
+  <view class="section-title">选择场景</view>
+  <block wx:if="{{loading}}">
+    <view class="scenes">
+      <view class="scene" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+        <view class="scene__cover skeleton"></view>
+      </view>
+    </view>
+  </block>
+  <view class="scenes" wx:else>
+    <view
+      class="scene tap"
+      wx:for="{{scenes}}"
+      wx:key="id"
+      bindtap="onSelect"
+      data-id="{{item.id}}"
+    >
+      <view class="scene__cover" style="background:{{item.gradient}}">
+        <text class="scene__go">生成 ›</text>
+      </view>
+      <view class="scene__name">{{item.name}}</view>
+      <view class="scene__desc text-3 xs ellipsis">{{item.desc}}</view>
+    </view>
+  </view>
+
+  <!-- 我的作品 -->
+  <view class="section-title">我的作品</view>
+  <re-card wx:if="{{!postcards.length && !loading}}" title="暂无作品">
+    <view class="empty">生成第一张明信片，记录你的红色足迹</view>
+  </re-card>
+  <scroll-view wx:else scroll-x class="gallery" enhanced show-scrollbar="{{false}}">
+    <view
+      class="pc"
+      wx:for="{{postcards}}"
+      wx:key="id"
+      style="background:{{item.gradient}}"
+    >
+      <view class="pc__scene">{{item.scene}}</view>
+      <view class="pc__quote">“{{item.quote}}”</view>
+      <view class="pc__date">{{item.date}}</view>
+    </view>
+  </scroll-view>
+
+  <view style="height:40rpx"></view>
+</view>

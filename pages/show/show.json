@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "re-card": "/components/re-card/re-card",
+    "re-skeleton": "/components/re-skeleton/re-skeleton",
+    "re-tag": "/components/re-tag/re-tag"
+  },
+  "navigationBarTitleText": "演出"
+}
