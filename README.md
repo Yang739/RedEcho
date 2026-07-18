@@ -152,12 +152,12 @@ flowchart LR
 ### 运行环境
 
 - 微信开发者工具（稳定版）
-- 已注册的微信小程序 **AppID**（项目已内置 `wxac6829a175131da4`，勿改）
+- 已注册的微信小程序 **AppID**（项目已内置，见 `project.config.json`，勿改）
 - Node.js（用于云函数 `npm install` 与 `miniprogram-ci` 命令行上传）
 
 ### 本地预览（mock 模式，零后端）
 
-1. 微信开发者工具 → 导入项目 → 目录选 `RedEcho/`，AppID 填 `wxac6829a175131da4`。
+1. 微信开发者工具 → 导入项目 → 目录选 `RedEcho/`，AppID 使用项目内置（已在 `project.config.json` 配置，勿改）。
 2. 保持 `config.js` 的 `ENV` 为占位符，所有页面自动走 `mock.js` 演示数据。
 3. 编译预览即可体验首页 / 演出 / 创作 / 我的全流程。
 

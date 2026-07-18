@@ -13,8 +13,8 @@
 const path = require('path')
 
 // —— 需自行填写的参数 ——
-// AppID：必须与实际小程序一致（当前项目为 wxac6829a175131da4，勿改）
-const APPID = 'wxac6829a175131da4'
+// AppID：从 project.config.json 自动读取，无需在此硬编码
+const APPID = require('../project.config.json').appid
 // 上传密钥：从小程序后台下载，建议放在项目外的安全目录，不要提交到 git
 const PRIVATE_KEY_PATH = path.resolve(__dirname, '../keys/private.key') // TODO: 改成你的私钥路径
 // 上传版本号（每次上传递增，如 1.0.1）

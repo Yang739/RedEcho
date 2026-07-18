@@ -12,7 +12,7 @@
 ## A. 小程序代码上传
 
 ### 方式一：微信开发者工具（推荐，零配置）
-1. 打开微信开发者工具，导入项目根目录 `RedEcho/`，AppID 填 `wxac6829a175131da4`（已就位）。
+1. 打开微信开发者工具，导入项目根目录 `RedEcho/`，AppID 使用项目内置（已在 `project.config.json` 配置）。
 2. 确认 `config.js` 的 `ENV` 已替换为真实云环境 ID（见下「部署前检查清单」）。
 3. 点击工具栏 **「上传」** 按钮，填写版本号与备注，提交为「开发版」。
 4. 在 **微信公众平台 → 管理 → 版本管理** 中：
@@ -31,7 +31,7 @@
    - `PRIVATE_KEY_PATH`：你的私钥文件路径
    - `VERSION`：本次版本号（每次上传递增）
    - `DESC`：上传备注
-   - `APPID`：保持 `wxac6829a175131da4`（与 project.config.json 一致）
+   - `APPID`：无需手填，`upload.js` 会自动从 `project.config.json` 读取
 4. 执行上传：
    ```bash
    npm run deploy
@@ -58,7 +58,7 @@
 
 ## 部署前检查清单
 
-- [ ] **AppID** 正确：`project.config.json` 中 `appid` 为 `wxac6829a175131da4`（已就位，勿改）。
+- [ ] **AppID** 正确：`project.config.json` 中 `appid` 已就位（勿改）。
 - [ ] **云环境已创建**：在微信开发者工具「云开发」中开通环境，复制环境 ID。
 - [ ] **ENV 已填**：根目录 `config.js` 的 `ENV` 已从占位符 `your-cloud-env-id` 改为真实环境 ID。
 - [ ] **npm 依赖已装**：在 `cloudfunctions/<每个函数>/` 执行 `npm install`（或在开发者工具选「云端安装依赖」）。
