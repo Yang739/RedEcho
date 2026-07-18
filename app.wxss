@@ -1,0 +1,196 @@
+/* =====================================================================
+ * RedEcho 设计系统 (Design System)
+ * 微信小程序 WXSS —— 适配 rpx 响应式 + 安全区 + 动效 + 无障碍
+ * 颜色：革命红主色 + 暖金点缀；遵循「单一强调色、饱和度克制」原则
+ * ===================================================================== */
+
+/* ---------- 设计令牌 (Design Tokens) ---------- */
+page {
+  /* 品牌色 */
+  --c-primary: #C8161D;
+  --c-primary-dark: #9E0B11;
+  --c-primary-light: #FCE9EA;
+  --c-accent: #E8A33D;
+  --c-accent-light: #FBEFD9;
+
+  /* 中性色 */
+  --c-bg: #F6F5F3;
+  --c-surface: #FFFFFF;
+  --c-surface-2: #FAF9F7;
+  --c-text: #1F1D1B;
+  --c-text-2: #6B6661;
+  --c-text-3: #A39E98;
+  --c-border: #ECE9E4;
+  --c-divider: #F1EFEB;
+
+  /* 语义色 */
+  --c-success: #2E9E5B;
+  --c-warning: #E8A33D;
+  --c-danger: #D23B3B;
+  --c-live: #E23744;
+
+  /* 圆角 */
+  --r-sm: 12rpx;
+  --r-md: 20rpx;
+  --r-lg: 32rpx;
+  --r-pill: 999rpx;
+
+  /* 阴影 */
+  --s-1: 0 4rpx 16rpx rgba(31, 29, 27, .06);
+  --s-2: 0 12rpx 36rpx rgba(31, 29, 27, .10);
+  --s-inset: inset 0 1rpx 0 rgba(255, 255, 255, .6);
+
+  /* 安全区 */
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-top: env(safe-area-inset-top);
+
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 布局工具 ---------- */
+.container { padding: 0 28rpx; }
+.row { display: flex; flex-direction: row; align-items: center; }
+.col { display: flex; flex-direction: column; }
+.between { display: flex; flex-direction: row; align-items: center; justify-content: space-between; }
+.center { display: flex; align-items: center; justify-content: center; }
+.flex-1 { flex: 1; min-width: 0; }
+.wrap { flex-wrap: wrap; }
+.gap-8 { gap: 8rpx; } .gap-12 { gap: 12rpx; } .gap-16 { gap: 16rpx; } .gap-24 { gap: 24rpx; }
+
+/* ---------- 文字 ---------- */
+.title-lg { font-size: 42rpx; font-weight: 700; letter-spacing: -0.5rpx; }
+.title { font-size: 34rpx; font-weight: 700; }
+.subtitle { font-size: 30rpx; font-weight: 600; }
+.text-2 { color: var(--c-text-2); }
+.text-3 { color: var(--c-text-3); }
+.sm { font-size: 24rpx; }
+.xs { font-size: 22rpx; }
+.bold { font-weight: 700; }
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ellipsis-2 {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* ---------- 卡片 (向后兼容旧类名) ---------- */
+.card {
+  background: var(--c-surface);
+  border-radius: var(--r-md);
+  padding: 28rpx;
+  box-shadow: var(--s-1);
+}
+.section-title {
+  font-size: 34rpx; font-weight: 700;
+  margin: 36rpx 0 18rpx;
+  padding-left: 18rpx;
+  border-left: 8rpx solid var(--c-primary);
+}
+.tip { color: var(--c-text-3); font-size: 24rpx; padding: 12rpx 4rpx; line-height: 1.6; }
+.empty { text-align: center; color: var(--c-text-3); padding: 96rpx 0; font-size: 26rpx; }
+.divider { height: 1rpx; background: var(--c-divider); margin: 24rpx 0; }
+
+/* ---------- 按钮 ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 84rpx; padding: 0 36rpx;
+  border-radius: var(--r-pill);
+  font-size: 30rpx; font-weight: 600;
+  border: none; line-height: 1;
+  transition: transform .15s cubic-bezier(.16,1,.3,1), opacity .15s ease, box-shadow .2s ease;
+}
+.btn::after { border: none; }
+.btn-primary { background: var(--c-primary); color: #fff; box-shadow: 0 8rpx 20rpx rgba(200,22,29,.28); }
+.btn-primary:active { transform: scale(.97); background: var(--c-primary-dark); }
+.btn-ghost { background: var(--c-primary-light); color: var(--c-primary); }
+.btn-ghost:active { transform: scale(.97); }
+.btn-outline { background: transparent; color: var(--c-primary); border: 2rpx solid var(--c-primary); }
+.btn-block { display: flex; width: 100%; }
+.btn[disabled] { opacity: .5; }
+.btn-sm { height: 64rpx; padding: 0 28rpx; font-size: 26rpx; }
+
+/* 触摸反馈通用类 */
+.tap { transition: transform .14s cubic-bezier(.16,1,.3,1), opacity .14s ease; }
+.tap:active { transform: scale(.97); opacity: .92; }
+
+/* ---------- 标签 / 徽标 ---------- */
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 4rpx 16rpx; border-radius: var(--r-pill);
+  font-size: 22rpx; font-weight: 600; line-height: 1.6;
+  background: var(--c-surface-2); color: var(--c-text-2);
+}
+.badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 32rpx; height: 32rpx; padding: 0 8rpx;
+  border-radius: var(--r-pill); font-size: 20rpx; font-weight: 700; color: #fff;
+  background: var(--c-danger);
+}
+
+/* ---------- 骨架屏 ---------- */
+.skeleton {
+  background: linear-gradient(100deg, #EDEAE4 30%, #F6F4F0 50%, #EDEAE4 70%);
+  background-size: 200% 100%;
+  border-radius: var(--r-sm);
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ---------- 直播脉冲点 ---------- */
+.live-dot {
+  width: 16rpx; height: 16rpx; border-radius: 50%;
+  background: var(--c-live);
+  position: relative;
+}
+.live-dot::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: var(--c-live); animation: pulse-ring 1.6s ease-out infinite;
+}
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: .7; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+
+/* 直播徽标（胶囊） */
+.live__badge {
+  display: inline-flex; align-items: center; gap: 8rpx;
+  background: rgba(0, 0, 0, .45); color: #fff;
+  font-size: 20rpx; padding: 4rpx 12rpx; border-radius: var(--r-pill);
+}
+.live__cover .live__badge,
+.show__cover .live__badge {
+  position: absolute; left: 10rpx; bottom: 10rpx; z-index: 2;
+}
+
+/* ---------- 进入动画 ---------- */
+.fade-up { animation: fadeUp .5s cubic-bezier(.16,1,.3,1) both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.spin { animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- 网格背景（无外链图，纯 CSS 纹理） ---------- */
+.bg-grid {
+  background-image:
+    radial-gradient(rgba(255,255,255,.10) 1rpx, transparent 1rpx);
+  background-size: 28rpx 28rpx;
+}
+
+/* ---------- 无障碍：尊重「减少动态效果」系统设置 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  page, view, text, image, button, scroll-view, navigator, input, textarea, swiper, swiper-item {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  .live-dot::after { animation: none; }
+}
