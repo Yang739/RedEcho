@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "re-tag": "/components/re-tag/re-tag"
+  },
+  "navigationBarTitleText": "生成明信片"
+}

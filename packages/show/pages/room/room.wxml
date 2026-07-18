@@ -1,0 +1,97 @@
+<view class="room">
+  <!-- 头部 -->
+  <view class="room__hero" style="background:{{show.gradient}}">
+    <view class="room__hero-mask"></view>
+    <view class="room__hero-inner">
+      <view class="between">
+        <view class="room__title ellipsis">{{show.title}}</view>
+        <view wx:if="{{show.status === 'live'}}" class="live__badge">
+          <view class="live-dot"></view><text>直播中</text>
+        </view>
+      </view>
+      <view class="room__seg">{{show.segment}} · {{show.online}} 人在线</view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="room__body" enhanced show-scrollbar="{{false}}">
+
+    <!-- 实时投票 -->
+    <re-card title="剧情投票" wx:if="{{show.pollOpen}}">
+      <view slot="extra" wx:if="{{voted}}" class="text-3 xs">已投票</view>
+      <view class="poll__q">{{poll.question}}</view>
+      <view class="poll__opts">
+        <view
+          wx:for="{{poll.options}}"
+          wx:key="id"
+          class="poll__opt tap {{voted ? 'poll__opt--done' : ''}} {{voted === item.id ? 'poll__opt--mine' : ''}}"
+          bindtap="onVote"
+          data-id="{{item.id}}"
+        >
+          <view class="poll__bar" style="width:{{item.pct}}%"></view>
+          <view class="poll__label">
+            <text>{{item.label}}</text>
+            <text class="poll__pct">{{item.pct}}%</text>
+          </view>
+        </view>
+      </view>
+      <view class="tip">实时结果随现场票情滚动更新</view>
+    </re-card>
+
+    <!-- 情绪反馈 -->
+    <re-card title="此刻心情">
+      <view class="emo">
+        <view
+          wx:for="{{emotions}}"
+          wx:key="id"
+          class="emo__item tap {{selectedEmotion === item.id ? 'emo__item--on' : ''}}"
+          style="{{selectedEmotion === item.id ? 'border-color:' + item.color + ';color:' + item.color : ''}}"
+          bindtap="onEmotion"
+          data-id="{{item.id}}"
+        >{{item.label}}</view>
+      </view>
+    </re-card>
+
+    <!-- 剧情分支 -->
+    <re-card title="剧情分支">
+      <view class="branch__text">{{branch.text}}</view>
+      <view class="branch__state">
+        <re-tag type="primary" solid>{{branch.locked ? '已锁定' : '进行中'}}</re-tag>
+        <text class="text-3 sm">{{branch.current}}</text>
+      </view>
+    </re-card>
+
+    <!-- 现场实时 -->
+    <re-card title="现场实时">
+      <view class="notice">
+        <view wx:for="{{notices}}" wx:key="id" class="notice__item fade-up">
+          <text class="notice__time">{{item.time}}</text>
+          <text class="notice__text">{{item.text}}</text>
+        </view>
+      </view>
+    </re-card>
+
+    <!-- 弹幕 -->
+    <re-card title="实时弹幕">
+      <view class="danmu">
+        <view wx:for="{{messages}}" wx:key="id" class="danmu__item">{{item.text}}</view>
+        <view wx:if="{{!messages.length}}" class="empty">还没有弹幕，来发第一条吧</view>
+      </view>
+      <view class="room__cta btn btn-ghost btn-block tap" bindtap="goGenerate">生成我的红色明信片 ›</view>
+    </re-card>
+
+    <view style="height:30rpx"></view>
+  </scroll-view>
+
+  <!-- 底部弹幕输入 -->
+  <view class="room__foot" style="padding-bottom:calc(16rpx + var(--safe-bottom))">
+    <input
+      class="room__input"
+      placeholder="发条弹幕，与现场共鸣…"
+      value="{{inputValue}}"
+      bindinput="onInput"
+      confirm-type="send"
+      bindconfirm="onSend"
+    />
+    <view class="room__send btn btn-primary btn-sm tap" bindtap="onSend">发送</view>
+  </view>
+</view>
