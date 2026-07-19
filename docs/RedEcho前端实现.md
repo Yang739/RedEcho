@@ -45,6 +45,14 @@
 3. 右键 `cloudfunctions/login` → 上传并部署（云端安装依赖）。
 4. 编译即可预览全部界面（当前为本地 mock 数据，无需后端即可跑通交互）。
 
+## 六（补充）、书法字体部署（明信片四风格）
+小程序字体必须经 https 加载（`wx.loadFontFace` 不能读包内静态文件，且主包装不下大字体），故采用 url 注入。`services/fonts.js` 已支持两种来源，**二选一**：
+
+- **云存储（推荐，免服务器）**：把 `maozedong-1.ttf`(毛体)、`AaSongHuiZongGuoBaoShouJinShu-2.ttf`(瘦金)、`经典繁颜体...ttf`(颜体)、`柳公权柳体...ttf`(柳体) 传到云存储 `fonts/` 目录，复制各自的 FileID（`cloud://cloud1-.../fonts/xxx.ttf`），分别填进 `FONTS.maoti/shoujin/yan/liu` 的 `cloudId`。`loadFonts()` 会自动用 `wx.cloud.getTempFileURL` 换临时 https 地址并加载（同一会话内缓存，避免重复云调用）。
+- **自有 CDN/服务器**：把 4 个 ttf 托管到 https 地址，在 `小程序后台 → 开发设置 → 服务器域名 → downloadFile合法域名` 加上该域名，再把地址填进对应 `url` 字段。
+
+未填 `url`/`cloudId` 时自动回退系统字体（STKaiti/STXingkai/LiSu 等近似风格），排版不崩。云存储临时地址域名若报加载失败，同上把该域名加入 downloadFile 合法域名即可。
+
 ## 六、下一步建议
 - 将 `services/api.js` 的 mock 替换为真实云函数（`getHomeData` / `getShows` / `submitVote` / `generatePostcard` 等已在《云函数接口列表》定义）。
 - 演出房间实时通道可升级为腾讯云 IM 群组推送（见《架构设计》），替换当前 `setInterval` 轮询。
