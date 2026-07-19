@@ -3,9 +3,9 @@
 .intro__title { font-size: 36rpx; font-weight: 800; }
 .intro__desc { font-size: 25rpx; color: var(--c-text-2); margin-top: 8rpx; line-height: 1.6; }
 
-/* 预览 / 结果容器：限制最大宽度，避免竖版过高、横版过宽 */
-.preview { max-width: 520rpx; margin: 0 auto 24rpx; }
-.result { max-width: 600rpx; margin: 0 auto; }
+/* 预览 / 结果容器：舞台外观由共享 .pc-stage 提供（限定最大宽、柔和底衬、居中） */
+.preview { /* 实时预览外层；.pc-stage 已处理最大宽与居中 */ }
+.result { max-width: 560rpx; margin: 0 auto; }
 
 /* 选项选择（方向 / 排列 / 字体 共用） */
 .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 16rpx; }

@@ -1,12 +1,6 @@
 .page { padding: 20rpx 28rpx 60rpx; }
 
-/* 作品网格：两列，避免尺寸越界 */
-.works {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
-  gap: 20rpx;
-}
+/* 作品网格：两列等宽由共享 .pc-grid 提供 */
 /* 画廊卡片外观统一由 app.wxss .pc-cell / .pc-frame 提供 */
 
 /* 预览层 */

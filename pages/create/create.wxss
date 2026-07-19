@@ -17,14 +17,8 @@
 
 .more-link { font-size: 24rpx; color: var(--c-primary); font-weight: 600; }
 
-/* 作品画廊：两列网格，纵向滚动 */
-.works-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
-  gap: 20rpx;
-  margin-top: 8rpx;
-}
+/* 作品画廊：两列等宽由共享 .pc-grid 提供；此处仅保留上间距 */
+.works-grid { margin-top: 8rpx; }
 /* 画廊卡片外观统一由 app.wxss .pc-cell / .pc-frame 提供 */
 
 /* 预览层 */

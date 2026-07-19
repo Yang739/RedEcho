@@ -287,6 +287,26 @@ page {
   box-shadow: var(--s-2);
 }
 
+/* 画廊 / 列表共享网格：两列等宽，创作页与列表页共用，保证完全一致 */
+.pc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 20rpx;
+}
+
+/* 生成页预览舞台：柔和"卡纸"底衬，居中、限定最大宽，内部 .pc-frame 按真实比例呈现 */
+.pc-stage {
+  max-width: 560rpx;
+  margin: 0 auto 24rpx;
+  padding: 22rpx;
+  background: linear-gradient(160deg, #ffffff, #fbf2ef);
+  border: 1rpx solid rgba(200, 22, 29, .14);
+  border-radius: var(--r-xl, 28rpx);
+  box-shadow: var(--s-2);
+}
+.pc-stage > .pc-frame { margin: 0 auto; }
+
 /* ---------- 无障碍：尊重「减少动态效果」系统设置 ---------- */
 @media (prefers-reduced-motion: reduce) {
   page, view, text, image, button, scroll-view, navigator, input, textarea, swiper, swiper-item {

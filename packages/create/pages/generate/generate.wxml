@@ -9,8 +9,10 @@
   <!-- 结果 -->
   <block wx:if="{{result}}">
     <view class="result">
-      <view class="pc-frame pc-frame--{{result.orient}}">
-        <template is="pcCard" data="{{ card: result }}" />
+      <view class="pc-stage">
+        <view class="pc-frame pc-frame--{{result.orient}}">
+          <template is="pcCard" data="{{ card: result }}" />
+        </view>
       </view>
       <view class="result-actions">
         <view class="pc-actions-3">
@@ -29,8 +31,10 @@
   <!-- 创作面板 -->
   <block wx:else>
     <!-- 实时预览 -->
-    <view class="preview pc-frame pc-frame--{{draft.orient}}">
-      <template is="pcCard" data="{{ card: draft }}" />
+    <view class="preview pc-stage">
+      <view class="pc-frame pc-frame--{{draft.orient}}">
+        <template is="pcCard" data="{{ card: draft }}" />
+      </view>
     </view>
 
     <view class="section-title">选择场景</view>

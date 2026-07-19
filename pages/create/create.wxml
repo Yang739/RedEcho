@@ -17,7 +17,7 @@
   <re-card wx:if="{{!postcards.length && !loading}}" title="暂无作品">
     <view class="empty">生成第一张明信片，记录你的红色足迹</view>
   </re-card>
-  <view wx:else class="works-grid">
+  <view wx:else class="works-grid pc-grid">
     <view
       class="pc-cell tap"
       wx:for="{{postcards}}"

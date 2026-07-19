@@ -7,7 +7,7 @@
     <view class="empty">还没有作品，去「创作」页生成第一张红色明信片吧</view>
   </re-card>
 
-  <view wx:else class="works">
+  <view wx:else class="works pc-grid">
     <view
       class="pc-cell tap"
       wx:for="{{list}}"
