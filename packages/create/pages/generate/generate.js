@@ -1,12 +1,14 @@
 // packages/create/pages/generate/generate.js
 const api = require('../../../../services/api.js')
+const postcards = require('../../../../services/postcards.js')
 const { containsSensitive } = require('../../../../services/sensitive.js')
 
-// 排版方案：影响 Canvas 绘制坐标与 CSS 卡对齐
-const LAYOUTS = {
-  classic: { align: 'left',   dateAlign: 'left',   sceneY: 56,  quoteY: 360, quoteSize: 38 },
-  center:  { align: 'center', dateAlign: 'center', sceneY: 64,  quoteY: 320, quoteSize: 40 },
-  minimal: { align: 'right',  dateAlign: 'right',  sceneY: 56,  quoteY: 380, quoteSize: 34 }
+// 字体风格 → Canvas 字体（系统字体可用时生效，否则回退默认衬线）
+const FONTS = {
+  maoti:   { weight: '700', family: 'KaiTi, STKaiti, serif' },
+  shoujin: { weight: '400', family: 'STXingkai, Xingkai SC, serif' },
+  liu:     { weight: '600', family: 'LiSu, STLiti, serif' },
+  yan:     { weight: '800', family: 'KaiTi, STKaiti, serif' }
 }
 
 Page({
@@ -18,17 +20,29 @@ Page({
     // 创作面板状态
     selectedId: '',
     customText: '',
-    layout: 'classic',
+    orient: 'land',   // land 横版 / port 竖版（按实物明信片比例）
+    arrange: 'h',     // h 横排 / v 竖排
+    font: 'maoti',    // maoti 毛体 / shoujin 瘦金 / liu 柳体 / yan 颜体
+    draft: { gradient: '', scene: '', quote: '', orient: 'land', arrange: 'h', font: 'maoti' },
     presets: [
       '星星之火，可以燎原。',
       '为有牺牲多壮志，敢教日月换新天。',
       '江山就是人民，人民就是江山。',
       '一代人有一代人的长征。'
     ],
-    layoutList: [
-      { key: 'classic', name: '经典', desc: '左对齐 · 大气' },
-      { key: 'center', name: '居中', desc: '居中 · 典雅' },
-      { key: 'minimal', name: '留白', desc: '右对齐 · 简约' }
+    orientList: [
+      { key: 'land', name: '横版', desc: '148 × 105 mm' },
+      { key: 'port', name: '竖版', desc: '105 × 148 mm' }
+    ],
+    arrangeList: [
+      { key: 'h', name: '横排', desc: '从左向右' },
+      { key: 'v', name: '竖排', desc: '从上向下' }
+    ],
+    fontList: [
+      { key: 'maoti', name: '大气 · 毛体' },
+      { key: 'shoujin', name: '遒劲 · 瘦金' },
+      { key: 'liu', name: '柳体' },
+      { key: 'yan', name: '颜体' }
     ]
   },
 
@@ -36,28 +50,53 @@ Page({
 
   onLoad(options) {
     api.getScenes().then((scenes) => {
-      this.setData({ scenes, selectedId: options.sceneId || (scenes[0] && scenes[0].id) || '' })
+      this.setData({ scenes, selectedId: options.sceneId || (scenes[0] && scenes[0].id) || '' }, () => this.updateDraft())
     })
   },
 
   onSelectScene(e) {
-    this.setData({ selectedId: e.currentTarget.dataset.id })
+    this.setData({ selectedId: e.currentTarget.dataset.id }, () => this.updateDraft())
   },
 
   onInputQuote(e) {
-    this.setData({ customText: e.detail.value })
+    this.setData({ customText: e.detail.value }, () => this.updateDraft())
   },
 
   onPickPreset(e) {
-    this.setData({ customText: e.currentTarget.dataset.q })
+    this.setData({ customText: e.currentTarget.dataset.q }, () => this.updateDraft())
   },
 
-  onSelectLayout(e) {
-    this.setData({ layout: e.currentTarget.dataset.key })
+  onSelectOrient(e) {
+    this.setData({ orient: e.currentTarget.dataset.key }, () => this.updateDraft())
+  },
+
+  onSelectArrange(e) {
+    this.setData({ arrange: e.currentTarget.dataset.key }, () => this.updateDraft())
+  },
+
+  onSelectFont(e) {
+    this.setData({ font: e.currentTarget.dataset.key }, () => this.updateDraft())
+  },
+
+  // 根据当前选择实时构建预览草稿
+  updateDraft() {
+    const scenes = this.data.scenes
+    const scene = scenes.find((s) => s.id === this.data.selectedId) || scenes[0] || {}
+    const text = (this.data.customText && this.data.customText.trim()) || '在此写下你的红色金句'
+    this.setData({
+      draft: {
+        gradient: scene.gradient || 'linear-gradient(135deg,#C8161D,#7A0A10)',
+        scene: scene.name || '红色旧址',
+        quote: text,
+        orient: this.data.orient,
+        arrange: this.data.arrange,
+        font: this.data.font
+      }
+    })
   },
 
   onGenerate() {
-    const { selectedId, customText, layout } = this.data
+    const { selectedId, customText, orient, arrange, font } = this.data
     if (!selectedId) {
       wx.showToast({ title: '请先选择场景', icon: 'none' })
       return
@@ -73,12 +112,21 @@ Page({
       return
     }
     this.setData({ generating: true, result: null, useImage: false })
-    api.generatePostcard(selectedId, customText, layout).then((res) => {
+    const opts = { orient, arrange, font }
+    api.generatePostcard(selectedId, customText, opts).then((res) => {
       const scene = this.data.scenes.find((s) => s.id === selectedId) || {}
-      const result = Object.assign({}, res, { colors: scene.colors || res.colors || ['#C8161D', '#7A0A10'] })
-      this.setData({ result, generating: false }, () => {
-        if (result.imageUrl) this.loadImage(result.imageUrl)
-        else this.drawPostcard()
+      const finalRec = Object.assign({}, res, {
+        scene: scene.name || res.scene,
+        gradient: scene.gradient || res.gradient,
+        colors: scene.colors || res.colors,
+        quote: (customText && customText.trim()) || res.quote,
+        orient, arrange, font
+      })
+      // 落库：保证「已存入我的作品」真实可信
+      postcards.add(finalRec)
+      wx.showToast({ title: '已存入我的作品', icon: 'success' })
+      this.setData({ result: finalRec, generating: false, useImage: !!res.imageUrl }, () => {
+        if (res.imageUrl) this.loadImage(res.imageUrl)
       })
     }).catch((err) => {
       this.setData({ generating: false })
@@ -94,11 +142,9 @@ Page({
         if (e.statusCode === 200 && e.tempFilePath) {
           this.tempPath = e.tempFilePath
           this.setData({ useImage: true })
-        } else {
-          this.drawPostcard()
         }
       },
-      fail: () => this.drawPostcard()
+      fail: () => {}
     })
   },
 
@@ -106,8 +152,12 @@ Page({
   drawPostcard() {
     const r = this.data.result
     if (!r) return Promise.resolve('')
+    const orient = r.orient || 'land'
+    const W = orient === 'port' ? 600 : 900
+    const H = orient === 'port' ? 900 : 600
+    const F = FONTS[r.font] || FONTS.maoti
     return new Promise((resolve) => {
-      wx.createSelectorQuery()
+      wx.createSelectorQuery().in(this)
         .select('#pcCanvas')
         .fields({ node: true, size: true })
         .exec((res) => {
@@ -115,8 +165,6 @@ Page({
           const canvas = res[0].node
           const ctx = canvas.getContext('2d')
           const dpr = (wx.getWindowInfo ? wx.getWindowInfo().pixelRatio : wx.getSystemInfoSync().pixelRatio) || 2
-          const W = 600
-          const H = 800
           canvas.width = W * dpr
           canvas.height = H * dpr
           ctx.scale(dpr, dpr)
@@ -127,23 +175,26 @@ Page({
           ctx.fillStyle = g
           ctx.fillRect(0, 0, W, H)
 
-          const lay = LAYOUTS[r.layout] || LAYOUTS.classic
-          const anchorX = lay.align === 'center' ? W / 2 : (lay.align === 'right' ? W - 48 : 48)
-
           ctx.fillStyle = '#ffffff'
           ctx.textBaseline = 'top'
-          ctx.textAlign = lay.align
+          ctx.textAlign = 'left'
 
-          ctx.font = '700 44px sans-serif'
-          ctx.fillText(r.scene, anchorX, lay.sceneY)
+          // 场景名
+          ctx.font = F.weight + ' 44px ' + F.family
+          ctx.fillText(r.scene, 48, 48)
 
-          ctx.font = 'italic 600 ' + lay.quoteSize + 'px sans-serif'
-          this.wrapText(ctx, '“' + r.quote + '”', anchorX, lay.quoteY, W - 96, 58, lay.align)
+          // 金句
+          const quote = '“' + r.quote + '”'
+          if (r.arrange === 'v') {
+            this._drawVertical(ctx, quote, W - 64, 150, 70, 60, F, orient)
+          } else {
+            ctx.font = F.weight + ' ' + (orient === 'port' ? 40 : 38) + 'px ' + F.family
+            this._wrap(ctx, quote, 48, orient === 'port' ? 360 : 210, W - 96, 60, 'left')
+          }
 
-          ctx.textAlign = lay.dateAlign
-          const dateX = lay.dateAlign === 'center' ? W / 2 : (lay.dateAlign === 'right' ? W - 48 : 48)
+          // 日期
           ctx.font = '400 24px sans-serif'
-          ctx.fillText(r.date + ' · 红色回响', dateX, H - 64)
+          ctx.fillText(r.date + ' · 红色回响', 48, H - 64)
 
           wx.canvasToTempFilePath({
             canvas,
@@ -154,7 +205,7 @@ Page({
     })
   },
 
-  wrapText(ctx, text, x, y, maxWidth, lineHeight, align) {
+  _wrap(ctx, text, x, y, maxWidth, lineHeight, align) {
     ctx.textAlign = align || 'left'
     let line = ''
     for (const ch of text) {
@@ -168,6 +219,21 @@ Page({
       }
     }
     if (line) ctx.fillText(line, x, y)
+  },
+
+  // 竖排：从右向左分列，每列自上而下
+  _drawVertical(ctx, text, x, y, colStep, charH, F, orient) {
+    ctx.textBaseline = 'top'
+    ctx.textAlign = 'center'
+    ctx.font = F.weight + ' 46px ' + F.family
+    let cx = x
+    let cy = y
+    const maxH = orient === 'port' ? 680 : 420
+    for (const ch of text) {
+      ctx.fillText(ch, cx, cy)
+      cy += charH
+      if (cy > y + maxH) { cy = y; cx -= colStep }
+    }
   },
 
   onSave() {
@@ -203,6 +269,16 @@ Page({
 
   onAgain() {
     this.tempPath = ''
-    this.setData({ result: null, useImage: false, customText: '' })
+    this.setData({ result: null, useImage: false, customText: '' }, () => this.updateDraft())
+  },
+
+  // 转发给好友（由结果层 <button open-type="share"> 触发）
+  onShareAppMessage() {
+    const r = this.data.result
+    return {
+      title: r ? ('我在红色回响创作了「' + r.scene + '」明信片') : '红色回响 · 创作你的专属红色明信片',
+      path: '/pages/create/create',
+      imageUrl: this.tempPath || (r && r.imageUrl) || ''
+    }
   }
 })
