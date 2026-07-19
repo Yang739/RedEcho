@@ -1,5 +1,5 @@
 <!-- 细线强调式底部导航栏：静默灰 / 点击红色线条 / 活跃墨黑+常驻红线 -->
-<view class="tab-bar">
+<view class="tab-bar" hidden="{{hidden}}">
   <view
     wx:for="{{list}}"
     wx:key="index"
