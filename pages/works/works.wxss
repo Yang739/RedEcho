@@ -6,11 +6,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 20rpx;
 }
-.works .pc-card-wrap {
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  box-shadow: var(--s-1);
-}
+/* 画廊卡片外观统一由 app.wxss .pc-frame 提供 */
 
 /* 预览层 */
 .preview-mask {

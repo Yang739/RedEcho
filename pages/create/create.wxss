@@ -24,11 +24,7 @@
   gap: 20rpx;
   margin-top: 8rpx;
 }
-.works-grid .pc-card-wrap {
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  box-shadow: var(--s-1);
-}
+/* 画廊卡片外观统一由 app.wxss .pc-frame 提供 */
 
 /* 预览层 */
 .preview-mask {

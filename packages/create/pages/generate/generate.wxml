@@ -9,7 +9,9 @@
   <!-- 结果 -->
   <block wx:if="{{result}}">
     <view class="result">
-      <template is="pcCard" data="{{ card: result }}" />
+      <view class="pc-frame">
+        <template is="pcCard" data="{{ card: result }}" />
+      </view>
       <view class="result-actions">
         <view class="pc-actions-3">
           <view class="btn btn-primary flex-1 tap" bindtap="onSave">保存</view>
@@ -27,7 +29,7 @@
   <!-- 创作面板 -->
   <block wx:else>
     <!-- 实时预览 -->
-    <view class="preview">
+    <view class="preview pc-frame">
       <template is="pcCard" data="{{ card: draft }}" />
     </view>
 

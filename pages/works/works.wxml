@@ -9,7 +9,7 @@
 
   <view wx:else class="works">
     <view
-      class="pc-card-wrap tap"
+      class="pc-frame tap"
       wx:for="{{list}}"
       wx:key="id"
       bindtap="onPreview"
@@ -26,7 +26,9 @@
   <!-- 作品预览（点空白处关闭；仅 保存 / 分享 / 打印） -->
   <view wx:if="{{preview}}" class="preview-mask" bindtap="onClosePreview">
     <view class="preview-card" catchtap="noop">
-      <template is="pcCard" data="{{ card: preview }}" />
+      <view class="pc-frame">
+        <template is="pcCard" data="{{ card: preview }}" />
+      </view>
       <view class="preview-actions">
         <view class="btn btn-primary flex-1 tap" bindtap="onSaveFromPreview">保存</view>
         <button class="btn btn-ghost flex-1 tap preview-share" open-type="share">分享</button>

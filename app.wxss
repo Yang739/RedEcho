@@ -257,6 +257,22 @@ page {
 .pc-card.is-vert .pc-pos-bl,
 .pc-card.is-vert .pc-pos-br { bottom: 64rpx; }
 
+/* 展示框：所有“展示态”明信片统一为竖版(2:3)比例，便于网格/预览统一尺寸；
+   横版卡片顺时针旋转 90° 后恰好填满 2:3 框（3:2 旋转后 = 2:3），实现“横板展示统一大小”。
+   注：导出 Canvas 仍按真实比例 3:2 / 2:3 绘制，仅展示层做旋转归一。 */
+.pc-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  box-shadow: var(--s-2);
+  background: var(--c-surface-2);
+}
+.pc-frame > .pc-card { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.pc-frame > .pc-card.pc-card--port { width: 100%; aspect-ratio: 2 / 3; }
+.pc-frame > .pc-card.pc-card--land { width: 150%; aspect-ratio: 3 / 2; transform: translate(-50%, -50%) rotate(90deg); }
+
 /* ---------- 无障碍：尊重「减少动态效果」系统设置 ---------- */
 @media (prefers-reduced-motion: reduce) {
   page, view, text, image, button, scroll-view, navigator, input, textarea, swiper, swiper-item {
