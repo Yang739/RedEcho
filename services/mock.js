@@ -68,8 +68,8 @@ const quotes = [
 ]
 
 const postcards = [
-  { id: 'p1', scene: '红船旭日', gradient: GRAD.red, colors: ['#C8161D', '#7A0A10'], quote: quotes[0], date: '2026-07-17', layout: 'classic' },
-  { id: 'p2', scene: '延安晨曦', gradient: GRAD.dawn, colors: ['#F6D365', '#C8161D'], quote: quotes[2], date: '2026-07-15', layout: 'center' }
+  { id: 'p1', scene: '红船旭日', gradient: GRAD.red, colors: ['#C8161D', '#7A0A10'], quote: quotes[0], date: '2026-07-17', orient: 'land', arrange: 'h', font: 'maoti', position: 'center' },
+  { id: 'p2', scene: '延安晨曦', gradient: GRAD.dawn, colors: ['#F6D365', '#C8161D'], quote: quotes[2], date: '2026-07-15', orient: 'port', arrange: 'v', font: 'yan', position: 'br' }
 ]
 
 const orders = [

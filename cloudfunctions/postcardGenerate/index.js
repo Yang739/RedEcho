@@ -84,7 +84,7 @@ async function saveImage(base64) {
 
 exports.main = async (event, context) => {
   const { OPENID } = getOpenid()
-  const { sceneId, quote, customText, orient, arrange, font } = event
+  const { sceneId, quote, customText, orient, arrange, font, position } = event
   const scene = SCENES[sceneId] || SCENES.sc1
 
   // 自定义金句敏感词拦截（与前端一致）
@@ -96,9 +96,11 @@ exports.main = async (event, context) => {
   const ORIENTS = ['land', 'port']
   const ARRANGES = ['h', 'v']
   const FONTS = ['maoti', 'shoujin', 'liu', 'yan']
+  const POSITIONS = ['top', 'bottom', 'left', 'right', 'tl', 'tr', 'bl', 'br', 'center']
   const finalOrient = ORIENTS.indexOf(orient) !== -1 ? orient : 'land'
   const finalArrange = ARRANGES.indexOf(arrange) !== -1 ? arrange : 'h'
   const finalFont = FONTS.indexOf(font) !== -1 ? font : 'maoti'
+  const finalPosition = POSITIONS.indexOf(position) !== -1 ? position : 'center'
 
   let imageUrl = ''
   if (SECRET_ID && SECRET_KEY) {
@@ -125,6 +127,7 @@ exports.main = async (event, context) => {
     orient: finalOrient,
     arrange: finalArrange,
     font: finalFont,
+    position: finalPosition,
     imageUrl,
     placeholder
   }
@@ -143,6 +146,7 @@ exports.main = async (event, context) => {
           orient: finalOrient,
           arrange: finalArrange,
           font: finalFont,
+          position: finalPosition,
           imageUrl,
           created_at: new Date()
         }

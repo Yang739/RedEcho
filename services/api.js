@@ -122,7 +122,11 @@ module.exports = {
 
   // 生成明信片：云函数 postcardGenerate（文生图接入点已标注为占位）
   // customText：用户自定义金句（为空则随机抽名言库）
-  // opts：{ orient: 'land'|'port', arrange: 'h'|'v', font: 'maoti'|'shoujin'|'liu'|'yan' }
+  // opts：{ orient, arrange, font, position }
+  //   - orient: 'land'|'port'（匹配图片朝向）
+  //   - arrange: 'h'|'v'（横排/竖排）
+  //   - font: 'maoti'|'shoujin'|'liu'|'yan'（仅 UI 展示修饰词）
+  //   - position: 'top'|'bottom'|'left'|'right'|'tl'|'tr'|'bl'|'br'|'center'（名言九宫格位置）
   // 云模式：云端生成失败（未部署/文生图异常）时回退本地 CSS 生成，保证本地可跑通
   generatePostcard(sceneId, customText, opts) {
     opts = opts || {}
@@ -138,7 +142,8 @@ module.exports = {
         date: '2026-07-18',
         orient: opts.orient || 'land',
         arrange: opts.arrange || 'h',
-        font: opts.font || 'maoti'
+        font: opts.font || 'maoti',
+        position: opts.position || 'center'
       }, 1600)
     }
     if (!IS_CLOUD) return fallback()
@@ -147,7 +152,8 @@ module.exports = {
       customText: customText || '',
       orient: opts.orient || 'land',
       arrange: opts.arrange || 'h',
-      font: opts.font || 'maoti'
+      font: opts.font || 'maoti',
+      position: opts.position || 'center'
     }).catch(fallback)
   },
 
