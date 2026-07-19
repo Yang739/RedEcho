@@ -185,6 +185,47 @@ page {
   background-size: 28rpx 28rpx;
 }
 
+/* ---------- 明信片卡片（创作 / 生成 / 作品列表 共用） ---------- */
+/* 尺寸参照实物明信片：横版 148×105mm ≈ 3:2，竖版 105×148mm ≈ 2:3 */
+.pc-card {
+  width: 100%;
+  border-radius: var(--r-lg);
+  box-shadow: var(--s-2);
+  overflow: hidden;
+  background: var(--c-surface-2);
+  color: #fff;
+  box-sizing: border-box;
+}
+.pc-card--land { aspect-ratio: 3 / 2; }
+.pc-card--port { aspect-ratio: 2 / 3; }
+.pc-card__img { width: 100%; height: 100%; display: block; }
+.pc-card__inner {
+  width: 100%; height: 100%;
+  padding: 40rpx 36rpx;
+  box-sizing: border-box;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.pc-card__scene { font-size: 38rpx; font-weight: 800; letter-spacing: 1rpx; }
+.pc-card__quote { font-size: 34rpx; line-height: 1.7; }
+.pc-card__date { font-size: 22rpx; opacity: .85; }
+
+/* 字体风格（CSS 模拟；系统字体可用时生效，否则回退衬线） */
+.font-maoti   { --pc-font: "STKaiti","KaiTi","Kaiti SC",serif;       --pc-weight: 700; }
+.font-shoujin { --pc-font: "STXingkai","Xingkai SC",serif;          --pc-weight: 400; }
+.font-liu     { --pc-font: "LiSu","STLiti","Kaiti SC",serif;        --pc-weight: 600; }
+.font-yan     { --pc-font: "STKaiti","KaiTi",serif;                 --pc-weight: 800; }
+.pc-card .pc-card__scene,
+.pc-card .pc-card__quote { font-family: var(--pc-font, serif); font-weight: var(--pc-weight, 700); }
+
+/* 名言竖排 */
+.pc-card.is-vert .pc-card__quote {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  max-height: 76%;
+  letter-spacing: 6rpx;
+  align-self: flex-end;
+}
+
 /* ---------- 无障碍：尊重「减少动态效果」系统设置 ---------- */
 @media (prefers-reduced-motion: reduce) {
   page, view, text, image, button, scroll-view, navigator, input, textarea, swiper, swiper-item {
