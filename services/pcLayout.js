@@ -26,6 +26,22 @@ function splitBalanced(text, perLine) {
   return lines
 }
 
+// 以逗号断行（逗号本身不显示）；竖排去除行尾标点；过长子句再均衡拆分
+function splitQuoteLines(text, arrange, perLine) {
+  let segs = String(text).split('，').map(s => s.trim()).filter(s => s.length)
+  if (!segs.length) segs = [String(text).trim() || String(text)]
+  if (arrange === 'v') {
+    // 竖排：句尾不跟标点（去除行尾全角标点）
+    segs = segs.map(s => s.replace(/[。！？!?；：、，,.…—~·]+$/, ''))
+  }
+  const lines = []
+  for (const s of segs) {
+    if (s.length <= perLine) lines.push(s)
+    else lines.push(...splitBalanced(s, perLine))
+  }
+  return lines
+}
+
 // 日期统一为 YYYY.MM.DD（落库为 YYYY-MM-DD，预览/导出一致）
 function formatDate(d) {
   if (!d) return ''
@@ -145,23 +161,22 @@ function paintHorizontal(ctx, q, W, H, F, orient, position) {
     ctx.font = F.weight + ' ' + fs + 'px ' + F.family
   }
 
-  // 分行（均衡）
-  const charW = fs * 0.95
-  const perLine = Math.max(1, Math.floor(boxW / charW))
-  let lines = q.length <= perLine ? [q] : splitBalanced(q, perLine)
+  // 分行：以逗号断行；续行缩进两字
+  const perLine = Math.max(1, Math.floor(boxW / (fs * 0.95)))
+  let lines = splitQuoteLines(q, 'h', perLine)
 
-  // 限行（最多 6 行）：超出再缩字号，仍超则截断
+  // 限行（最多 6 行）：超出再缩字号
   if (lines.length > 6) {
     fs = Math.max(18, Math.floor((fs * 6) / lines.length))
     ctx.font = F.weight + ' ' + fs + 'px ' + F.family
     const pl = Math.max(1, Math.floor(boxW / (fs * 0.95)))
-    lines = splitBalanced(q, pl)
+    lines = splitQuoteLines(q, 'h', pl)
     if (lines.length > 6) lines = lines.slice(0, 6)
   }
 
   const lineH = fs * 1.5
   const totalH = lines.length * lineH
-  const indentX = (eff === 'left' || eff === 'tl' || eff === 'bl') ? fs * 2 : 0
+  const indentX = fs * 2 // 续行缩进两字
 
   // 垂直锚点（bottom 系预留落款带）
   let y
@@ -173,9 +188,11 @@ function paintHorizontal(ctx, q, W, H, F, orient, position) {
   ctx.textAlign = align
   ctx.fillStyle = '#ffffff'
   for (let i = 0; i < lines.length; i++) {
-    const x = align === 'center'
-      ? boxX + boxW / 2
-      : (align === 'right' ? boxX + boxW : boxX + (i > 0 ? indentX : 0))
+    const baseX = align === 'center' ? boxX + boxW / 2
+      : align === 'right' ? boxX + boxW
+      : boxX
+    // 续行相对上一行缩进两字（右对齐则向左缩）
+    const x = baseX + (i > 0 ? (align === 'right' ? -indentX : indentX) : 0)
     ctx.fillText(lines[i], x, y + i * lineH)
   }
 }
@@ -190,10 +207,13 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
   const charH = fs * 1.05
   const cap = Math.floor(maxH / charH)
 
-  // 拆成多列（自右向左）
+  // 按逗号分段（竖排去段尾标点）；每段再按列高切列（自右向左）
+  const segs = splitQuoteLines(q, 'v', q.length)
   const cols = []
-  let i = 0
-  while (i < q.length) { cols.push(q.substr(i, cap)); i += cap }
+  for (const seg of segs) {
+    let i = 0
+    while (i < seg.length) { cols.push(seg.substr(i, cap)); i += cap }
+  }
 
   // 水平锚点
   let x
@@ -201,12 +221,15 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
   else if (position === 'center') x = W / 2
   else x = W - pad - fs / 2
 
-  // 垂直锚点（bottom 系预留落款带）
-  const colH = cols.length * charH
+  // 续列（逗号后 / 段内换行）整体向下缩进两字
+  const indentY = fs * 2
+  const mainH = (cols[0] ? cols[0].length * charH : 0) + indentY
+
+  // 垂直锚点（bottom 系预留落款带；以首列高度 + 续列缩进估算整体块高）
   let y0
   if (position === 'top' || position === 'tl' || position === 'tr') y0 = SCENE_BAND
-  else if (position === 'bottom' || position === 'bl' || position === 'br') y0 = H - SIGN_BAND - colH
-  else y0 = (H - colH) / 2
+  else if (position === 'bottom' || position === 'bl' || position === 'br') y0 = H - SIGN_BAND - mainH
+  else y0 = (H - mainH) / 2
 
   ctx.textBaseline = 'top'
   ctx.textAlign = 'center'
@@ -214,8 +237,9 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
   for (let c = 0; c < cols.length; c++) {
     const cx = x - c * (fs * 1.15)
     const col = cols[c]
+    const yStart = y0 + (c > 0 ? indentY : 0)
     for (let j = 0; j < col.length; j++) {
-      ctx.fillText(col[j], cx, y0 + j * charH)
+      ctx.fillText(col[j], cx, yStart + j * charH)
     }
   }
 }
