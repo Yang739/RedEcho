@@ -46,11 +46,16 @@ Page({
     return arr.slice(0, n)
   },
 
-  // 为你推荐：当前从全部资料随机抽 3 条（优先未读见后续提交）
+  // 为你推荐：优先推送未读文章；未读不足 HOME_MAX 时以已读补足；全部读完则继续随机
   buildRecommend() {
     const readIds = new Set(readHistory.getList())
-    const recommend = this.pickRandom(res.cards, HOME_MAX)
-      .map((c) => Object.assign({}, c, { read: readIds.has(c.id) }))
+    const unread = res.cards.filter((c) => !readIds.has(c.id))
+    const read = res.cards.filter((c) => readIds.has(c.id))
+    let pool = this.pickRandom(unread, HOME_MAX)
+    if (pool.length < HOME_MAX) {
+      pool = pool.concat(this.pickRandom(read, HOME_MAX - pool.length))
+    }
+    const recommend = pool.map((c) => Object.assign({}, c, { read: readIds.has(c.id) }))
     this.setData({ 'home.recommend': recommend, hasMore: res.cards.length > HOME_MAX })
   },
 
