@@ -2,8 +2,11 @@
 const api = require('../../services/api.js')
 const store = require('../../store.js')
 const res = require('../../services/resources.js')
+const readHistory = require('../../services/readHistory.js')
 
 const HOME_MAX = 3 // 首页随机推荐 3 条（从整个资料库随机挑选）
+const CAT_NAME = res.CATEGORIES.reduce((m, c) => { m[c.key] = c.name; return m }, {})
+const READ_SHOW = 3 // 红色足迹仅展示最近 3 篇
 
 Page({
   data: {
@@ -23,6 +26,12 @@ Page({
     this.load()
   },
 
+  onShow() {
+    // 回到首页时刷新阅读记录与推荐，反映最新已读状态
+    this.buildReading()
+    this.buildRecommend()
+  },
+
   onUnload() {
     if (this.unsub) this.unsub()
   },
@@ -37,14 +46,23 @@ Page({
     return arr.slice(0, n)
   },
 
-  // 首页只随机展示 HOME_MAX 条，其余进入「更多」
-  apply(list) {
-    const recommend = this.pickRandom(list, HOME_MAX)
-    this.setData({
-      loading: false,
-      'home.recommend': recommend,
-      hasMore: list.length > HOME_MAX
-    })
+  // 为你推荐：当前从全部资料随机抽 3 条（优先未读见后续提交）
+  buildRecommend() {
+    const readIds = new Set(readHistory.getList())
+    const recommend = this.pickRandom(res.cards, HOME_MAX)
+      .map((c) => Object.assign({}, c, { read: readIds.has(c.id) }))
+    this.setData({ 'home.recommend': recommend, hasMore: res.cards.length > HOME_MAX })
+  },
+
+  // 红色足迹：从本地阅读历史读取，仅展示最近 3 篇；与「我的」页共用 readHistory 数据源
+  buildReading() {
+    const ids = readHistory.getList()
+    const list = ids
+      .map((id) => res.cards.find((c) => c.id === id))
+      .filter(Boolean)
+      .slice(0, READ_SHOW)
+      .map((c) => ({ id: c.id, title: c.title, catName: CAT_NAME[c.cat] || '', gradient: c.gradient }))
+    this.setData({ 'home.reading': list })
   },
 
   load() {
@@ -56,16 +74,19 @@ Page({
             greeting: d.greeting,
             points: d.points,
             todayGain: d.todayGain,
-            reading: d.reading,
             liveShow: d.liveShow
-          })
+          }),
+          loading: false
         })
-        this.apply(res.cards)
+        this.buildReading()
+        this.buildRecommend()
         wx.stopPullDownRefresh()
       })
       .catch(() => {
         // 云端异常时仍保证资料卡片可见
-        this.apply(res.cards)
+        this.setData({ loading: false })
+        this.buildReading()
+        this.buildRecommend()
         wx.stopPullDownRefresh()
       })
   },
@@ -77,6 +98,11 @@ Page({
   // 进入「更多」资料列表页（列表页内再提供分类筛选）
   onMore() {
     wx.navigateTo({ url: '/pages/resource/list/list' })
+  },
+
+  // 红色足迹「全部」按钮：跳转我的阅读列表页
+  onAllReads() {
+    wx.navigateTo({ url: '/pages/read/read' })
   },
 
   // 点击卡片：进入资料详情页

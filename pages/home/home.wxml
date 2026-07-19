@@ -48,18 +48,25 @@
   </block>
 
   <!-- 红色足迹 -->
-  <view class="section-title">红色足迹</view>
+  <view class="section-title between">
+    <text>红色足迹</text>
+    <view class="more-link" wx:if="{{home.reading.length}}" bindtap="onAllReads">全部 ›</view>
+  </view>
   <re-card title="我的阅读">
     <view wx:if="{{!home.reading.length}}" class="empty">还没有阅读记录，去首页挑一篇吧</view>
-    <view wx:for="{{home.reading}}" wx:key="id" class="trace">
+    <view
+      wx:for="{{home.reading}}"
+      wx:key="id"
+      class="trace tap"
+      bindtap="onRead"
+      data-id="{{item.id}}"
+    >
       <view class="trace__cover" style="background:{{item.gradient}}"></view>
       <view class="flex-1">
         <view class="between">
           <text class="subtitle ellipsis">{{item.title}}</text>
-          <text class="text-3 xs">{{item.last}}</text>
+          <text class="text-3 xs">{{item.catName}}</text>
         </view>
-        <view class="trace__bar"><view class="trace__bar-fill" style="width:{{item.progress}}%"></view></view>
-        <view class="text-3 xs" style="margin-top:6rpx">已读 {{item.progress}}%</view>
       </view>
     </view>
   </re-card>
