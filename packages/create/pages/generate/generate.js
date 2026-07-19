@@ -1,10 +1,10 @@
 // packages/create/pages/generate/generate.js
 const api = require('../../../../services/api.js')
 const postcards = require('../../../../services/postcards.js')
-const { containsSensitive } = require('../../../../services/sensitive.js')
+const { containsSensitive } = require('../../services/sensitive.js')
 const { FONTS, loadFonts } = require('../../../../services/fonts.js')
 const { decorateCard, paintPostcard, renderPostcard } = require('../../../../services/pcLayout.js')
-const { clampQuote, quoteCount, MAX_QUOTE } = require('../../../../services/quote.js')
+const { clampQuote, quoteCount, MAX_QUOTE } = require('../../services/quote.js')
 
 // 字体风格 → 仅暴露修饰词（不展示具体字体名）
 const fontList = Object.keys(FONTS).map((key) => ({
