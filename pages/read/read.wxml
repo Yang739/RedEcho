@@ -16,6 +16,7 @@
         <view class="read-item__main">
           <view class="read-item__title">{{item.title}}</view>
           <view class="read-item__sub text-3 xs">{{item.catName}} · {{item.subtitle}}</view>
+          <view class="read-item__time text-3 xs">阅读于 {{item.readTime}}</view>
         </view>
         <text class="read-item__arrow">›</text>
       </view>

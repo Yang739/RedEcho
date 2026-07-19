@@ -67,6 +67,7 @@
           <text class="subtitle ellipsis">{{item.title}}</text>
           <text class="text-3 xs">{{item.catName}}</text>
         </view>
+        <view class="text-3 xs" style="margin-top:6rpx">阅读于 {{item.readTime}}</view>
       </view>
     </view>
   </re-card>

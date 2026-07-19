@@ -32,7 +32,7 @@
 | 创作 `pages/create` | 场景网格 + 我的作品横向画廊 |
 | 明信片生成 `packages/create/pages/generate` | 场景选择 → 生成遮罩 → **离屏 Canvas 绘制造明信片 → 保存相册**（含权限引导） |
 | 我的 `pages/mine` | 个人资料、积分、数据统计、服务菜单（含"我的阅读"入口，订阅 store 实时刷新积分） |
-| 我的阅读 `pages/read/read` | 本地阅读历史列表：按倒序展示已读篇章，点击回看详情，可清空 |
+| 我的阅读 `pages/read/read` | 本地阅读历史列表：按倒序展示已读篇章，**每篇标注阅读时间（20XX年X月XX日）**，点击回看详情，可清空（见 `services/readHistory.js`） |
 | 资料中心 `pages/resource/list` | 顶部分类筛选栏（全部 / 历史事件 / 湘籍伟人 / 红色旧址 / 湖湘精神 / 英烈丰碑），展示该分类全部资料 |
 | 资料详情 `pages/resource/detail` | 按 id 查卡片，渲染导语 / 正文 / 关键要点 / 名言；含「相关宣传片」占位区块（短视频，待填内容）；导航栏标题随卡片 |
 | 演出回顾 `packages/show/pages/review` | 我的投票、情绪分布条形图、金句、引导生成明信片 |

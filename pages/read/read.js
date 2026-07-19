@@ -11,19 +11,23 @@ Page({
   onShow() { this.refresh() },
 
   refresh() {
-    const ids = readHistory.getList()
-    const list = ids
-      .map((id) => res.cards.find((c) => c.id === id))
+    const entries = readHistory.getEntries()
+    const list = entries
+      .map((e) => {
+        const c = res.cards.find((x) => x.id === e.id)
+        if (!c) return null
+        return {
+          id: c.id,
+          title: c.title,
+          subtitle: c.subtitle,
+          catName: CAT_NAME[c.cat] || '',
+          gradient: c.gradient,
+          readTime: readHistory.formatDate(e.time)
+        }
+      })
       .filter(Boolean)
       .slice(0, READ_SHOW)
-      .map((c) => ({
-        id: c.id,
-        title: c.title,
-        subtitle: c.subtitle,
-        catName: CAT_NAME[c.cat] || '',
-        gradient: c.gradient
-      }))
-    this.setData({ list, count: ids.length })
+    this.setData({ list, count: entries.length })
   },
 
   onRead(e) {

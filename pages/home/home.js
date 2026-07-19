@@ -61,12 +61,20 @@ Page({
 
   // 红色足迹：从本地阅读历史读取，仅展示最近 3 篇；与「我的」页共用 readHistory 数据源
   buildReading() {
-    const ids = readHistory.getList()
-    const list = ids
-      .map((id) => res.cards.find((c) => c.id === id))
+    const list = readHistory.getEntries()
+      .map((e) => {
+        const c = res.cards.find((x) => x.id === e.id)
+        if (!c) return null
+        return {
+          id: c.id,
+          title: c.title,
+          catName: CAT_NAME[c.cat] || '',
+          gradient: c.gradient,
+          readTime: readHistory.formatDate(e.time)
+        }
+      })
       .filter(Boolean)
       .slice(0, READ_SHOW)
-      .map((c) => ({ id: c.id, title: c.title, catName: CAT_NAME[c.cat] || '', gradient: c.gradient }))
     this.setData({ 'home.reading': list })
   },
 
