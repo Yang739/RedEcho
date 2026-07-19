@@ -17,7 +17,12 @@ Page({
 
   onLoad() { this.load() },
 
-  onShow() { this.load() },
+  onShow() {
+    this.load()
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 1 })
+    }
+  },
 
   load() {
     this.setData({ loading: true })

@@ -1,0 +1,15 @@
+<!-- 细线强调式底部导航栏：静默灰 / 点击红色线条 / 活跃墨黑+常驻红线 -->
+<view class="tab-bar">
+  <view
+    wx:for="{{list}}"
+    wx:key="index"
+    class="tab {{selected === index ? 'tab--active' : ''}}"
+    data-index="{{index}}"
+    bindtap="switchTab"
+    hover-class="tab--press"
+    hover-stay-time="80"
+  >
+    <image class="tab__icon" src="{{selected === index ? item.iconInk : item.iconGray}}" mode="aspectFit" />
+    <view class="tab__label">{{item.text}}</view>
+  </view>
+</view>

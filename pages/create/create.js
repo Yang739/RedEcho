@@ -18,6 +18,9 @@ Page({
   onShow() {
     loadFonts()
     this.load()
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 2 })
+    }
   },
 
   load() {
