@@ -97,7 +97,7 @@
     </view>
 
     <view class="section-title">名言位置</view>
-    <view class="pos-grid">
+    <view class="pos-grid pos-grid--{{arrange}}">
       <view
         class="pos tap {{position === item.key ? 'pos--on' : ''}}"
         wx:for="{{positionList}}"

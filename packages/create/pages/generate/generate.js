@@ -12,36 +12,32 @@ const fontList = Object.keys(FONTS).map((key) => ({
   desc: FONTS[key].desc
 }))
 
-// 位置中文名（用于回退展示）
+// 位置中文名（用于展示）
 const POSITION_NAMES = {
-  tl: '左上', top: '上', tr: '右上',
-  left: '左', center: '正中', right: '右',
-  bl: '左下', bottom: '下', br: '右下'
+  top: '上', center: '正中', bottom: '下',
+  left: '左', right: '右'
 }
 
-// 按「朝向 × 排列」限定可选位置（避免文字溢出/重叠）
-// 横版-横排：左上,上,右上,中,左下,下,右下
-// 横版-竖排：左上,上,右上
-// 竖版-横排：左上,上,右上,中,左下,下,右下
-// 竖版-竖排：左上,右上
+// 按「排列」限定可选位置（横排：上/中/下；竖排：左/右）
 const POSITIONS_BY_MODE = {
-  'land-h': ['tl', 'top', 'tr', 'center', 'bl', 'bottom', 'br'],
-  'land-v': ['tl', 'top', 'tr'],
-  'port-h': ['tl', 'top', 'tr', 'center', 'bl', 'bottom', 'br'],
-  'port-v': ['tl', 'tr']
+  h: ['top', 'center', 'bottom'],
+  v: ['left', 'right']
 }
 
-// 根据朝向+排列返回当前可选位置列表（[{key,name}]）
+// 各排列的默认位置（切换排列时回退到该默认，而非首个，体验更自然）
+const POSITION_DEFAULT = { h: 'center', v: 'right' }
+
+// 根据排列返回当前可选位置列表（[{key,name}]）
 function getPositionList(orient, arrange) {
-  const keys = POSITIONS_BY_MODE[(orient || 'land') + '-' + (arrange || 'h')] || POSITIONS_BY_MODE['land-h']
+  const keys = POSITIONS_BY_MODE[arrange || 'h'] || POSITIONS_BY_MODE['h']
   return keys.map((k) => ({ key: k, name: POSITION_NAMES[k] || k }))
 }
 
-// 当前位置是否仍在可选范围内，否则回退到首个可选位置
+// 当前位置是否仍在可选范围内，否则回退到该排列的默认位置
 function normalPosition(orient, arrange, position) {
   const list = getPositionList(orient, arrange)
   if (list.some((p) => p.key === position)) return position
-  return list[0] ? list[0].key : 'tl'
+  return POSITION_DEFAULT[arrange] || (list[0] ? list[0].key : 'top')
 }
 
 Page({
