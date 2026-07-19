@@ -2,7 +2,12 @@
   <!-- 头图 -->
   <view class="hero" style="background:{{card.gradient}}">
     <view class="hero__era">{{card.era}}</view>
-    <view class="hero__title">{{card.title}}</view>
+    <view class="hero__title-row">
+      <view class="hero__title">{{card.title}}</view>
+      <view class="hero__fav {{favorited ? 'on' : ''}}" bindtap="onToggleFav">
+        <text class="hero__fav-icon">{{favorited ? '★' : '☆'}}</text>
+      </view>
+    </view>
     <view class="hero__sub">{{card.subtitle}}</view>
     <view class="hero__tag">{{card.tag}}</view>
   </view>
@@ -44,15 +49,6 @@
   </view>
 
   <view class="footer-tip text-3 xs">红色回响 · 红色旧址沉浸式互动演出</view>
-  <view style="height:140rpx"></view>
-
-  <!-- 底部操作栏 -->
-  <view class="action-bar">
-    <view class="action-bar__fav {{card.favorited ? 'on' : ''}}" bindtap="onToggleFav">
-      <text class="action-bar__icon">{{card.favorited ? '★' : '☆'}}</text>
-      <text class="action-bar__txt">{{card.favorited ? '已收藏' : '收藏'}}</text>
-    </view>
-  </view>
 </view>
 
 <view class="empty-page" wx:else>

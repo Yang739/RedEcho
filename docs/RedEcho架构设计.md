@@ -180,5 +180,5 @@ RedEcho/
 - **本版已落地（增量）**：资料卡片详情页加入「相关宣传片」占位；「我的阅读」本地阅读历史已在 `pages/read/read` 落地（入口在「我的服务」菜单，记录存于 `wx` 本地存储，无需后端，见 `services/readHistory.js`）。
 - **首页红色足迹**与「我的阅读」（`pages/read/read`）共用 `readHistory` 本地数据源，保证两端阅读记录同步；首页仅展示最近 3 篇（含阅读时间），点「全部 ›」跳转列表页。`readHistory` 存储 `{id, time}`，`formatDate()` 输出「20XX 年 X 月 XX 日  XX : XX」（24 小时制）。
 - **首页为你推荐**优先推送未读资料（基于 `readHistory` 标记），全部读完则继续随机。
-- **阅读收藏**：详情页底部「收藏」按钮切换本地收藏（`services/favorites.js`，`toggle/has/getList/clear`），「阅读收藏」列表页（`pages/favorites/favorites`）展示全部收藏、可单条取消或清空；「我的」页统计「收藏」数随本地收藏实时更新。
+- **阅读收藏**：详情页头图标题右侧「收藏」五角星按钮（点击变黄）切换本地收藏（`services/favorites.js`，`toggle/has/getList/clear`），「阅读收藏」列表页（`pages/favorites/favorites`）展示全部收藏、可单条取消或清空；「我的」页统计「收藏」数随本地收藏实时更新。
 - **用户登录与积分体系**：当前游客端以本地资料浏览为主，IM 实时演出、商城核销、AIGC 明信片等 M3–M5 能力尚未在本仓库代码层落地。
