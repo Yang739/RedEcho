@@ -12,7 +12,7 @@
   <!-- 我的作品 -->
   <view class="section-title between">
     <text>我的作品</text>
-    <view wx:if="{{hasMoreWorks}}" class="more-link tap" bindtap="onAll">全部 ›</view>
+    <view wx:if="{{hasWorks}}" class="more-link tap" bindtap="onAll">全部 ›</view>
   </view>
   <re-card wx:if="{{!postcards.length && !loading}}" title="暂无作品">
     <view class="empty">生成第一张明信片，记录你的红色足迹</view>

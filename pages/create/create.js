@@ -10,7 +10,7 @@ Page({
   data: {
     loading: true,
     postcards: [],
-    hasMoreWorks: false,
+    hasWorks: false,
     preview: null
   },
 
@@ -26,7 +26,7 @@ Page({
         const decorated = list.map((p) => decorateCard(p))
         this.setData({
           postcards: decorated.slice(0, MAX_SHOW),
-          hasMoreWorks: list.length > MAX_SHOW,
+          hasWorks: list.length > 0,
           loading: false
         })
       })
