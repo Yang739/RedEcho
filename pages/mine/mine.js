@@ -80,6 +80,7 @@ Page({
     if (key === 'postcards') wx.navigateTo({ url: '/pages/works/works' })
     else if (key === 'reads') wx.navigateTo({ url: '/pages/read/read' })
     else if (key === 'favorites') wx.navigateTo({ url: '/pages/favorites/favorites' })
+    else if (key === 'about') wx.navigateTo({ url: '/pages/about/about' })
     else wx.showToast({ title: '功能开发中', icon: 'none' })
   }
 })

@@ -1,0 +1,33 @@
+<view class="page">
+  <!-- 品牌头部 -->
+  <view class="brand">
+    <view class="brand__logo">红</view>
+    <view class="brand__name">红色回响</view>
+    <view class="brand__en">REDECHO</view>
+    <view class="brand__tag">红色旧址沉浸式互动演出</view>
+  </view>
+
+  <!-- 简介 -->
+  <view class="card intro">
+    <view class="intro__title">关于我们</view>
+    <view class="intro__text">{{intro}}</view>
+  </view>
+
+  <!-- 核心功能 -->
+  <view class="section-title">核心功能</view>
+  <view class="card features">
+    <view class="feature" wx:for="{{features}}" wx:key="title">
+      <view class="feature__icon">{{item.icon}}</view>
+      <view class="flex-1">
+        <view class="feature__title">{{item.title}}</view>
+        <view class="feature__desc">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 版本与版权 -->
+  <view class="footer">
+    <view class="footer__ver">版本 {{version}}</view>
+    <view class="footer__copy">© {{year}} 红色回响 RedEcho</view>
+  </view>
+</view>

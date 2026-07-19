@@ -8,7 +8,8 @@
     "pages/resource/detail/detail",
     "pages/works/works",
     "pages/resource/list/list",
-    "pages/favorites/favorites"
+    "pages/favorites/favorites",
+    "pages/about/about"
   ],
   "subpackages": [
     {
