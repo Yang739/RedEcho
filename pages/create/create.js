@@ -1,13 +1,7 @@
 // pages/create/create.js
 const api = require('../../services/api.js')
-
-// 字体风格 → Canvas 字体（系统字体可用时生效，否则回退默认衬线）
-const FONTS = {
-  maoti:   { weight: '700', family: 'KaiTi, STKaiti, serif' },
-  shoujin: { weight: '400', family: 'STXingkai, Xingkai SC, serif' },
-  liu:     { weight: '600', family: 'LiSu, STLiti, serif' },
-  yan:     { weight: '800', family: 'KaiTi, STKaiti, serif' }
-}
+const { loadFonts } = require('../../services/fonts.js')
+const { decorateCard, paintPostcard } = require('../../services/pcLayout.js')
 
 // 创作页「我的作品」最多展示条数
 const MAX_SHOW = 4
@@ -21,6 +15,7 @@ Page({
   },
 
   onShow() {
+    loadFonts()
     this.load()
   },
 
@@ -28,8 +23,9 @@ Page({
     this.setData({ loading: true })
     api.getPostcards()
       .then((list) => {
+        const decorated = list.map((p) => decorateCard(p))
         this.setData({
-          postcards: list.slice(0, MAX_SHOW),
+          postcards: decorated.slice(0, MAX_SHOW),
           hasMoreWorks: list.length > MAX_SHOW,
           loading: false
         })
@@ -64,11 +60,9 @@ Page({
   drawRecord(rec) {
     return new Promise((resolve) => {
       if (!rec) return resolve('')
-      const colors = (rec.colors && rec.colors.length === 2) ? rec.colors : ['#C8161D', '#7A0A10']
       const orient = rec.orient || 'land'
       const W = orient === 'port' ? 600 : 900
       const H = orient === 'port' ? 900 : 600
-      const F = FONTS[rec.font] || FONTS.maoti
       wx.createSelectorQuery().in(this)
         .select('#pcCanvas')
         .fields({ node: true, size: true })
@@ -80,31 +74,7 @@ Page({
           canvas.width = W * dpr
           canvas.height = H * dpr
           ctx.scale(dpr, dpr)
-
-          const g = ctx.createLinearGradient(0, 0, W, H)
-          g.addColorStop(0, colors[0])
-          g.addColorStop(1, colors[1])
-          ctx.fillStyle = g
-          ctx.fillRect(0, 0, W, H)
-
-          ctx.fillStyle = '#ffffff'
-          ctx.textBaseline = 'top'
-          ctx.textAlign = 'left'
-
-          ctx.font = F.weight + ' 44px ' + F.family
-          ctx.fillText(rec.scene, 48, 48)
-
-          const quote = '“' + rec.quote + '”'
-          if (rec.arrange === 'v') {
-            this._drawVertical(ctx, quote, W - 64, 150, 70, 60, F, orient)
-          } else {
-            ctx.font = F.weight + ' ' + (orient === 'port' ? 40 : 38) + 'px ' + F.family
-            this._wrap(ctx, quote, 48, orient === 'port' ? 360 : 210, W - 96, 60, 'left')
-          }
-
-          ctx.font = '400 24px sans-serif'
-          ctx.fillText(rec.date + ' · 红色回响', 48, H - 64)
-
+          paintPostcard(ctx, W, H, decorateCard(rec))
           wx.canvasToTempFilePath({
             canvas,
             success: (e) => resolve(e.tempFilePath),
@@ -112,36 +82,6 @@ Page({
           })
         })
     })
-  },
-
-  _wrap(ctx, text, x, y, maxWidth, lineHeight, align) {
-    ctx.textAlign = align || 'left'
-    let line = ''
-    for (const ch of text) {
-      const test = line + ch
-      if (ctx.measureText(test).width > maxWidth && line) {
-        ctx.fillText(line, x, y)
-        line = ch
-        y += lineHeight
-      } else {
-        line = test
-      }
-    }
-    if (line) ctx.fillText(line, x, y)
-  },
-
-  _drawVertical(ctx, text, x, y, colStep, charH, F, orient) {
-    ctx.textBaseline = 'top'
-    ctx.textAlign = 'center'
-    ctx.font = F.weight + ' 46px ' + F.family
-    let cx = x
-    let cy = y
-    const maxH = orient === 'port' ? 640 : 420
-    for (const ch of text) {
-      ctx.fillText(ch, cx, cy)
-      cy += charH
-      if (cy > y + maxH) { cy = y; cx -= colStep }
-    }
   },
 
   // 预览层「保存相册」
@@ -169,6 +109,16 @@ Page({
     }
     if (rec.imageUrl) { save(rec.imageUrl); return }
     this.drawRecord(rec).then((path) => save(path))
+  },
+
+  // 打印：绘制高清图后用系统图片查看器（可长按保存 / 打印）
+  onPrint() {
+    const rec = this.data.preview
+    if (!rec) return
+    wx.showToast({ title: '长按图片可保存或打印', icon: 'none' })
+    const open = (path) => { if (path) wx.previewImage({ urls: [path], current: path }) }
+    if (rec.imageUrl) { open(rec.imageUrl); return }
+    this.drawRecord(rec).then(open)
   },
 
   // 转发给好友（由预览层 <button open-type="share"> 触发）

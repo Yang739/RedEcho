@@ -1,3 +1,5 @@
+<import src="../../templates/pc-card.wxml" />
+
 <view class="page">
   <!-- 引导 + 入口：整张卡片即入口（场景选择在生成页内） -->
   <view class="intro bg-grid fade-up tap" bindtap="onStartCreate">
@@ -15,43 +17,30 @@
   <re-card wx:if="{{!postcards.length && !loading}}" title="暂无作品">
     <view class="empty">生成第一张明信片，记录你的红色足迹</view>
   </re-card>
-  <scroll-view wx:else scroll-x class="gallery" enhanced show-scrollbar="{{false}}">
+  <view wx:else class="works-grid">
     <view
-      class="pc-card pc-card--{{item.orient || 'land'}} font-{{item.font || 'maoti'}} {{item.arrange === 'v' ? 'is-vert' : ''}} tap"
+      class="pc-card-wrap tap"
       wx:for="{{postcards}}"
       wx:key="id"
-      style="background:{{item.gradient}}"
       bindtap="onPreview"
       data-id="{{item.id}}"
     >
-      <view class="pc-card__inner">
-        <view class="pc-card__scene">{{item.scene}}</view>
-        <view class="pc-card__quote">“{{item.quote}}”</view>
-        <view class="pc-card__date">{{item.date}}</view>
-      </view>
+      <template is="pcCard" data="{{ card: item }}" />
     </view>
-  </scroll-view>
+  </view>
 
   <view style="height:40rpx"></view>
 
-  <!-- 作品预览 -->
+  <!-- 作品预览（点空白处关闭） -->
   <view wx:if="{{preview}}" class="preview-mask" bindtap="onClosePreview">
     <view class="preview-card" catchtap="noop">
-      <view class="pc-card pc-card--{{preview.orient || 'land'}} font-{{preview.font || 'maoti'}} {{preview.arrange === 'v' ? 'is-vert' : ''}}">
-        <image wx:if="{{preview.imageUrl}}" class="pc-card__img" src="{{preview.imageUrl}}" mode="aspectFill" />
-        <view wx:else class="pc-card__inner" style="background:{{preview.gradient}}">
-          <view class="pc-card__scene">{{preview.scene}}</view>
-          <view class="pc-card__quote">“{{preview.quote}}”</view>
-          <view class="pc-card__date">{{preview.date}} · 红色回响</view>
-        </view>
-      </view>
+      <template is="pcCard" data="{{ card: preview }}" />
       <view class="preview-actions">
-        <view class="btn btn-primary flex-1 tap" bindtap="onSaveFromPreview">保存相册</view>
-        <button class="btn btn-ghost flex-1 tap preview-share" open-type="share">转发给好友</button>
-        <view class="btn btn-ghost flex-1 tap" bindtap="onClosePreview">关闭</view>
+        <view class="btn btn-primary flex-1 tap" bindtap="onSaveFromPreview">保存</view>
+        <button class="btn btn-ghost flex-1 tap preview-share" open-type="share">分享</button>
+        <view class="btn btn-ghost flex-1 tap" bindtap="onPrint">打印</view>
       </view>
     </view>
-    <!-- 离屏画布：用于从历史记录现绘保存（透明不占视觉） -->
     <canvas type="2d" id="pcCanvas" class="pc-canvas"></canvas>
   </view>
 </view>

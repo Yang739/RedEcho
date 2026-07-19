@@ -17,12 +17,16 @@
 
 .more-link { font-size: 24rpx; color: var(--c-primary); font-weight: 600; }
 
-/* 作品画廊：水平滚动，固定卡片尺寸避免越界 */
-.gallery { white-space: nowrap; margin-top: 8rpx; }
-.gallery .pc-card {
-  display: inline-block;
-  width: 280rpx; height: 380rpx;
-  margin-right: 20rpx; vertical-align: top;
+/* 作品画廊：两列网格，纵向滚动 */
+.works-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  margin-top: 8rpx;
+}
+.works-grid .pc-card-wrap {
+  border-radius: var(--r-lg);
+  overflow: hidden;
   box-shadow: var(--s-1);
 }
 
