@@ -18,9 +18,10 @@ Page({
   onShow() {
     loadFonts()
     this.load()
-    // 每次回到本页都强制显示自定义 tabBar（防从其他页返回后卡在隐藏态）
+    // 回到本页时：若预览仍打开则保持 tabBar 隐藏（如打印系统看图器关闭会触发 onShow），
+    // 否则恢复显示；同时高亮当前 tab。
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 2, hidden: false })
+      this.getTabBar().setData({ selected: 2, hidden: !!this.data.preview })
     }
   },
 
