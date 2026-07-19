@@ -95,3 +95,27 @@
 
 .empty-page { padding-top: 200rpx; text-align: center; }
 .footer-tip { text-align: center; padding: 40rpx 0 10rpx; }
+
+/* 底部操作栏（收藏） */
+.action-bar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16rpx 36rpx calc(16rpx + env(safe-area-inset-bottom));
+  background: var(--c-surface, #fff);
+  border-top: 1rpx solid var(--c-divider, #eee);
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, .04);
+  z-index: 10;
+}
+.action-bar__fav {
+  display: flex; align-items: center; gap: 12rpx;
+  padding: 16rpx 56rpx;
+  border-radius: 999rpx;
+  background: var(--c-surface-2, #f2f2f2);
+  color: var(--c-text-2, #888);
+  font-size: 28rpx; font-weight: 600;
+}
+.action-bar__fav.on {
+  background: rgba(200, 22, 29, .1);
+  color: var(--c-primary, #C8161D);
+}
+.action-bar__icon { font-size: 32rpx; line-height: 1; }
