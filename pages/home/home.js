@@ -27,9 +27,14 @@ Page({
   },
 
   onShow() {
-    // 回到首页时刷新阅读记录与推荐，反映最新已读状态
+    // 红色足迹始终反映最新已读状态
     this.buildReading()
-    this.buildRecommend()
+    // 由推荐卡片进入详情并返回时，仅移除刚读的那篇并在尾部补一篇（不整体刷新）
+    if (this._pendingReadId) {
+      const id = this._pendingReadId
+      this._pendingReadId = null
+      this.removeAndAppend(id)
+    }
   },
 
   onUnload() {
@@ -118,10 +123,28 @@ Page({
     wx.navigateTo({ url: '/pages/read/read' })
   },
 
-  // 点击卡片：进入资料详情页
+  // 点击推荐卡片：记录待移除 id，进入详情页（返回时不整体刷新，仅移除该篇并尾部补一篇）
   onRead(e) {
     const id = e.currentTarget.dataset.id
+    this._pendingReadId = id
     wx.navigateTo({ url: `/pages/resource/detail/detail?id=${id}` })
+  },
+
+  // 由推荐卡片返回时调用：移除刚刚阅读过的那篇，并在列表尾部补充一篇（优先未读）
+  removeAndAppend(justReadId) {
+    const readIds = new Set(readHistory.getList())
+    let list = (this.data.home.recommend || []).slice()
+    // 仅移除刚刚阅读过的那篇（其余保持不变，不整体刷新）
+    list = list.filter((c) => c.id !== justReadId)
+    const existIds = new Set(list.map((c) => c.id))
+    // 从「未读且不在当前列表」中补一篇；不足则从已读补
+    const unread = res.cards.filter((c) => !readIds.has(c.id) && !existIds.has(c.id))
+    const read = res.cards.filter((c) => readIds.has(c.id) && !existIds.has(c.id))
+    let pick = this.pickRandom(unread, 1)
+    if (pick.length < 1) pick = this.pickRandom(read, 1)
+    const appended = pick.map((c) => Object.assign({}, c, { read: readIds.has(c.id) }))
+    list = list.concat(appended)
+    this.setData({ 'home.recommend': list, hasMore: res.cards.length > list.length })
   },
 
   goRoom(e) {
