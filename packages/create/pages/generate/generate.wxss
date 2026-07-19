@@ -39,13 +39,28 @@
 /* 离屏画布 */
 .pc-canvas { position: fixed; left: -9999rpx; top: -9999rpx; width: 900px; height: 600px; }
 
-/* 场景选择 */
-.scenes { display: grid; grid-template-columns: 1fr 1fr; gap: 20rpx; }
-.scene { background: var(--c-surface); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--s-1); border: 3rpx solid transparent; }
+/* 场景选择：单行左右滑动 */
+.scenes {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 18rpx;
+  padding-bottom: 10rpx;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+.scenes::-webkit-scrollbar { display: none; }
+.scene {
+  flex: 0 0 auto;
+  width: 250rpx;
+  scroll-snap-align: start;
+  background: var(--c-surface); border-radius: var(--r-md); overflow: hidden;
+  box-shadow: var(--s-1); border: 3rpx solid transparent; box-sizing: border-box;
+}
 .scene--on { border-color: var(--c-primary, #C8161D); }
-.scene__cover { height: 200rpx; }
-.scene__name { font-size: 28rpx; font-weight: 700; padding: 16rpx 20rpx 4rpx; }
-.scene__desc { padding: 0 20rpx 20rpx; }
+.scene__cover { height: 160rpx; }
+.scene__name { font-size: 27rpx; font-weight: 700; padding: 14rpx 18rpx 4rpx; }
+.scene__desc { padding: 0 18rpx 16rpx; }
 
 /* 金句输入 */
 .quote-input {
