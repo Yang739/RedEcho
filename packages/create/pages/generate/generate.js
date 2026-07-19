@@ -12,12 +12,37 @@ const fontList = Object.keys(FONTS).map((key) => ({
   desc: FONTS[key].desc
 }))
 
-// 9 宫格位置
-const positionList = [
-  { key: 'tl', name: '左上' }, { key: 'top', name: '上' }, { key: 'tr', name: '右上' },
-  { key: 'left', name: '左' }, { key: 'center', name: '正中' }, { key: 'right', name: '右' },
-  { key: 'bl', name: '左下' }, { key: 'bottom', name: '下' }, { key: 'br', name: '右下' }
-]
+// 位置中文名（用于回退展示）
+const POSITION_NAMES = {
+  tl: '左上', top: '上', tr: '右上',
+  left: '左', center: '正中', right: '右',
+  bl: '左下', bottom: '下', br: '右下'
+}
+
+// 按「朝向 × 排列」限定可选位置（避免文字溢出/重叠）
+// 横版-横排：左上,上,右上,中,左下,下,右下
+// 横版-竖排：左上,上,右上
+// 竖版-横排：左上,上,右上,中,左下,下,右下
+// 竖版-竖排：左上,右上
+const POSITIONS_BY_MODE = {
+  'land-h': ['tl', 'top', 'tr', 'center', 'bl', 'bottom', 'br'],
+  'land-v': ['tl', 'top', 'tr'],
+  'port-h': ['tl', 'top', 'tr', 'center', 'bl', 'bottom', 'br'],
+  'port-v': ['tl', 'tr']
+}
+
+// 根据朝向+排列返回当前可选位置列表（[{key,name}]）
+function getPositionList(orient, arrange) {
+  const keys = POSITIONS_BY_MODE[(orient || 'land') + '-' + (arrange || 'h')] || POSITIONS_BY_MODE['land-h']
+  return keys.map((k) => ({ key: k, name: POSITION_NAMES[k] || k }))
+}
+
+// 当前位置是否仍在可选范围内，否则回退到首个可选位置
+function normalPosition(orient, arrange, position) {
+  const list = getPositionList(orient, arrange)
+  if (list.some((p) => p.key === position)) return position
+  return list[0] ? list[0].key : 'tl'
+}
 
 Page({
   data: {
@@ -47,7 +72,7 @@ Page({
       { key: 'h', name: '横排', desc: '从左向右' },
       { key: 'v', name: '竖排', desc: '从上向下' }
     ],
-    positionList,
+    positionList: getPositionList('land', 'h'),
     fontList
   },
 
@@ -76,11 +101,21 @@ Page({
   },
 
   onSelectOrient(e) {
-    this.setData({ orient: e.currentTarget.dataset.key }, () => this.updateDraft())
+    const orient = e.currentTarget.dataset.key
+    this.setData({
+      orient,
+      positionList: getPositionList(orient, this.data.arrange),
+      position: normalPosition(orient, this.data.arrange, this.data.position)
+    }, () => this.updateDraft())
   },
 
   onSelectArrange(e) {
-    this.setData({ arrange: e.currentTarget.dataset.key }, () => this.updateDraft())
+    const arrange = e.currentTarget.dataset.key
+    this.setData({
+      arrange,
+      positionList: getPositionList(this.data.orient, arrange),
+      position: normalPosition(this.data.orient, arrange, this.data.position)
+    }, () => this.updateDraft())
   },
 
   onSelectPosition(e) {
