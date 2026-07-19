@@ -1,4 +1,4 @@
-.page { padding: 20rpx 28rpx 60rpx; }
+.page { padding: 20rpx 28rpx 140rpx; }
 
 /* 分段控件 */
 .seg {

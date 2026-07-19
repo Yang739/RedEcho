@@ -1,4 +1,4 @@
-.page { padding: 20rpx 28rpx 60rpx; }
+.page { padding: 20rpx 28rpx 140rpx; }
 
 /* 创作红色记忆：Hero 风格入口卡片，参考首页「你好，旅人」 */
 .intro {

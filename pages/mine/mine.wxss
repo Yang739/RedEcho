@@ -1,4 +1,4 @@
-.page { padding: 20rpx 28rpx 60rpx; }
+.page { padding: 20rpx 28rpx 140rpx; }
 
 .profile {
   display: flex; align-items: center; gap: 24rpx;
