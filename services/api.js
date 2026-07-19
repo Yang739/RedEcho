@@ -9,6 +9,7 @@
 
 const mock = require('./mock.js')
 const resources = require('./resources.js')
+const postcards = require('./postcards.js')
 const { ENV } = require('../config.js')
 
 // 是否启用真实云函数：ENV 不是占位符即视为已配置真实环境
@@ -120,9 +121,11 @@ module.exports = {
   },
 
   // 生成明信片：云函数 postcardGenerate（文生图接入点已标注为占位）
-  // customText：用户自定义金句（为空则随机抽名言库）；layout：排版方案 classic/center/minimal
+  // customText：用户自定义金句（为空则随机抽名言库）
+  // opts：{ orient: 'land'|'port', arrange: 'h'|'v', font: 'maoti'|'shoujin'|'liu'|'yan' }
   // 云模式：云端生成失败（未部署/文生图异常）时回退本地 CSS 生成，保证本地可跑通
-  generatePostcard(sceneId, customText, layout) {
+  generatePostcard(sceneId, customText, opts) {
+    opts = opts || {}
     const fallback = () => {
       const scene = mock.scenes.find((s) => s.id === sceneId) || mock.scenes[0]
       const quote = (customText && customText.trim()) || mock.quotes[Math.floor(Math.random() * mock.quotes.length)]
@@ -133,20 +136,28 @@ module.exports = {
         colors: scene.colors,
         quote,
         date: '2026-07-18',
-        layout: layout || 'classic'
+        orient: opts.orient || 'land',
+        arrange: opts.arrange || 'h',
+        font: opts.font || 'maoti'
       }, 1600)
     }
     if (!IS_CLOUD) return fallback()
-    return call('postcardGenerate', { sceneId, customText: customText || '', layout: layout || 'classic' }).catch(fallback)
+    return call('postcardGenerate', {
+      sceneId,
+      customText: customText || '',
+      orient: opts.orient || 'land',
+      arrange: opts.arrange || 'h',
+      font: opts.font || 'maoti'
+    }).catch(fallback)
   },
 
-  // 我的明信片：云函数 postcardList
-  // 云模式：云端空集合/云函数未部署时回退本地 mock.postcards，保证本地可跑通
+  // 我的明信片（我的作品）：以本地存储 postcards 为准（与创作落库同源）
+  // 首次为空时用 mock.postcards 种子初始化，保证体验非空；生成新作品后即时反映
   getPostcards() {
-    if (!IS_CLOUD) return delay(mock.postcards, 300)
-    return call('postcardList', {})
-      .then((list) => (list && list.length ? list : mock.postcards))
-      .catch(() => mock.postcards)
+    const list = postcards.getList()
+    if (list.length) return delay(list, 200)
+    mock.postcards.forEach((p) => postcards.add(p))
+    return delay(postcards.getList(), 200)
   },
 
   /* ---------------- 我的 ---------------- */
