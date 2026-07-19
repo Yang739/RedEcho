@@ -1,33 +1,34 @@
 <view class="page">
-  <!-- 引导 + 入口：点击卡片进入明信片创作（场景选择在生成页内） -->
+  <!-- 引导 + 入口：整张卡片即入口（场景选择在生成页内） -->
   <view class="intro bg-grid fade-up tap" bindtap="onStartCreate">
     <view class="intro__main">
       <view class="intro__title">创作红色记忆</view>
       <view class="intro__desc">选择一处旧址场景，AI 为你生成专属金句明信片，带走这份信仰的温度。</view>
     </view>
-    <view class="intro__enter">
-      <text class="intro__enter-text">进入</text>
-      <text class="intro__enter-arrow">›</text>
-    </view>
   </view>
 
   <!-- 我的作品 -->
-  <view class="section-title">我的作品</view>
+  <view class="section-title between">
+    <text>我的作品</text>
+    <view wx:if="{{hasMoreWorks}}" class="more-link tap" bindtap="onAll">全部 ›</view>
+  </view>
   <re-card wx:if="{{!postcards.length && !loading}}" title="暂无作品">
     <view class="empty">生成第一张明信片，记录你的红色足迹</view>
   </re-card>
   <scroll-view wx:else scroll-x class="gallery" enhanced show-scrollbar="{{false}}">
     <view
-      class="pc tap pc--{{item.layout || 'classic'}}"
+      class="pc-card pc-card--{{item.orient || 'land'}} font-{{item.font || 'maoti'}} {{item.arrange === 'v' ? 'is-vert' : ''}} tap"
       wx:for="{{postcards}}"
       wx:key="id"
       style="background:{{item.gradient}}"
       bindtap="onPreview"
       data-id="{{item.id}}"
     >
-      <view class="pc__scene">{{item.scene}}</view>
-      <view class="pc__quote">“{{item.quote}}”</view>
-      <view class="pc__date">{{item.date}}</view>
+      <view class="pc-card__inner">
+        <view class="pc-card__scene">{{item.scene}}</view>
+        <view class="pc-card__quote">“{{item.quote}}”</view>
+        <view class="pc-card__date">{{item.date}}</view>
+      </view>
     </view>
   </scroll-view>
 
@@ -36,18 +37,18 @@
   <!-- 作品预览 -->
   <view wx:if="{{preview}}" class="preview-mask" bindtap="onClosePreview">
     <view class="preview-card" catchtap="noop">
-      <view class="pc-card">
+      <view class="pc-card pc-card--{{preview.orient || 'land'}} font-{{preview.font || 'maoti'}} {{preview.arrange === 'v' ? 'is-vert' : ''}}">
         <image wx:if="{{preview.imageUrl}}" class="pc-card__img" src="{{preview.imageUrl}}" mode="aspectFill" />
-        <view wx:else class="pc-card__inner pc-card__inner--{{preview.layout || 'classic'}}" style="background:{{preview.gradient}};height:100%">
+        <view wx:else class="pc-card__inner" style="background:{{preview.gradient}}">
           <view class="pc-card__scene">{{preview.scene}}</view>
           <view class="pc-card__quote">“{{preview.quote}}”</view>
           <view class="pc-card__date">{{preview.date}} · 红色回响</view>
         </view>
       </view>
       <view class="preview-actions">
-        <view class="btn btn-primary tap" bindtap="onSaveFromPreview">保存相册</view>
-        <button class="btn btn-ghost tap preview-share" open-type="share">转发给好友</button>
-        <view class="btn btn-ghost tap" bindtap="onClosePreview">关闭</view>
+        <view class="btn btn-primary flex-1 tap" bindtap="onSaveFromPreview">保存相册</view>
+        <button class="btn btn-ghost flex-1 tap preview-share" open-type="share">转发给好友</button>
+        <view class="btn btn-ghost flex-1 tap" bindtap="onClosePreview">关闭</view>
       </view>
     </view>
     <!-- 离屏画布：用于从历史记录现绘保存（透明不占视觉） -->

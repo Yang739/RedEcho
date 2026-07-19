@@ -1,17 +1,22 @@
 // pages/create/create.js
 const api = require('../../services/api.js')
 
-// 与生成页一致的排版坐标（用于从历史记录现绘保存）
-const LAYOUTS = {
-  classic: { align: 'left',   dateAlign: 'left',   sceneY: 56,  quoteY: 360, quoteSize: 38 },
-  center:  { align: 'center', dateAlign: 'center', sceneY: 64,  quoteY: 320, quoteSize: 40 },
-  minimal: { align: 'right',  dateAlign: 'right',  sceneY: 56,  quoteY: 380, quoteSize: 34 }
+// 字体风格 → Canvas 字体（系统字体可用时生效，否则回退默认衬线）
+const FONTS = {
+  maoti:   { weight: '700', family: 'KaiTi, STKaiti, serif' },
+  shoujin: { weight: '400', family: 'STXingkai, Xingkai SC, serif' },
+  liu:     { weight: '600', family: 'LiSu, STLiti, serif' },
+  yan:     { weight: '800', family: 'KaiTi, STKaiti, serif' }
 }
+
+// 创作页「我的作品」最多展示条数
+const MAX_SHOW = 4
 
 Page({
   data: {
     loading: true,
     postcards: [],
+    hasMoreWorks: false,
     preview: null
   },
 
@@ -22,13 +27,24 @@ Page({
   load() {
     this.setData({ loading: true })
     api.getPostcards()
-      .then((postcards) => this.setData({ postcards, loading: false }))
+      .then((list) => {
+        this.setData({
+          postcards: list.slice(0, MAX_SHOW),
+          hasMoreWorks: list.length > MAX_SHOW,
+          loading: false
+        })
+      })
       .catch(() => this.setData({ loading: false }))
   },
 
   // 「创作红色记忆」卡片入口：进入生成页（场景选择留在生成页内）
   onStartCreate() {
     wx.navigateTo({ url: '/packages/create/pages/generate/generate' })
+  },
+
+  // 「全部」：跳转我的作品列表页
+  onAll() {
+    wx.navigateTo({ url: '/pages/works/works' })
   },
 
   // 画廊点击 → 预览
@@ -49,7 +65,11 @@ Page({
     return new Promise((resolve) => {
       if (!rec) return resolve('')
       const colors = (rec.colors && rec.colors.length === 2) ? rec.colors : ['#C8161D', '#7A0A10']
-      wx.createSelectorQuery()
+      const orient = rec.orient || 'land'
+      const W = orient === 'port' ? 600 : 900
+      const H = orient === 'port' ? 900 : 600
+      const F = FONTS[rec.font] || FONTS.maoti
+      wx.createSelectorQuery().in(this)
         .select('#pcCanvas')
         .fields({ node: true, size: true })
         .exec((res) => {
@@ -57,8 +77,6 @@ Page({
           const canvas = res[0].node
           const ctx = canvas.getContext('2d')
           const dpr = (wx.getWindowInfo ? wx.getWindowInfo().pixelRatio : wx.getSystemInfoSync().pixelRatio) || 2
-          const W = 600
-          const H = 800
           canvas.width = W * dpr
           canvas.height = H * dpr
           ctx.scale(dpr, dpr)
@@ -69,23 +87,23 @@ Page({
           ctx.fillStyle = g
           ctx.fillRect(0, 0, W, H)
 
-          const lay = LAYOUTS[rec.layout] || LAYOUTS.classic
-          const anchorX = lay.align === 'center' ? W / 2 : (lay.align === 'right' ? W - 48 : 48)
-
           ctx.fillStyle = '#ffffff'
           ctx.textBaseline = 'top'
-          ctx.textAlign = lay.align
+          ctx.textAlign = 'left'
 
-          ctx.font = '700 44px sans-serif'
-          ctx.fillText(rec.scene, anchorX, lay.sceneY)
+          ctx.font = F.weight + ' 44px ' + F.family
+          ctx.fillText(rec.scene, 48, 48)
 
-          ctx.font = 'italic 600 ' + lay.quoteSize + 'px sans-serif'
-          this._wrap(ctx, '“' + rec.quote + '”', anchorX, lay.quoteY, W - 96, 58, lay.align)
+          const quote = '“' + rec.quote + '”'
+          if (rec.arrange === 'v') {
+            this._drawVertical(ctx, quote, W - 64, 150, 70, 60, F, orient)
+          } else {
+            ctx.font = F.weight + ' ' + (orient === 'port' ? 40 : 38) + 'px ' + F.family
+            this._wrap(ctx, quote, 48, orient === 'port' ? 360 : 210, W - 96, 60, 'left')
+          }
 
-          ctx.textAlign = lay.dateAlign
-          const dateX = lay.dateAlign === 'center' ? W / 2 : (lay.dateAlign === 'right' ? W - 48 : 48)
           ctx.font = '400 24px sans-serif'
-          ctx.fillText(rec.date + ' · 红色回响', dateX, H - 64)
+          ctx.fillText(rec.date + ' · 红色回响', 48, H - 64)
 
           wx.canvasToTempFilePath({
             canvas,
@@ -110,6 +128,20 @@ Page({
       }
     }
     if (line) ctx.fillText(line, x, y)
+  },
+
+  _drawVertical(ctx, text, x, y, colStep, charH, F, orient) {
+    ctx.textBaseline = 'top'
+    ctx.textAlign = 'center'
+    ctx.font = F.weight + ' 46px ' + F.family
+    let cx = x
+    let cy = y
+    const maxH = orient === 'port' ? 640 : 420
+    for (const ch of text) {
+      ctx.fillText(ch, cx, cy)
+      cy += charH
+      if (cy > y + maxH) { cy = y; cx -= colStep }
+    }
   },
 
   // 预览层「保存相册」

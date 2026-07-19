@@ -14,29 +14,17 @@
 .intro__main { flex: 1; min-width: 0; }
 .intro__title { font-size: 38rpx; font-weight: 800; }
 .intro__desc { font-size: 25rpx; opacity: .88; margin-top: 10rpx; line-height: 1.6; }
-.intro__enter {
-  flex-shrink: 0; margin-left: 24rpx;
-  display: flex; align-items: center; gap: 6rpx;
-  background: rgba(255,255,255,.16);
-  padding: 14rpx 22rpx; border-radius: var(--r-pill);
-  font-size: 26rpx; font-weight: 600;
-}
-.intro__enter-arrow { font-size: 32rpx; line-height: 1; }
 
-/* 作品画廊 */
+.more-link { font-size: 24rpx; color: var(--c-primary); font-weight: 600; }
+
+/* 作品画廊：水平滚动，固定卡片尺寸避免越界 */
 .gallery { white-space: nowrap; margin-top: 8rpx; }
-.pc {
-  display: inline-flex; flex-direction: column; justify-content: space-between;
-  width: 280rpx; height: 380rpx; padding: 28rpx;
-  border-radius: var(--r-md); margin-right: 20rpx; color: #fff;
-  box-shadow: var(--s-1); vertical-align: top;
-  text-align: left;
+.gallery .pc-card {
+  display: inline-block;
+  width: 280rpx; height: 380rpx;
+  margin-right: 20rpx; vertical-align: top;
+  box-shadow: var(--s-1);
 }
-.pc--center { text-align: center; align-items: center; }
-.pc--minimal { text-align: right; align-items: flex-end; }
-.pc__scene { font-size: 30rpx; font-weight: 800; }
-.pc__quote { font-size: 27rpx; line-height: 1.6; font-style: italic; }
-.pc__date { font-size: 20rpx; opacity: .8; }
 
 /* 预览层 */
 .preview-mask {
@@ -46,25 +34,10 @@
   padding: 40rpx;
 }
 .preview-card { width: 100%; max-width: 620rpx; }
-.pc-card {
-  height: 760rpx; border-radius: var(--r-lg);
-  box-shadow: var(--s-2); overflow: hidden; background: var(--c-surface-2);
-}
-.pc-card__img { width: 100%; height: 100%; display: block; }
-.pc-card__inner {
-  height: 100%; padding: 48rpx 40rpx;
-  display: flex; flex-direction: column; justify-content: space-between; color: #fff;
-}
-.pc-card__scene { font-size: 40rpx; font-weight: 800; letter-spacing: 1rpx; }
-.pc-card__quote { font-size: 38rpx; line-height: 1.7; font-style: italic; font-weight: 600; }
-.pc-card__date { font-size: 24rpx; opacity: .85; }
-.pc-card__inner--center { text-align: center; align-items: center; }
-.pc-card__inner--minimal { text-align: right; align-items: flex-end; }
-
 .preview-actions { display: flex; gap: 16rpx; margin-top: 28rpx; }
 .preview-actions .btn { flex: 1; text-align: center; font-size: 28rpx; }
 .preview-share { line-height: 1; padding: 0; margin: 0; }
 .preview-share::after { border: none; }
 
 /* 离屏画布 */
-.pc-canvas { position: fixed; left: -9999rpx; top: -9999rpx; width: 600px; height: 800px; }
+.pc-canvas { position: fixed; left: -9999rpx; top: -9999rpx; width: 900px; height: 600px; }
