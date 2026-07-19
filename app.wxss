@@ -188,20 +188,23 @@ page {
 /* 明信片卡片现统一由 components/pc-canvas 以 Canvas 绘制（与导出图像素级一致），
    原 .pc-card / .pc-pos-* / .font-* / .is-vert 等 CSS 类已不再使用，移除。 */
 
-/* 展示框（真实比例，不旋转）：填充模式（生成页预览/结果、预览弹窗），按 orient 设定比例 */
+/* 展示框：画廊/列表/预览统一为竖版(2:3) 比例，便于网格统一尺寸；
+   横版卡片由 components/pc-canvas 顺时针旋转 90° 后恰好填满 2:3 框（与竖版等大）。
+   注：导出 Canvas 仍按真实 3:2 / 2:3 比例，仅展示层做旋转归一。 */
 .pc-frame {
   position: relative;
   width: 100%;
+  aspect-ratio: 2 / 3;
   border-radius: var(--r-lg);
   overflow: hidden;
   box-shadow: var(--s-2);
   background: var(--c-surface-2);
 }
 .pc-frame.pc-frame--port { aspect-ratio: 2 / 3; }
-.pc-frame.pc-frame--land { aspect-ratio: 3 / 2; }
+.pc-frame.pc-frame--land { aspect-ratio: 2 / 3; }
 
-/* 画廊 / 列表单元：两列等宽（容器 grid 决定），卡按自身真实比例（竖 2:3 / 横 3:2）
-   渲染，正向显示、左缘对齐，像相册墙；圆角/阴影/比例由内层 .pc-frame 提供 */
+/* 画廊 / 列表单元：两列等宽（容器 grid 决定），卡统一为竖版(2:3) 大小，
+   横版卡由组件内旋转 90° 填满、与竖版等大；圆角/阴影/比例由内层 .pc-frame 提供 */
 .pc-cell {
   display: block;
 }

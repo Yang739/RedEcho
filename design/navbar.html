@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RedEcho 导航栏设计 · 活跃 / 静默 / 点击</title>
+<style>
+  :root {
+    --red: #C8161D;
+    --red-deep: #b3000b;
+    --gold: #E8A33D;
+    --gray: #999999;
+    --line: #ececec;
+    --bg: #f5f5f5;
+    --ink: #1a1a1a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #eceef1;
+    color: var(--ink);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 24px 64px;
+  }
+  .header {
+    width: 100%;
+    max-width: 980px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: var(--red-deep);
+    letter-spacing: .5px;
+  }
+  .header p { margin: 0; color: #6b7280; font-size: 13px; }
+
+  /* ---------- 手机外壳 + 实时交互导航栏 ---------- */
+  .phone {
+    width: 340px;
+    height: 700px;
+    background: #fff;
+    border: 10px solid #1c1c1e;
+    border-radius: 48px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.18);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .statusbar {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    font-size: 12px;
+    color: #444;
+    font-weight: 600;
+  }
+  .appbar {
+    padding: 14px 20px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--red-deep);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .appbar .tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--red);
+    background: rgba(200,22,29,.08);
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .content {
+    flex: 1;
+    background: var(--bg);
+    padding: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card-ph {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    height: 120px;
+    padding: 14px;
+  }
+  .card-ph .t { width: 50%; height: 14px; background: #e7e7e7; border-radius: 6px; margin-bottom: 10px; }
+  .card-ph .l { width: 80%; height: 9px; background: #efefef; border-radius: 5px; margin-bottom: 7px; }
+  .card-ph .l.short { width: 60%; }
+  .hint {
+    text-align: center;
+    color: #9aa0a6;
+    font-size: 12px;
+    margin-top: auto;
+    padding-bottom: 4px;
+  }
+
+  /* ---------- 导航栏（胶囊式） ---------- */
+  .navbar-wrap { padding: 12px 16px 22px; background: #fff; }
+  .navbar {
+    display: flex;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    padding: 6px;
+    gap: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 9px 0;
+    border-radius: 18px;
+    cursor: pointer;
+    color: var(--gray);
+    background: transparent;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .14s ease, background-color .18s ease, color .18s ease;
+  }
+  .tab svg { width: 23px; height: 23px; display: block; }
+  .tab .label { font-size: 11px; font-weight: 600; letter-spacing: .3px; }
+  .tab.active { background: var(--red); color: #fff; }
+  .tab.pressing { transform: scale(.9); }
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(200,22,29,.16);
+    transform: scale(0);
+    animation: ripple .6s ease-out forwards;
+    pointer-events: none;
+  }
+  .tab.active .ripple { background: rgba(255,255,255,.5); }
+  @keyframes ripple { to { transform: scale(2.6); opacity: 0; } }
+
+  /* ---------- 状态参考卡片 ---------- */
+  .states { display: flex; flex-direction: column; gap: 18px; width: 360px; }
+  .state-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.06); }
+  .state-card h3 { margin: 0 0 4px; font-size: 14px; font-weight: 700; color: var(--ink); }
+  .state-card .desc { margin: 0 0 14px; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .state-card .desc b { color: var(--red-deep); }
+  .swatch-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .swatch { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #555; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+
+  .spec { width: 100%; max-width: 760px; }
+  .spec table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.05); }
+  .spec th, .spec td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .spec th { background: #fafafa; font-weight: 700; color: #444; }
+  .spec td.state { font-weight: 600; }
+  .spec .s-active { color: var(--red-deep); }
+  .spec .s-silent { color: var(--gray); }
+  .spec .s-press { color: var(--gold); }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>RedEcho 导航栏设计</h1>
+    <p>底部胶囊式 Tab Bar · 四个 Tab：首页 / 演出 / 创作 / 我的 · 含活跃、静默、点击三种状态</p>
+  </div>
+
+  <!-- 手机外壳 + 实时交互导航栏 -->
+  <div class="phone">
+    <div class="statusbar"><span>9:41</span><span>●●● 100%</span></div>
+    <div class="appbar"><span>红色回响</span><span class="tag">LIVE</span></div>
+    <div class="content">
+      <div class="card-ph"><div class="t"></div><div class="l"></div><div class="l"></div><div class="l short"></div></div>
+      <div class="card-ph"><div class="t"></div><div class="l"></div><div class="l short"></div></div>
+      <div class="hint">↓ 点击下方导航栏切换 Tab，体验点击波纹与活跃态</div>
+    </div>
+    <div class="navbar-wrap"><div id="liveNavbar"></div></div>
+  </div>
+
+  <!-- 三种状态静态参考 -->
+  <div class="states">
+    <div class="state-card">
+      <h3>① 静默状态（未选中）</h3>
+      <p class="desc">所有 Tab 处于静默态：<b>透明背景 + 灰色图标文字（#999）</b>，仅作信息呈现，不抢占视觉焦点。</p>
+      <div id="stateSilent"></div>
+    </div>
+    <div class="state-card">
+      <h3>② 活跃状态（当前选中）</h3>
+      <p class="desc">选中 Tab 以 <b>品牌红实心填充（#C8161D）+ 白色图标文字</b>，与圆角胶囊形成强对比，当前位置一目了然。</p>
+      <div id="stateActive"></div>
+    </div>
+    <div class="state-card">
+      <h3>③ 点击效果（按下瞬间）</h3>
+      <p class="desc">手指按下时 Tab <b>缩放至 0.9（物理按压反馈）</b> 并迸发 <b>红色波纹（静默态）/ 白色波纹（活跃态）</b>，松手回弹并切换活跃态。</p>
+      <div id="statePress"></div>
+    </div>
+    <div class="state-card">
+      <h3>配色规范</h3>
+      <div class="swatch-row">
+        <span class="swatch"><span class="dot" style="background:#C8161D"></span>品牌红 #C8161D</span>
+        <span class="swatch"><span class="dot" style="background:#b3000b"></span>深红 #b3000b</span>
+        <span class="swatch"><span class="dot" style="background:#E8A33D"></span>暖金 #E8A33D</span>
+        <span class="swatch"><span class="dot" style="background:#999999"></span>静默灰 #999</span>
+        <span class="swatch"><span class="dot" style="background:#f5f5f5;border:1px solid #ddd"></span>底色 #f5f5f5</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 状态说明表 -->
+  <div class="spec">
+    <table>
+      <thead><tr><th>状态</th><th>背景</th><th>图标 / 文字</th><th>交互反馈</th></tr></thead>
+      <tbody>
+        <tr><td class="state s-silent">静默</td><td>透明</td><td>灰色 #999</td><td>—</td></tr>
+        <tr><td class="state s-active">活跃</td><td>品牌红 #C8161D 实心</td><td>白色 #FFF</td><td>选中即高亮</td></tr>
+        <tr><td class="state s-press">点击</td><td>红色加深 + 波纹</td><td>白色 / 灰（按下时）</td><td>scale(.9) + 波纹 + 回弹</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+<script>
+  const ICONS = {
+    home: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/></svg>`,
+    show: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H6a2 2 0 0 1-2-2 2 2 0 0 0 0-4Z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>`,
+    create: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1L19 8a2 2 0 0 0-3-3L5 16l-1 4Z"/><path d="M14 6l3 3"/></svg>`,
+    mine: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5"/></svg>`
+  };
+  const TABS = [{k:'home',l:'首页'},{k:'show',l:'演出'},{k:'create',l:'创作'},{k:'mine',l:'我的'}];
+
+  function attach(tab){
+    tab.addEventListener('pointerdown', e=>{
+      tab.classList.add('pressing');
+      const r = tab.getBoundingClientRect();
+      const size = Math.max(r.width, r.height);
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - r.left - size/2) + 'px';
+      ripple.style.top  = (e.clientY - r.top  - size/2) + 'px';
+      tab.appendChild(ripple);
+      setTimeout(()=>ripple.remove(), 600);
+    });
+    ['pointerup','pointerleave'].forEach(ev=>tab.addEventListener(ev, ()=>tab.classList.remove('pressing')));
+    tab.addEventListener('click', ()=>{
+      const bar = tab.parentElement;
+      bar.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  }
+
+  function buildBar(opts){
+    const bar = document.createElement('div');
+    bar.className = 'navbar';
+    TABS.forEach(t=>{
+      const el = document.createElement('div');
+      el.className = 'tab' + (opts.active===t.k ? ' active':'') + (opts.pressing===t.k ? ' pressing':'');
+      el.innerHTML = ICONS[t.k] + `<span class="label">${t.l}</span>`;
+      if(opts.pressing===t.k){
+        const r = document.createElement('span');
+        r.className = 'ripple';
+        r.style.width = r.style.height = '64px';
+        r.style.left = 'calc(50% - 32px)';
+        r.style.top = '4px';
+        el.appendChild(r);
+      }
+      if(opts.interactive) attach(el);
+      bar.appendChild(el);
+    });
+    return bar;
+  }
+
+  document.getElementById('liveNavbar').appendChild(buildBar({active:'home', interactive:true}));
+  document.getElementById('stateSilent').appendChild(buildBar({active:null}));
+  document.getElementById('stateActive').appendChild(buildBar({active:'home'}));
+  document.getElementById('statePress').appendChild(buildBar({active:'create', pressing:'create'}));
+</script>
+</body>
+</html>
