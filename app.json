@@ -4,6 +4,7 @@
     "pages/show/show",
     "pages/create/create",
     "pages/mine/mine",
+    "pages/read/read",
     "pages/resource/detail/detail",
     "pages/resource/list/list"
   ],

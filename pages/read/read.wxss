@@ -1,0 +1,27 @@
+.page { padding: 20rpx 28rpx 60rpx; }
+
+/* 我的阅读 */
+.read-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+.read-clear { font-size: 24rpx; color: var(--c-primary, #C8161D); }
+.read-list { display: flex; flex-direction: column; }
+.read-item {
+  display: flex; align-items: center; gap: 20rpx;
+  padding: 20rpx 4rpx;
+}
+.read-item + .read-item { border-top: 1rpx solid var(--c-divider, #eee); }
+.read-item__bar {
+  width: 8rpx; height: 64rpx; border-radius: 999rpx; flex-shrink: 0;
+}
+.read-item__main { flex: 1; min-width: 0; }
+.read-item__title {
+  font-size: 30rpx; font-weight: 600; color: var(--c-text-1, #333);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.read-item__sub { margin-top: 6rpx; }
+.read-item__arrow { color: var(--c-text-3, #bbb); font-size: 36rpx; }
+.read-empty { padding: 24rpx 4rpx; line-height: 1.6; }
+
+.footer-tip { text-align: center; padding: 40rpx 0 20rpx; }
