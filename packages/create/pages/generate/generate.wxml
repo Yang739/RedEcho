@@ -15,7 +15,7 @@
       <view class="result-actions">
         <view class="pc-actions-3">
           <view class="btn btn-primary flex-1 tap" bindtap="onSave">保存</view>
-          <button class="btn btn-ghost flex-1 tap pc-share" open-type="share">分享</button>
+          <button class="btn btn-ghost flex-1 tap pc-share pc-actions-gap" open-type="share">分享</button>
           <view class="btn btn-ghost flex-1 tap" bindtap="onPrint">打印</view>
         </view>
         <view class="pc-actions2">

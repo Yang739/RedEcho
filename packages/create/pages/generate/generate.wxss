@@ -29,7 +29,7 @@
   text-align: center;
   font-size: 30rpx;
 }
-.pc-actions-3 .btn:nth-child(2) { margin: 0 14rpx; }
+.pc-actions-3 .pc-actions-gap { margin: 0 14rpx; }
 .pc-actions2 { margin-top: 16rpx; }
 .pc-share { line-height: 1; padding: 0; margin: 0; }
 .pc-share::after { border: none; }
