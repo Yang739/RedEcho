@@ -158,12 +158,15 @@ module.exports = {
   },
 
   // 我的明信片（我的作品）：以本地存储 postcards 为准（与创作落库同源）
-  // 首次为空时用 mock.postcards 种子初始化，保证体验非空；生成新作品后即时反映
+  // 仅"从未初始化"（存储键不存在）时用 mock.postcards 种子；用户主动删空后不再回填，保证可真正清空
   getPostcards() {
     const list = postcards.getList()
     if (list.length) return delay(list, 200)
-    mock.postcards.forEach((p) => postcards.add(p))
-    return delay(postcards.getList(), 200)
+    if (!postcards.isInitialized()) {
+      mock.postcards.forEach((p) => postcards.add(p))
+      return delay(postcards.getList(), 200)
+    }
+    return delay([], 200)
   },
 
   /* ---------------- 我的 ---------------- */

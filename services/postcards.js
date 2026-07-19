@@ -39,4 +39,14 @@ function clear() {
   return []
 }
 
-module.exports = { getList, add, remove, clear, today }
+// 存储键是否曾被写入：用于区分"从未初始化"与"用户已主动删空"
+//（WeChat 中未设置的键 getStorageSync 返回 ''，已设为空数组则返回 []）
+function isInitialized() {
+  try {
+    return wx.getStorageSync(KEY) !== ''
+  } catch (e) {
+    return false
+  }
+}
+
+module.exports = { getList, add, remove, clear, today, isInitialized }
