@@ -1,42 +1,39 @@
 <view class="page">
-  <!-- 预览未打开时展示引导 + 我的作品；打开预览时整体从 DOM 移除，
-       彻底销毁画廊 <canvas> 的独立合成层，避免它盖在遮罩/按钮之上（修 #1 #2） -->
-  <view wx:if="{{!preview}}">
-    <!-- 引导 + 入口：整张卡片即入口（场景选择在生成页内） -->
-    <view class="intro bg-grid fade-up tap" bindtap="onStartCreate">
-      <view class="intro__main">
-        <view class="intro__title">创作红色记忆</view>
-        <view class="intro__desc">选择一处旧址场景，AI 为你生成专属金句明信片，带走这份信仰的温度。</view>
-      </view>
+  <!-- 引导 + 入口：整张卡片即入口（场景选择在生成页内） -->
+  <view class="intro bg-grid fade-up tap" bindtap="onStartCreate">
+    <view class="intro__main">
+      <view class="intro__title">创作红色记忆</view>
+      <view class="intro__desc">选择一处旧址场景，AI 为你生成专属金句明信片，带走这份信仰的温度。</view>
     </view>
-
-    <!-- 我的作品 -->
-    <view class="section-title between">
-      <text>我的作品</text>
-      <view wx:if="{{hasWorks}}" class="more-link tap" bindtap="onAll">全部 ›</view>
-    </view>
-    <re-card wx:if="{{!postcards.length && !loading}}" title="暂无作品">
-      <view class="empty">生成第一张明信片，记录你的红色足迹</view>
-    </re-card>
-    <view wx:else class="works-grid pc-grid">
-      <view
-        class="pc-cell tap"
-        wx:for="{{postcards}}"
-        wx:key="id"
-        bindtap="onPreview"
-        bindlongpress="onDeleteWork"
-        data-id="{{item.id}}"
-      >
-        <view class="pc-frame pc-frame--{{item.orient}}">
-          <pc-canvas card="{{item}}" />
-        </view>
-      </view>
-    </view>
-
-    <view style="height:40rpx"></view>
   </view>
 
-  <!-- 作品预览（点空白处关闭）。catchtouchmove 锁定背景滚动，预览图不再随页面滑动、不露白底（修 #4） -->
+  <!-- 我的作品 -->
+  <view class="section-title between">
+    <text>我的作品</text>
+    <view wx:if="{{hasWorks}}" class="more-link tap" bindtap="onAll">全部 ›</view>
+  </view>
+  <re-card wx:if="{{!postcards.length && !loading}}" title="暂无作品">
+    <view class="empty">生成第一张明信片，记录你的红色足迹</view>
+  </re-card>
+  <view wx:else class="works-grid pc-grid">
+    <view
+      class="pc-cell tap"
+      wx:for="{{postcards}}"
+      wx:key="id"
+      bindtap="onPreview"
+      bindlongpress="onDeleteWork"
+      data-id="{{item.id}}"
+    >
+      <view class="pc-frame pc-frame--{{item.orient}}">
+        <pc-canvas card="{{item}}" />
+      </view>
+    </view>
+  </view>
+
+  <view style="height:40rpx"></view>
+
+  <!-- 作品预览（点空白处关闭）。预览打开时仅隐藏底部 tabBar，画廊 canvas 保留在 DOM。
+       catchtouchmove 锁定背景滚动，预览图不再随页面滑动、不露白底。 -->
   <view wx:if="{{preview}}" class="preview-mask" bindtap="onClosePreview" catchtouchmove="noop">
     <view class="preview-card" catchtap="noop">
       <view class="pc-frame pc-frame--{{preview.orient}}">
