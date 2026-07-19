@@ -10,6 +10,7 @@ Page({
     todayGain: 60,
     statsList: [],
     menus: [
+      { key: 'create', name: '明信片创作' },
       { key: 'postcards', name: '我的明信片' },
       { key: 'orders', name: '我的订单' },
       { key: 'reads', name: '我的阅读' },
@@ -67,6 +68,7 @@ Page({
   onMenu(e) {
     const key = e.currentTarget.dataset.key
     if (key === 'postcards') wx.switchTab({ url: '/pages/create/create' })
+    else if (key === 'create') wx.navigateTo({ url: '/packages/create/pages/generate/generate' })
     else if (key === 'reads') wx.navigateTo({ url: '/pages/read/read' })
     else if (key === 'favorites') wx.navigateTo({ url: '/pages/favorites/favorites' })
     else wx.showToast({ title: '功能开发中', icon: 'none' })

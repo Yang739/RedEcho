@@ -32,6 +32,12 @@ Page({
     wx.navigateTo({ url: `/packages/create/pages/generate/generate?sceneId=${id}` })
   },
 
+  // 顶部「生成明信片」主入口：直接进入生成页（默认首个场景）
+  onStartCreate() {
+    const firstId = (this.data.scenes[0] && this.data.scenes[0].id) || ''
+    wx.navigateTo({ url: `/packages/create/pages/generate/generate?sceneId=${firstId}` })
+  },
+
   // 画廊点击 → 预览
   onPreview(e) {
     const id = e.currentTarget.dataset.id
