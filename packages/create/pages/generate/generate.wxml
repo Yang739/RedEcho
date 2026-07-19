@@ -50,11 +50,11 @@
       </view>
     </view>
 
-    <view class="section-title">写句话（金句）</view>
+    <view class="section-title">写句话</view>
     <textarea
       class="quote-input"
       maxlength="100"
-      placeholder="写一句想留下的话（限20字，含标点，换行不计）"
+      placeholder="写一句想留下的话"
       value="{{customText}}"
       bindinput="onInputQuote"
     />
