@@ -9,7 +9,7 @@ RedEcho 是一套基于 **微信小程序原生 + 微信云开发** 的红色旧
 - **首页推荐**：资料卡片（湖南主题红色史料）、直播演出入口、积分概览。
 - **资料中心**：按分类（历史事件 / 湘籍伟人 / 红色旧址 / 湖湘精神 / 英烈丰碑）浏览全部资料，详情页看全文；详情页含「相关宣传片」占位（短视频，待填实际内容）。
 - **演出实时互动**：投票（原子自增 + 一人一票）、情绪反馈、剧情分支、通知。
-- **明信片 AIGC 创作**：场景模板 + 自定义金句（敏感词过滤）+ 3 种排版 + 文生图（腾讯云 AI 绘画）/ 兜底 CSS 渐变卡；我的作品支持预览、保存相册与转发好友。
+- **明信片 AIGC 创作**：场景模板 + 自定义金句（敏感词过滤）+ 排版定制（图片横版/竖版、名言横排/竖排、字体大气·毛体/遒劲·瘦金/柳体/颜体）+ 文生图（腾讯云 AI 绘画）/ 兜底 CSS 渐变卡（真实明信片比例 3:2 / 2:3，实时预览）；生成后存入「我的作品」，列表页支持预览、保存相册、转发与删除。
 - **个人中心**：档案、积分、统计、订单、我的阅读（本地阅读历史，每篇标注阅读时间「20XX 年 X 月 XX 日  XX : XX」24 小时制、灰色显示、列表页支持右滑单条删除）、阅读收藏（详情页标题右侧五角星收藏、列表页支持右滑删除与清空，从"我的服务"进入）、演员 AI 台词助手（腾讯云混元）。
 
 ## 目录结构概览
@@ -26,8 +26,9 @@ RedEcho/
 ├── services/                         # 双模服务层（api.js + mock.js + resources.js）
 │   └── resources.js                  # 首页资料卡片精选内容（湖南主题红色史料，本地静态源）
 ├── pages/                            # 主包：4 个 tab 页（home/show/create/mine）
-│   └── resource/                     # 资料中心（list 列表页 + detail 详情页）
-├── packages/                         # 分包：show（房间+回顾）、create（明信片）
+│   ├── resource/                     # 资料中心（list 列表页 + detail 详情页）
+│   └── works/                        # 我的作品列表页（明信片）
+├── packages/                         # 分包：show（房间+回顾）、create（明信片生成）
 ├── components/                       # 复用组件：re-card / re-skeleton / re-tag
 ├── cloudfunctions/                   # 17 个云函数 + 说明（详见 cloudfunctions/README.md）
 ├── deploy/                           # 部署指南 + 上传脚本（详见 deploy/README.md）
@@ -36,9 +37,10 @@ RedEcho/
 
 | 目录 / 文件 | 职责 |
 |---|---|
-| `pages/` | 主包 4 个 tab 页：首页、演出、创作、我的 |
+| `pages/` | 主包 4 个 tab 页：首页、演出、创作、我的；`pages/works` 为「我的作品」列表页 |
 | `packages/show/` | 分包 A：演出房间（实时互动）、演出回顾 |
-| `packages/create/` | 分包 B：明信片生成（Canvas / 文生图） |
+| `packages/create/` | 分包 B：明信片生成（实时预览 / 排版定制 / Canvas 文生图） |
+| `pages/works/` | 我的作品列表页（明信片预览 / 保存相册 / 转发 / 删除） |
 | `components/` | 跨页复用 UI 组件 |
 | `services/` | 前端 BFF：封装云函数调用，支持 mock / 真实云双模；`resources.js` 为资料卡片本地内容源；`readHistory.js` 为本地阅读历史（我的阅读，含阅读时间、单条删除 remove）；`favorites.js` 为本地收藏（阅读收藏，remove 单条删除） |
 | `pages/resource/` | 资料中心：列表页（分类筛选）+ 详情页（正文 / 要点 / 名言 / 宣传片占位） |
@@ -109,8 +111,8 @@ sequenceDiagram
     participant API as services/api
     participant Fn as postcardGenerate
     participant COS as 云存储
-    U->>Page: 选场景模板 → 生成
-    Page->>API: generatePostcard(sceneId)
+    U->>Page: 选场景/方向/排列/字体 → 生成
+    Page->>API: generatePostcard(sceneId, customText, {orient,arrange,font})
     API->>Fn: callFunction
     Fn->>Fn: 调腾讯云 AI 绘画文生图
     alt 已配密钥且审核通过
@@ -137,7 +139,7 @@ flowchart LR
 
 - **响应式设计系统**：`app.wxss` 设计令牌（革命红 `#C8161D` + 暖金 `#E8A33D`）、rpx 自适应、安全区、骨架屏、直播脉冲、`prefers-reduced-motion` 全局降级、按钮 `:active` 触觉反馈。
 - **演出实时互动**：投票、情绪、剧情分支、通知。
-- **AIGC 明信片**：文生图 + 兜底渐变卡，一键保存相册。
+- **AIGC 明信片**：文生图 + 兜底渐变卡（真实比例 3:2 / 2:3，实时预览），生成即存入「我的作品」，支持保存相册、转发、列表管理。
 - **双模开发**：mock 模式零后端即可演示全流程，配置真实环境后无缝切云。
 - **资料卡片 / 资料中心**：首页随机推荐 3 张湖南主题史料（历史事件 / 湘籍伟人 / 红色旧址 / 湖湘精神 / 英烈丰碑），详情页看全文；数据走本地静态源 `services/resources.js`，无需灌库；首页「为你推荐」点击卡片进入详情返回后仅局部更新（移除刚读篇 + 尾部补一篇），不整体刷新。
 - **组件化**：`re-card` / `re-skeleton` / `re-tag` 跨页复用。

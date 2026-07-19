@@ -82,8 +82,8 @@
 | `postcardSceneList` | 场景模板列表 | - | 登录 | - |
 | `quoteList` | 名言警句库（可按分类） | `category` | 登录 | - |
 | `sensitiveCheck` | 手动输入文本敏感词过滤 | `text` | 登录 | 敏感词服务 |
-| `postcardGenerate` | 调用文生图生成明信片（<10s，后处理） | `sceneId`, `quote`, `customText`, `templateId`, `avatarFileID?` | 登录 | 文生图 API |
-| `postcardList` | 我的明信片历史 | `page` | 登录 | 云存储 |
+| `postcardGenerate` | 调用文生图生成明信片（<10s，后处理），落库排版参数 | `sceneId`, `quote`, `customText`, `orient`, `arrange`, `font`, `avatarFileID?` | 登录 | 文生图 API |
+| `postcardList` | 我的作品历史 | `page` | 登录 | 云存储 |
 | `postcardShare` | 保存高清图至相册/生成分享卡片 | `postcardId` | 登录 | 云存储 |
 
 ## 八、周边商城 / 订单

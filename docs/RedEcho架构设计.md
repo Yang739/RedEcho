@@ -58,9 +58,10 @@ RedEcho/
 ├── components/                       # 复用组件（投票器/弹幕/星级/打印面板…）
 ├── utils/                            # request.js、im.js、敏感词、日期、防抖
 ├── pages/        (主包·tabBar)       # 首页/演出/创作/我的（轻壳）
+│   └── works/                       # 我的作品列表页（见 pages/works/works）
 ├── packages/
 │   ├── show/     (分包A·演出)        # room(房间)/review(回顾)/staff(场务台)
-│   └── create/   (分包B·创作)        # generate(生成)/mylist(我的明信片)/scenes
+│   └── create/   (分包B·创作)        # generate(生成·实时预览/排版/场景)
 ├── cloudfunctions/                   # 云函数根目录（每个函数独立目录+package.json）
 └── images/                         # tabBar图标、占位图
 ```
