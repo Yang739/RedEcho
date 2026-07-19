@@ -198,7 +198,7 @@ page {
   border-radius: var(--r-lg);
   overflow: hidden;
   box-shadow: var(--s-2);
-  background: var(--c-surface-2);
+  background: transparent;
 }
 .pc-frame.pc-frame--port { aspect-ratio: 2 / 3; }
 .pc-frame.pc-frame--land { aspect-ratio: 2 / 3; }
