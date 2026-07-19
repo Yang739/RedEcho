@@ -6,6 +6,7 @@
     "pages/mine/mine",
     "pages/read/read",
     "pages/resource/detail/detail",
+    "pages/works/works",
     "pages/resource/list/list",
     "pages/favorites/favorites"
   ],
