@@ -4,6 +4,7 @@ const postcards = require('../../../../services/postcards.js')
 const { containsSensitive } = require('../../../../services/sensitive.js')
 const { FONTS, loadFonts } = require('../../../../services/fonts.js')
 const { decorateCard, paintPostcard, renderPostcard } = require('../../../../services/pcLayout.js')
+const { clampQuote, quoteCount, MAX_QUOTE } = require('../../../../services/quote.js')
 
 // 字体风格 → 仅暴露修饰词（不展示具体字体名）
 const fontList = Object.keys(FONTS).map((key) => ({
@@ -49,6 +50,8 @@ Page({
     // 创作面板状态
     selectedId: '',
     customText: '',
+    maxQuote: MAX_QUOTE,   // 金句有效字数上限（不含换行，标点计入）
+    quoteCount: 0,         // 当前有效字数（实时计数展示用）
     orient: 'land',   // land 横版 / port 竖版（匹配图片朝向，按实物明信片比例）
     arrange: 'h',     // h 横排 / v 竖排
     position: 'center', // 名言 9 宫格位置
@@ -89,11 +92,13 @@ Page({
   },
 
   onInputQuote(e) {
-    this.setData({ customText: e.detail.value }, () => this.updateDraft())
+    const { text, count } = clampQuote(e.detail.value)
+    this.setData({ customText: text, quoteCount: count }, () => this.updateDraft())
   },
 
   onPickPreset(e) {
-    this.setData({ customText: e.currentTarget.dataset.q }, () => this.updateDraft())
+    const { text, count } = clampQuote(e.currentTarget.dataset.q)
+    this.setData({ customText: text, quoteCount: count }, () => this.updateDraft())
   },
 
   onSelectOrient(e) {
@@ -253,7 +258,7 @@ Page({
 
   onAgain() {
     this.tempPath = ''
-    this.setData({ result: null, useImage: false, customText: '' }, () => this.updateDraft())
+    this.setData({ result: null, useImage: false, customText: '', quoteCount: 0 }, () => this.updateDraft())
   },
 
   onShareAppMessage() {

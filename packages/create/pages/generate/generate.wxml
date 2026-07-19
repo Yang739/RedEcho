@@ -53,11 +53,14 @@
     <view class="section-title">写句话（金句）</view>
     <textarea
       class="quote-input"
-      maxlength="40"
-      placeholder="写一句想留下的话，或点下方名言快速填入"
+      maxlength="100"
+      placeholder="写一句想留下的话（限20字，含标点，换行不计）"
       value="{{customText}}"
       bindinput="onInputQuote"
     />
+    <view class="quote-meta">
+      <text class="counter">{{quoteCount}}/{{maxQuote}}</text>
+    </view>
     <view class="presets">
       <view
         class="preset tap"
