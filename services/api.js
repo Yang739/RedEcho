@@ -111,32 +111,42 @@ module.exports = {
 
   /* ---------------- 创作 / 明信片 ---------------- */
   // 场景模板：云函数 postcardSceneList
+  // 云模式：云端空集合/云函数未部署时回退本地 mock.scenes，保证本地可跑通（有数据则优先云端）
   getScenes() {
-    if (IS_CLOUD) return call('postcardSceneList', {})
-    return delay(mock.scenes, 320)
+    if (!IS_CLOUD) return delay(mock.scenes, 320)
+    return call('postcardSceneList', {})
+      .then((list) => (list && list.length ? list : mock.scenes))
+      .catch(() => mock.scenes)
   },
 
   // 生成明信片：云函数 postcardGenerate（文生图接入点已标注为占位）
   // customText：用户自定义金句（为空则随机抽名言库）；layout：排版方案 classic/center/minimal
+  // 云模式：云端生成失败（未部署/文生图异常）时回退本地 CSS 生成，保证本地可跑通
   generatePostcard(sceneId, customText, layout) {
-    if (IS_CLOUD) return call('postcardGenerate', { sceneId, customText: customText || '', layout: layout || 'classic' })
-    const scene = mock.scenes.find((s) => s.id === sceneId) || mock.scenes[0]
-    const quote = (customText && customText.trim()) || mock.quotes[Math.floor(Math.random() * mock.quotes.length)]
-    return delay({
-      id: 'p' + Date.now(),
-      scene: scene.name,
-      gradient: scene.gradient,
-      colors: scene.colors,
-      quote,
-      date: '2026-07-18',
-      layout: layout || 'classic'
-    }, 1600)
+    const fallback = () => {
+      const scene = mock.scenes.find((s) => s.id === sceneId) || mock.scenes[0]
+      const quote = (customText && customText.trim()) || mock.quotes[Math.floor(Math.random() * mock.quotes.length)]
+      return delay({
+        id: 'p' + Date.now(),
+        scene: scene.name,
+        gradient: scene.gradient,
+        colors: scene.colors,
+        quote,
+        date: '2026-07-18',
+        layout: layout || 'classic'
+      }, 1600)
+    }
+    if (!IS_CLOUD) return fallback()
+    return call('postcardGenerate', { sceneId, customText: customText || '', layout: layout || 'classic' }).catch(fallback)
   },
 
   // 我的明信片：云函数 postcardList
+  // 云模式：云端空集合/云函数未部署时回退本地 mock.postcards，保证本地可跑通
   getPostcards() {
-    if (IS_CLOUD) return call('postcardList', {})
-    return delay(mock.postcards, 300)
+    if (!IS_CLOUD) return delay(mock.postcards, 300)
+    return call('postcardList', {})
+      .then((list) => (list && list.length ? list : mock.postcards))
+      .catch(() => mock.postcards)
   },
 
   /* ---------------- 我的 ---------------- */

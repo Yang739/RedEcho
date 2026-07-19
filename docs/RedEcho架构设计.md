@@ -109,7 +109,7 @@ RedEcho/
 - 云函数统一中间件校验 `role` + `staff_types`，越权返回 `403`；绝不信任端上传入的用户身份，身份以 `cloud.getWXContext().OPENID` 为准。
 
 ### 4.5 AIGC 双引擎
-- **明信片（文生图）**：`postcardGenerate` 组装 Prompt（场景模板 + 名言 + 用户头像）→ 调文生图 API → 后处理（合成字体/水印/留白）→ 存云存储返回 URL，< 10s。本版新增：支持 `customText`（用户自定义金句，客户端与云函数双重敏感词过滤）与 `layout`（classic/center/minimal 三选一，写入记录并在画廊/预览中还原）。
+- **明信片（文生图）**：`postcardGenerate` 组装 Prompt（场景模板 + 名言 + 用户头像）→ 调文生图 API → 后处理（合成字体/水印/留白）→ 存云存储返回 URL，< 10s。本版新增：支持 `customText`（用户自定义金句，客户端与云函数双重敏感词过滤）与 `layout`（classic/center/minimal 三选一，写入记录并在画廊/预览中还原）。`services/api.js` 的 `getScenes` / `getPostcards` / `generatePostcard` 在云模式遇到「云端空集合 / 云函数未部署」时自动回退本地 `mock`，保证本地开发者工具无需灌库即可选场景、生成（有云端数据则优先云端）。
 - **台词（LLM）**：`aiLineGenerate` 结合「当前环节 + 投票趋势 + 角色背景」生成多条备选，支持流式与 TTS 预览。
 - 手动输入名言走 `sensitiveCheck` 敏感词过滤后再入库。
 
