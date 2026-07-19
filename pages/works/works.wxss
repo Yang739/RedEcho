@@ -6,7 +6,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 20rpx;
 }
-/* 画廊卡片外观统一由 app.wxss .pc-frame 提供 */
+/* 画廊卡片外观统一由 app.wxss .pc-cell / .pc-frame 提供 */
 
 /* 预览层 */
 .preview-mask {

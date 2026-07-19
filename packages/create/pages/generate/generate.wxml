@@ -9,7 +9,7 @@
   <!-- 结果 -->
   <block wx:if="{{result}}">
     <view class="result">
-      <view class="pc-frame">
+      <view class="pc-frame pc-frame--{{result.orient}}">
         <template is="pcCard" data="{{ card: result }}" />
       </view>
       <view class="result-actions">
@@ -29,7 +29,7 @@
   <!-- 创作面板 -->
   <block wx:else>
     <!-- 实时预览 -->
-    <view class="preview pc-frame">
+    <view class="preview pc-frame pc-frame--{{draft.orient}}">
       <template is="pcCard" data="{{ card: draft }}" />
     </view>
 

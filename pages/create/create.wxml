@@ -19,14 +19,16 @@
   </re-card>
   <view wx:else class="works-grid">
     <view
-      class="pc-frame tap"
+      class="pc-cell tap"
       wx:for="{{postcards}}"
       wx:key="id"
       bindtap="onPreview"
       bindlongpress="onDeleteWork"
       data-id="{{item.id}}"
     >
-      <template is="pcCard" data="{{ card: item }}" />
+      <view class="pc-frame pc-frame--{{item.orient}}">
+        <template is="pcCard" data="{{ card: item }}" />
+      </view>
     </view>
   </view>
 
@@ -35,7 +37,7 @@
   <!-- 作品预览（点空白处关闭） -->
   <view wx:if="{{preview}}" class="preview-mask" bindtap="onClosePreview">
     <view class="preview-card" catchtap="noop">
-      <view class="pc-frame">
+      <view class="pc-frame pc-frame--{{preview.orient}}">
         <template is="pcCard" data="{{ card: preview }}" />
       </view>
       <view class="preview-actions">

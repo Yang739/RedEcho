@@ -214,8 +214,13 @@ page {
   text-shadow: 0 2rpx 8rpx rgba(0,0,0,.38); z-index: 2;
 }
 .pc-card__date {
-  position: absolute; bottom: 18rpx; right: 26rpx;
+  position: absolute; right: 26rpx; bottom: 70rpx;
   font-size: 20rpx; opacity: .9; text-shadow: 0 2rpx 8rpx rgba(0,0,0,.38); z-index: 2;
+}
+.pc-card__sign {
+  position: absolute; right: 26rpx; bottom: 22rpx;
+  font-size: 26rpx; font-weight: 700; letter-spacing: 1rpx; opacity: .96;
+  text-shadow: 0 2rpx 8rpx rgba(0,0,0,.38); z-index: 2;
 }
 .pc-card__quote {
   position: absolute; z-index: 2; color: #fff;
@@ -226,14 +231,14 @@ page {
 
 /* 9 宫格位置：名言块定位（上/下/左/右/左上/右上/左下/右下/正中） */
 .pc-pos-top    { top: 96rpx;  left: 26rpx; right: 26rpx; text-align: center; }
-.pc-pos-bottom { bottom: 64rpx; left: 26rpx; right: 26rpx; text-align: center; }
+.pc-pos-bottom { bottom: 110rpx; left: 26rpx; right: 26rpx; text-align: center; }
 .pc-pos-center { top: 50%; left: 26rpx; right: 26rpx; transform: translateY(-50%); text-align: center; }
 .pc-pos-left   { top: 50%; left: 26rpx; transform: translateY(-50%); text-align: left;  max-width: 64%; }
 .pc-pos-right  { top: 50%; right: 26rpx; transform: translateY(-50%); text-align: right; max-width: 64%; }
 .pc-pos-tl     { top: 96rpx; left: 26rpx;  text-align: left;  max-width: 72%; }
 .pc-pos-tr     { top: 96rpx; right: 26rpx; text-align: right; max-width: 72%; }
-.pc-pos-bl     { bottom: 64rpx; left: 26rpx;  text-align: left;  max-width: 72%; }
-.pc-pos-br     { bottom: 64rpx; right: 26rpx; text-align: right; max-width: 72%; }
+.pc-pos-bl     { bottom: 110rpx; left: 26rpx;  text-align: left;  max-width: 72%; }
+.pc-pos-br     { bottom: 110rpx; right: 26rpx; text-align: right; max-width: 72%; }
 
 /* 字体风格（CSS 模拟；内置字体 url 注入后优先，否则回退系统字体） */
 .font-maoti   { --pc-font: 'RE-Mao','STKaiti','KaiTi','Kaiti SC',serif;       --pc-weight: 700; }
@@ -257,21 +262,37 @@ page {
 .pc-card.is-vert .pc-pos-bl,
 .pc-card.is-vert .pc-pos-br { bottom: 64rpx; }
 
-/* 展示框：所有“展示态”明信片统一为竖版(2:3)比例，便于网格/预览统一尺寸；
-   横版卡片顺时针旋转 90° 后恰好填满 2:3 框（3:2 旋转后 = 2:3），实现“横板展示统一大小”。
-   注：导出 Canvas 仍按真实比例 3:2 / 2:3 绘制，仅展示层做旋转归一。 */
+/* 展示框（真实比例，不旋转）：填充模式（生成页预览/结果、预览弹窗），按 orient 设定比例 */
 .pc-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 2 / 3;
-  overflow: hidden;
   border-radius: var(--r-lg);
+  overflow: hidden;
   box-shadow: var(--s-2);
   background: var(--c-surface-2);
 }
-.pc-frame > .pc-card { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-.pc-frame > .pc-card.pc-card--port { width: 100%; aspect-ratio: 2 / 3; }
-.pc-frame > .pc-card.pc-card--land { width: 150%; aspect-ratio: 3 / 2; transform: translate(-50%, -50%) rotate(90deg); }
+.pc-frame.pc-frame--port { aspect-ratio: 2 / 3; }
+.pc-frame.pc-frame--land { aspect-ratio: 3 / 2; }
+.pc-frame > .pc-card { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* 画廊 / 列表单元：固定高度，卡按真实比例居中留白（横竖均正向，最不突兀） */
+.pc-cell {
+  height: 360rpx;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--c-surface-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--s-2);
+  overflow: hidden;
+}
+.pc-cell > .pc-frame {
+  width: 100%; height: 100%;
+  border-radius: var(--r-lg);
+  box-shadow: none; /* 避免与单元阴影叠加 */
+  display: flex; align-items: center; justify-content: center;
+}
+.pc-cell > .pc-frame > .pc-card { position: relative; inset: auto; }
+.pc-cell > .pc-frame > .pc-card.pc-card--port { height: 100%; width: auto; aspect-ratio: 2 / 3; }
+.pc-cell > .pc-frame > .pc-card.pc-card--land { width: 100%; height: auto; aspect-ratio: 3 / 2; }
 
 /* ---------- 无障碍：尊重「减少动态效果」系统设置 ---------- */
 @media (prefers-reduced-motion: reduce) {

@@ -8,6 +8,7 @@
     <view class="pc-card__scrim"></view>
     <view class="pc-card__scene">{{card.scene}}</view>
     <view class="pc-card__date">{{card.date}}</view>
+    <view class="pc-card__sign">{{card.sign}}</view>
     <view class="pc-card__quote pc-pos-{{card.position || 'center'}}">
       <view
         wx:for="{{card.quoteLines}}"

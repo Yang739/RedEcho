@@ -1,13 +1,15 @@
 // services/pcLayout.js —— 明信片排版引擎（与页面解耦，三页共用）
 //
 // 职责：
-// - buildQuote：根据 名言 / 方向 / 排列 / 位置 计算「尽量一行、分行均衡、续行缩进两字符」的展示方案
-// - decorateCard：给一张明信片记录补全渲染所需字段（quoteLines / quoteFontSize / indent / position 等）
-// - paintPostcard：在 Canvas 上精绘（按 9 宫格定位、测量缩字号、均衡分行、续行缩进）
+// - buildQuote：根据 名言 / 方向 / 排列 / 位置 计算展示方案（单行放大 / 均衡分行 / 续行缩进）
+// - decorateCard：补全渲染字段（quoteLines / quoteFontSize / indent / sign / 统一格式 date）
+// - paintPostcard：Canvas 精绘（9 宫格定位、字号自适应、落款双行、名句避让落款带）
 
 const { FONTS } = require('./fonts.js')
 const POS_FULL = { top: 1, bottom: 1, center: 1 } // 满宽位置（横排时可整行书写）
 const DEFAULT_QUOTE = '在此写下你的红色金句'
+const SIGN_BAND = 96   // 底部落款带预留高度（Canvas px）
+const SCENE_BAND = 112 // 顶部场景名预留高度（Canvas px）
 
 // 将文本做「均衡分行」：行数尽量少，且相邻行字数差不超过 1
 function splitBalanced(text, perLine) {
@@ -24,7 +26,15 @@ function splitBalanced(text, perLine) {
   return lines
 }
 
-// 计算名言的展示方案（CSS 预览用）
+// 日期统一为 YYYY.MM.DD（落库为 YYYY-MM-DD，预览/导出一致）
+function formatDate(d) {
+  if (!d) return ''
+  const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  if (m) return m[1] + '.' + m[2] + '.' + m[3]
+  return d
+}
+
+// 计算名言的展示方案（CSS 预览用，与 Canvas 规则对齐）
 function buildQuote(quote, orient, arrange, position) {
   const raw = (quote && String(quote).trim()) || DEFAULT_QUOTE
   const text = '“' + raw + '”'
@@ -43,8 +53,10 @@ function buildQuote(quote, orient, arrange, position) {
     ? (full ? 10 : 5)
     : (full ? 15 : 7)
 
+  // 单行且字少：放大字号，使长短句都饱满不空旷
   if (text.length <= perLine) {
-    return { lines: [text], fontSizeRpx: 34, indent: false }
+    const boost = text.length <= Math.ceil(perLine * 0.6) ? 6 : 0
+    return { lines: [text], fontSizeRpx: Math.min(44, 34 + boost), indent: false }
   }
   // 仅略长：缩字号强行一行
   if (text.length <= perLine * 1.4) {
@@ -67,7 +79,9 @@ function decorateCard(rec) {
     orient, arrange, position,
     quoteLines: q.lines,
     quoteFontSize: q.fontSizeRpx,
-    indent: q.indent
+    indent: q.indent,
+    sign: rec.sign || '红色回响',
+    date: formatDate(rec.date)
   })
 }
 
@@ -95,70 +109,83 @@ function paintPostcard(ctx, W, H, rec) {
   ctx.font = F.weight + ' 40px ' + F.family
   ctx.fillText(rec.scene || '', 40, 40)
 
-  // 日期（右下）
-  ctx.font = '400 22px sans-serif'
+  // 落款（右下，双行：日期 / 红色回响）
   ctx.textAlign = 'right'
-  ctx.fillText((rec.date || '') + ' · 红色回响', W - 40, H - 44)
+  ctx.fillStyle = 'rgba(255,255,255,.9)'
+  ctx.font = '400 22px sans-serif'
+  ctx.fillText(rec.date || '', W - 40, H - 76)
+  ctx.fillStyle = '#ffffff'
+  ctx.font = '700 28px sans-serif'
+  ctx.fillText(rec.sign || '红色回响', W - 40, H - 44)
 
-  // 名言
+  // 名言（统一加引号，与 CSS 预览一致）
   const quote = (rec.quote && String(rec.quote).trim()) ? rec.quote : DEFAULT_QUOTE
-  if (arrange === 'v') paintVertical(ctx, quote, W, H, F, orient, position)
-  else paintHorizontal(ctx, quote, W, H, F, orient, position)
+  const q = '“' + quote + '”'
+  if (arrange === 'v') paintVertical(ctx, q, W, H, F, orient, position)
+  else paintHorizontal(ctx, q, W, H, F, orient, position)
 }
 
-function paintHorizontal(ctx, quote, W, H, F, orient, position) {
+function paintHorizontal(ctx, q, W, H, F, orient, position) {
   const pad = 40
-  const full = !!POS_FULL[position]
+  // br（右下）多行时降级为 bottom 居中，避让右下落款带
+  const eff = (position === 'br' && q.length > (orient === 'port' ? 9 : 14)) ? 'bottom' : position
+
   let boxX = pad
   let boxW = W - pad * 2
   let align = 'center'
-  if (position === 'left' || position === 'tl' || position === 'bl') { boxW = (W - pad * 2) * 0.62; align = 'left' }
-  if (position === 'right' || position === 'tr' || position === 'br') { boxX = pad + (W - pad * 2) * 0.38; boxW = (W - pad * 2) * 0.62; align = 'right' }
+  if (eff === 'left' || eff === 'tl' || eff === 'bl') { boxW = (W - pad * 2) * 0.62; align = 'left' }
+  if (eff === 'right' || eff === 'tr') { boxX = pad + (W - pad * 2) * 0.38; boxW = (W - pad * 2) * 0.62; align = 'right' }
 
-  // 测量并缩字号，尽量一行
+  // 字号自适应：先按基准字号测量，超宽则缩（min 20）
   let fs = orient === 'port' ? 40 : 38
   ctx.font = F.weight + ' ' + fs + 'px ' + F.family
-  let w = ctx.measureText(quote).width
+  let w = ctx.measureText(q).width
   if (w > boxW) {
     fs = Math.max(20, Math.floor((fs * boxW) / w))
     ctx.font = F.weight + ' ' + fs + 'px ' + F.family
-    w = ctx.measureText(quote).width
   }
 
   // 分行（均衡）
   const charW = fs * 0.95
   const perLine = Math.max(1, Math.floor(boxW / charW))
-  let lines
-  if (quote.length <= perLine) lines = [quote]
-  else lines = splitBalanced(quote, perLine)
+  let lines = q.length <= perLine ? [q] : splitBalanced(q, perLine)
+
+  // 限行（最多 6 行）：超出再缩字号，仍超则截断
+  if (lines.length > 6) {
+    fs = Math.max(18, Math.floor((fs * 6) / lines.length))
+    ctx.font = F.weight + ' ' + fs + 'px ' + F.family
+    const pl = Math.max(1, Math.floor(boxW / (fs * 0.95)))
+    lines = splitBalanced(q, pl)
+    if (lines.length > 6) lines = lines.slice(0, 6)
+  }
 
   const lineH = fs * 1.5
   const totalH = lines.length * lineH
-  const indentX = (position === 'left' || position === 'tl' || position === 'bl') ? fs * 2 : 0
+  const indentX = (eff === 'left' || eff === 'tl' || eff === 'bl') ? fs * 2 : 0
 
-  // 垂直锚点
+  // 垂直锚点（bottom 系预留落款带）
   let y
-  if (position === 'top' || position === 'tl' || position === 'tr') y = 112
-  else if (position === 'bottom' || position === 'bl' || position === 'br') y = H - 64 - totalH
+  if (eff === 'top' || eff === 'tl' || eff === 'tr') y = SCENE_BAND
+  else if (eff === 'bottom' || eff === 'bl' || eff === 'br') y = H - SIGN_BAND - totalH
   else y = (H - totalH) / 2
 
   ctx.textBaseline = 'top'
   ctx.textAlign = align
   ctx.fillStyle = '#ffffff'
   for (let i = 0; i < lines.length; i++) {
-    let x = align === 'center'
+    const x = align === 'center'
       ? boxX + boxW / 2
       : (align === 'right' ? boxX + boxW : boxX + (i > 0 ? indentX : 0))
     ctx.fillText(lines[i], x, y + i * lineH)
   }
 }
 
-function paintVertical(ctx, quote, W, H, F, orient, position) {
+function paintVertical(ctx, q, W, H, F, orient, position) {
   const pad = 40
   const maxH = orient === 'port' ? H - 200 : H - 260
   let fs = 46
   const colCap = Math.floor(maxH / (fs * 1.05))
-  if (quote.length > colCap) fs = Math.max(22, Math.floor((fs * colCap) / quote.length))
+  if (q.length > colCap) fs = Math.max(22, Math.floor((fs * colCap) / q.length))
   ctx.font = F.weight + ' ' + fs + 'px ' + F.family
   const charH = fs * 1.05
   const cap = Math.floor(maxH / charH)
@@ -166,7 +193,7 @@ function paintVertical(ctx, quote, W, H, F, orient, position) {
   // 拆成多列（自右向左）
   const cols = []
   let i = 0
-  while (i < quote.length) { cols.push(quote.substr(i, cap)); i += cap }
+  while (i < q.length) { cols.push(q.substr(i, cap)); i += cap }
 
   // 水平锚点
   let x
@@ -174,11 +201,11 @@ function paintVertical(ctx, quote, W, H, F, orient, position) {
   else if (position === 'center') x = W / 2
   else x = W - pad - fs / 2
 
-  // 垂直锚点
+  // 垂直锚点（bottom 系预留落款带）
   const colH = cols.length * charH
   let y0
-  if (position === 'top' || position === 'tl' || position === 'tr') y0 = 112
-  else if (position === 'bottom' || position === 'bl' || position === 'br') y0 = H - 64 - colH
+  if (position === 'top' || position === 'tl' || position === 'tr') y0 = SCENE_BAND
+  else if (position === 'bottom' || position === 'bl' || position === 'br') y0 = H - SIGN_BAND - colH
   else y0 = (H - colH) / 2
 
   ctx.textBaseline = 'top'

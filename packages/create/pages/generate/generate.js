@@ -104,7 +104,7 @@ Page({
       arrange: this.data.arrange,
       position: this.data.position,
       font: this.data.font,
-      date: '红色回响 · 预览'
+      date: postcards.today()
     }
     this.setData({ draft: decorateCard(base) })
   },
