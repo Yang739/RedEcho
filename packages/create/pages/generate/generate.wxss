@@ -30,7 +30,9 @@
   font-size: 30rpx;
 }
 .pc-actions-3 .pc-actions-gap { margin: 0 14rpx; }
-.pc-actions2 { margin-top: 16rpx; }
+/* 「再生成一张」做成与上方同宽的 flex 行，保证两行严格对齐 */
+.pc-actions2 { margin-top: 16rpx; display: flex; }
+.pc-actions2 .btn { flex: 1; }
 .pc-share { line-height: 1; padding: 0; margin: 0; }
 .pc-share::after { border: none; }
 
@@ -85,7 +87,8 @@
 }
 .preset:active { color: var(--c-primary, #C8161D); border-color: var(--c-primary, #C8161D); }
 
-.gen-btn { margin-top: 36rpx; }
+.gen-btn { margin-top: 36rpx; margin-bottom: 200rpx; }
+.gen-spacer { height: 1rpx; }
 
 /* 生成遮罩 */
 .gen-mask {
