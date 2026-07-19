@@ -21,6 +21,7 @@
 .works-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: start;
   gap: 20rpx;
   margin-top: 8rpx;
 }

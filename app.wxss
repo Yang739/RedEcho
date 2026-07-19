@@ -275,24 +275,17 @@ page {
 .pc-frame.pc-frame--land { aspect-ratio: 3 / 2; }
 .pc-frame > .pc-card { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-/* 画廊 / 列表单元：固定高度，卡按真实比例居中留白（横竖均正向，最不突兀） */
+/* 画廊 / 列表单元：两列等宽（容器 grid 决定），卡按自身真实比例（竖 2:3 / 横 3:2）
+   渲染，正向显示、左缘对齐，像相册墙；圆角/阴影/比例由内层 .pc-frame 提供 */
 .pc-cell {
-  height: 360rpx;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--c-surface-2);
-  border-radius: var(--r-lg);
-  box-shadow: var(--s-2);
-  overflow: hidden;
+  display: block;
 }
 .pc-cell > .pc-frame {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: auto;
   border-radius: var(--r-lg);
-  box-shadow: none; /* 避免与单元阴影叠加 */
-  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--s-2);
 }
-.pc-cell > .pc-frame > .pc-card { position: relative; inset: auto; }
-.pc-cell > .pc-frame > .pc-card.pc-card--port { height: 100%; width: auto; aspect-ratio: 2 / 3; }
-.pc-cell > .pc-frame > .pc-card.pc-card--land { width: 100%; height: auto; aspect-ratio: 3 / 2; }
 
 /* ---------- 无障碍：尊重「减少动态效果」系统设置 ---------- */
 @media (prefers-reduced-motion: reduce) {

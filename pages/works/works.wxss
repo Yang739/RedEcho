@@ -4,6 +4,7 @@
 .works {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: start;
   gap: 20rpx;
 }
 /* 画廊卡片外观统一由 app.wxss .pc-cell / .pc-frame 提供 */
