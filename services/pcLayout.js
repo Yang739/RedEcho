@@ -195,7 +195,8 @@ function paintHorizontal(ctx, q, W, H, F, orient, position) {
 
 function paintVertical(ctx, q, W, H, F, orient, position) {
   const pad = 40
-  const maxH = orient === 'port' ? H - 200 : H - 260
+  // 横版竖向容量放宽，使单列可容纳约 14 汉字 + 1 逗号（约 15 字）；竖版保持更大留白
+  const maxH = orient === 'port' ? H - 200 : H - 240
   // 先按换行切段、去段尾标点，以最长段为基准定字号（保证单列不超列高）
   const segs = splitQuoteLines(q, 'v', q.length)
   const maxSeg = segs.reduce((m, s) => Math.max(m, s.length), 0)
@@ -230,6 +231,11 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
   if (position === 'top' || position === 'tl' || position === 'tr') y0 = SCENE_BAND
   else if (position === 'bottom' || position === 'bl' || position === 'br') y0 = H - SIGN_BAND - mainH
   else y0 = (H - mainH) / 2
+
+  // 竖版竖排（左锚点）单列下移，避让左上角场景名，不与其相接
+  if (orient === 'port' && (position === 'left' || position === 'tl' || position === 'bl')) {
+    y0 = Math.max(y0, SCENE_BAND + 16)
+  }
 
   ctx.textBaseline = 'top'
   ctx.textAlign = 'center'
