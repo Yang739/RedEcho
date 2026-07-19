@@ -1,7 +1,7 @@
 // services/pcLayout.js —— 明信片排版引擎（与页面解耦，三页共用）
 //
 // 职责：
-// - buildQuote：根据 名言 / 方向 / 排列 / 位置 计算展示方案（单行放大 / 均衡分行 / 续行缩进）
+// - buildQuote：根据 名言 / 方向 / 排列 / 位置 计算展示方案（换行断行 / 句尾去标点 / 续行缩进）
 // - decorateCard：补全渲染字段（quoteLines / quoteFontSize / indent / sign / 统一格式 date）
 // - paintPostcard：Canvas 精绘（9 宫格定位、字号自适应、落款双行、名句避让落款带）
 
@@ -26,14 +26,12 @@ function splitBalanced(text, perLine) {
   return lines
 }
 
-// 以逗号断行（逗号本身不显示）；竖排去除行尾标点；过长子句再均衡拆分
+// 以换行符断行（换行本身不显示）；所有句子（行/列）结尾都不跟标点；过长子段再均衡拆分
 function splitQuoteLines(text, arrange, perLine) {
-  let segs = String(text).split('，').map(s => s.trim()).filter(s => s.length)
+  let segs = String(text).split(/\r?\n/).map(s => s.trim()).filter(s => s.length)
   if (!segs.length) segs = [String(text).trim() || String(text)]
-  if (arrange === 'v') {
-    // 竖排：句尾不跟标点（去除行尾全角标点）
-    segs = segs.map(s => s.replace(/[。！？!?；：、，,.…—~·]+$/, ''))
-  }
+  // 句尾不跟标点：去除段尾全角/半角标点（横竖排一致）
+  segs = segs.map(s => s.replace(/[。！？!?；：、，,.…—~·]+$/, ''))
   const lines = []
   for (const s of segs) {
     if (s.length <= perLine) lines.push(s)
@@ -50,39 +48,35 @@ function formatDate(d) {
   return d
 }
 
-// 计算名言的展示方案（CSS 预览用，与 Canvas 规则对齐）
+// 计算名言的展示方案（与 Canvas 规则对齐：换行断行 / 句尾去标点 / 续行缩进）
 function buildQuote(quote, orient, arrange, position) {
   const raw = (quote && String(quote).trim()) || DEFAULT_QUOTE
-  const text = raw
+  // 以换行符断行、句尾去标点；空行忽略
+  let lines = String(raw).split(/\r?\n/).map(s => s.trim()).filter(s => s.length)
+    .map(s => s.replace(/[。！？!?；：、，,.…—~·]+$/, ''))
+  if (!lines.length) lines = [raw]
   const full = !!POS_FULL[position]
+  const indent = (position === 'left' || position === 'tl' || position === 'bl')
+  const longest = lines.reduce((m, s) => Math.max(m, s.length), 0)
 
   if (arrange === 'v') {
-    // 竖排：尽量一列放下（按高度），过长则缩字号
+    // 竖排：以最长段定字号（尽量一列放下）
     const maxCol = orient === 'port' ? 16 : 11
     let fs = 34
-    if (text.length > maxCol) fs = Math.max(22, Math.round((34 * maxCol) / text.length))
-    return { lines: [text], fontSizeRpx: fs, indent: false }
+    if (longest > maxCol) fs = Math.max(22, Math.round((34 * maxCol) / longest))
+    return { lines, fontSizeRpx: fs, indent }
   }
 
-  // 横排：先按位置估算一行可容纳字符数（基准字号 34rpx，CJK 约等宽）
-  let perLine = orient === 'port'
+  // 横排：按位置估算单行容量（基准字号 34rpx，CJK 约等宽）
+  const perLine = orient === 'port'
     ? (full ? 10 : 5)
     : (full ? 15 : 7)
-
-  // 单行且字少：放大字号，使长短句都饱满不空旷
-  if (text.length <= perLine) {
-    const boost = text.length <= Math.ceil(perLine * 0.6) ? 6 : 0
-    return { lines: [text], fontSizeRpx: Math.min(44, 34 + boost), indent: false }
+  if (longest <= perLine) {
+    const boost = longest <= Math.ceil(perLine * 0.6) ? 6 : 0
+    return { lines, fontSizeRpx: Math.min(44, 34 + boost), indent }
   }
-  // 仅略长：缩字号强行一行
-  if (text.length <= perLine * 1.4) {
-    const fs = Math.max(22, Math.round((34 * perLine) / text.length))
-    return { lines: [text], fontSizeRpx: fs, indent: false }
-  }
-  // 过长：均衡分行，续行缩进两字符（仅左侧对齐位置）
-  const lines = splitBalanced(text, perLine)
-  const indent = (position === 'left' || position === 'tl' || position === 'bl')
-  return { lines, fontSizeRpx: 34, indent }
+  const fs = Math.max(22, Math.round((34 * perLine) / longest))
+  return { lines, fontSizeRpx: fs, indent }
 }
 
 // 补全一张明信片渲染所需字段
@@ -152,16 +146,18 @@ function paintHorizontal(ctx, q, W, H, F, orient, position) {
   if (eff === 'left' || eff === 'tl' || eff === 'bl') { boxW = (W - pad * 2) * 0.62; align = 'left' }
   if (eff === 'right' || eff === 'tr') { boxX = pad + (W - pad * 2) * 0.38; boxW = (W - pad * 2) * 0.62; align = 'right' }
 
-  // 字号自适应：先按基准字号测量，超宽则缩（min 20）
+  // 字号自适应：先按换行切段、去句尾标点，以最长段为基准测量，超宽则缩（min 20）
   let fs = orient === 'port' ? 40 : 38
   ctx.font = F.weight + ' ' + fs + 'px ' + F.family
-  let w = ctx.measureText(q).width
-  if (w > boxW) {
-    fs = Math.max(20, Math.floor((fs * boxW) / w))
+  const segs = splitQuoteLines(q, 'h', q.length)
+  let longestW = 0
+  for (const s of segs) longestW = Math.max(longestW, ctx.measureText(s).width)
+  if (longestW > boxW) {
+    fs = Math.max(20, Math.floor((fs * boxW) / longestW))
     ctx.font = F.weight + ' ' + fs + 'px ' + F.family
   }
 
-  // 分行：以逗号断行；续行缩进两字
+  // 分行：以换行符断行；续行缩进两字；超长段再均衡折行
   const perLine = Math.max(1, Math.floor(boxW / (fs * 0.95)))
   let lines = splitQuoteLines(q, 'h', perLine)
 
@@ -200,15 +196,17 @@ function paintHorizontal(ctx, q, W, H, F, orient, position) {
 function paintVertical(ctx, q, W, H, F, orient, position) {
   const pad = 40
   const maxH = orient === 'port' ? H - 200 : H - 260
+  // 先按换行切段、去段尾标点，以最长段为基准定字号（保证单列不超列高）
+  const segs = splitQuoteLines(q, 'v', q.length)
+  const maxSeg = segs.reduce((m, s) => Math.max(m, s.length), 0)
   let fs = 46
   const colCap = Math.floor(maxH / (fs * 1.05))
-  if (q.length > colCap) fs = Math.max(22, Math.floor((fs * colCap) / q.length))
+  if (maxSeg > colCap) fs = Math.max(22, Math.floor((fs * colCap) / maxSeg))
   ctx.font = F.weight + ' ' + fs + 'px ' + F.family
   const charH = fs * 1.05
   const cap = Math.floor(maxH / charH)
 
-  // 按逗号分段（竖排去段尾标点）；每段再按列高切列（自右向左）
-  const segs = splitQuoteLines(q, 'v', q.length)
+  // 每段再按列高切列（自右向左）
   const cols = []
   for (const seg of segs) {
     let i = 0
@@ -221,7 +219,7 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
   else if (position === 'center') x = W / 2
   else x = W - pad - fs / 2
 
-  // 续列（逗号后 / 段内换行）整体向下缩进两字
+  // 续列（换行后 / 段内换行）整体向下缩进两字
   const indentY = fs * 2
   const mainH = (cols[0] ? cols[0].length * charH : 0) + indentY
 
