@@ -1,4 +1,4 @@
-.page { padding: 20rpx 28rpx calc(60rpx + env(safe-area-inset-bottom)); }
+.page { padding: 20rpx 28rpx 180rpx; }
 .intro { padding: 8rpx 4rpx 16rpx; }
 .intro__title { font-size: 36rpx; font-weight: 800; }
 .intro__desc { font-size: 25rpx; color: var(--c-text-2); margin-top: 8rpx; line-height: 1.6; }
@@ -20,17 +20,16 @@
 .opt__desc { margin-top: 6rpx; }
 
 /* 结果卡片动作区 */
-.result-actions {
-  margin-top: 24rpx;
+.result-actions { margin-top: 24rpx; }
+/* 保存/分享/打印：三等分（用中间按钮 margin 代替容器 gap，
+   避免 gap 吃掉宽度导致比「再生成一张」窄） */
+.pc-actions-3 { display: flex; }
+.pc-actions-3 .btn {
+  flex: 1;
+  text-align: center;
+  font-size: 30rpx;
 }
-/* 保存/分享/打印 三等分 + 再生成一张：两行宽度严格一致 */
-.pc-actions-3,
-.pc-actions2 {
-  display: block;
-  box-sizing: border-box;
-}
-.pc-actions-3 { display: flex; gap: 16rpx; }
-.pc-actions-3 .btn { flex: 1; text-align: center; font-size: 30rpx; }
+.pc-actions-3 .btn:nth-child(2) { margin: 0 14rpx; }
 .pc-actions2 { margin-top: 16rpx; }
 .pc-share { line-height: 1; padding: 0; margin: 0; }
 .pc-share::after { border: none; }
