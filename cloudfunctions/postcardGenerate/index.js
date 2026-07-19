@@ -37,6 +37,12 @@ const QUOTES = [
   '一代人有一代人的长征。'
 ]
 
+// 轻量敏感词（服务端兜底拦截；前端同样会先过滤一次）
+const SENSITIVE = ['毒品', '恐怖', '暴力', '色情', '赌博', '诈骗', '反动', '分裂', '枪支', '炸药']
+function hasSensitive(text) {
+  return SENSITIVE.some((w) => (text || '').indexOf(w) !== -1)
+}
+
 function today() {
   const d = new Date()
   const p = (n) => String(n).padStart(2, '0')
@@ -78,9 +84,16 @@ async function saveImage(base64) {
 
 exports.main = async (event, context) => {
   const { OPENID } = getOpenid()
-  const { sceneId, quote, customText } = event
+  const { sceneId, quote, customText, layout } = event
   const scene = SCENES[sceneId] || SCENES.sc1
+
+  // 自定义金句敏感词拦截（与前端一致）
+  if (customText && hasSensitive(customText)) {
+    return fail('内容包含不适当的词汇，请修改后再生成', 400)
+  }
+
   const finalQuote = (customText || quote || QUOTES[Math.floor(Math.random() * QUOTES.length)])
+  const finalLayout = ['classic', 'center', 'minimal'].indexOf(layout) !== -1 ? layout : 'classic'
 
   let imageUrl = ''
   if (SECRET_ID && SECRET_KEY) {
@@ -104,6 +117,7 @@ exports.main = async (event, context) => {
     colors: scene.colors,
     quote: finalQuote,
     date: today(),
+    layout: finalLayout,
     imageUrl,
     placeholder
   }
@@ -119,6 +133,7 @@ exports.main = async (event, context) => {
           colors: scene.colors,
           quote: finalQuote,
           date: result.date,
+          layout: finalLayout,
           imageUrl,
           created_at: new Date()
         }

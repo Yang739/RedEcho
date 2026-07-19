@@ -1,7 +1,7 @@
 .page { padding: 20rpx 28rpx 60rpx; }
 .intro { padding: 8rpx 4rpx 16rpx; }
 .intro__title { font-size: 36rpx; font-weight: 800; }
-.intro__desc { font-size: 25rpx; color: var(--c-text-2); margin-top: 8rpx; }
+.intro__desc { font-size: 25rpx; color: var(--c-text-2); margin-top: 8rpx; line-height: 1.6; }
 
 /* 结果卡片 */
 .pc-card {
@@ -16,6 +16,11 @@
 .pc-card__scene { font-size: 40rpx; font-weight: 800; letter-spacing: 1rpx; }
 .pc-card__quote { font-size: 38rpx; line-height: 1.7; font-style: italic; font-weight: 600; }
 .pc-card__date { font-size: 24rpx; opacity: .85; }
+
+/* 排版变体 */
+.pc-card__inner--center { text-align: center; align-items: center; }
+.pc-card__inner--minimal { text-align: right; align-items: flex-end; }
+
 .pc-actions { margin-top: 28rpx; display: flex; flex-direction: column; gap: 18rpx; }
 
 /* 离屏画布 */
@@ -23,10 +28,36 @@
 
 /* 场景选择 */
 .scenes { display: grid; grid-template-columns: 1fr 1fr; gap: 20rpx; }
-.scene { background: var(--c-surface); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--s-1); }
+.scene { background: var(--c-surface); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--s-1); border: 3rpx solid transparent; }
+.scene--on { border-color: var(--c-primary, #C8161D); }
 .scene__cover { height: 200rpx; }
 .scene__name { font-size: 28rpx; font-weight: 700; padding: 16rpx 20rpx 4rpx; }
 .scene__desc { padding: 0 20rpx 20rpx; }
+
+/* 金句输入 */
+.quote-input {
+  width: 100%; box-sizing: border-box;
+  min-height: 120rpx; padding: 20rpx 24rpx;
+  font-size: 28rpx; line-height: 1.6; color: var(--c-text);
+  background: var(--c-surface); border-radius: var(--r-md);
+  border: 1rpx solid var(--c-divider, #eee);
+}
+.presets { display: flex; flex-wrap: wrap; gap: 14rpx; margin-top: 16rpx; }
+.preset {
+  font-size: 24rpx; color: var(--c-text-2);
+  padding: 10rpx 18rpx; background: var(--c-surface-2);
+  border-radius: var(--r-pill); border: 1rpx solid var(--c-divider, #eee);
+}
+.preset:active { color: var(--c-primary, #C8161D); border-color: var(--c-primary, #C8161D); }
+
+/* 排版选择 */
+.layouts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16rpx; }
+.layout { background: var(--c-surface); border-radius: var(--r-md); padding: 20rpx 16rpx; text-align: center; border: 3rpx solid transparent; box-shadow: var(--s-1); }
+.layout--on { border-color: var(--c-primary, #C8161D); background: rgba(200,22,29,.06); }
+.layout__name { font-size: 28rpx; font-weight: 700; }
+.layout__desc { margin-top: 6rpx; }
+
+.gen-btn { margin-top: 36rpx; }
 
 /* 生成遮罩 */
 .gen-mask {

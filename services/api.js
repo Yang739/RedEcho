@@ -117,11 +117,20 @@ module.exports = {
   },
 
   // 生成明信片：云函数 postcardGenerate（文生图接入点已标注为占位）
-  generatePostcard(sceneId) {
-    if (IS_CLOUD) return call('postcardGenerate', { sceneId })
+  // customText：用户自定义金句（为空则随机抽名言库）；layout：排版方案 classic/center/minimal
+  generatePostcard(sceneId, customText, layout) {
+    if (IS_CLOUD) return call('postcardGenerate', { sceneId, customText: customText || '', layout: layout || 'classic' })
     const scene = mock.scenes.find((s) => s.id === sceneId) || mock.scenes[0]
-    const quote = mock.quotes[Math.floor(Math.random() * mock.quotes.length)]
-    return delay({ id: 'p' + Date.now(), scene: scene.name, gradient: scene.gradient, quote, date: '2026-07-18' }, 1600)
+    const quote = (customText && customText.trim()) || mock.quotes[Math.floor(Math.random() * mock.quotes.length)]
+    return delay({
+      id: 'p' + Date.now(),
+      scene: scene.name,
+      gradient: scene.gradient,
+      colors: scene.colors,
+      quote,
+      date: '2026-07-18',
+      layout: layout || 'classic'
+    }, 1600)
   },
 
   // 我的明信片：云函数 postcardList

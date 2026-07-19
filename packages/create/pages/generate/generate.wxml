@@ -1,14 +1,14 @@
 <view class="page">
   <view class="intro">
     <view class="intro__title">生成你的红色明信片</view>
-    <view class="intro__desc">AI 将依据场景为你生成专属金句，可一键保存至相册。</view>
+    <view class="intro__desc">选场景、写金句、挑排版，AI 为你生成专属明信片，可保存或分享。</view>
   </view>
 
   <!-- 结果 -->
   <block wx:if="{{result}}">
     <view class="pc-card fade-up">
       <image wx:if="{{useImage}}" class="pc-card__img" src="{{result.imageUrl}}" mode="aspectFill" />
-      <view wx:else class="pc-card__inner" style="background:{{result.gradient}}">
+      <view wx:else class="pc-card__inner pc-card__inner--{{result.layout}}" style="background:{{result.gradient}}">
         <view class="pc-card__scene">{{result.scene}}</view>
         <view class="pc-card__quote">“{{result.quote}}”</view>
         <view class="pc-card__date">{{result.date}} · 红色回响</view>
@@ -22,15 +22,15 @@
     <canvas type="2d" id="pcCanvas" class="pc-canvas"></canvas>
   </block>
 
-  <!-- 选择 -->
+  <!-- 创作面板 -->
   <block wx:else>
     <view class="section-title">选择场景</view>
     <view class="scenes">
       <view
-        class="scene tap"
+        class="scene tap {{selectedId === item.id ? 'scene--on' : ''}}"
         wx:for="{{scenes}}"
         wx:key="id"
-        bindtap="onSelect"
+        bindtap="onSelectScene"
         data-id="{{item.id}}"
       >
         <view class="scene__cover" style="background:{{item.gradient}}"></view>
@@ -38,6 +38,40 @@
         <view class="scene__desc text-3 xs ellipsis">{{item.desc}}</view>
       </view>
     </view>
+
+    <view class="section-title">写句话（金句）</view>
+    <textarea
+      class="quote-input"
+      maxlength="40"
+      placeholder="写一句想留下的话，或点下方名言快速填入"
+      value="{{customText}}"
+      bindinput="onInputQuote"
+    />
+    <view class="presets">
+      <view
+        class="preset tap"
+        wx:for="{{presets}}"
+        wx:key="*this"
+        bindtap="onPickPreset"
+        data-q="{{item}}"
+      >{{item}}</view>
+    </view>
+
+    <view class="section-title">排版</view>
+    <view class="layouts">
+      <view
+        class="layout tap {{layout === item.key ? 'layout--on' : ''}}"
+        wx:for="{{layoutList}}"
+        wx:key="key"
+        bindtap="onSelectLayout"
+        data-key="{{item.key}}"
+      >
+        <view class="layout__name">{{item.name}}</view>
+        <view class="layout__desc xs text-3">{{item.desc}}</view>
+      </view>
+    </view>
+
+    <view class="btn btn-primary btn-block tap gen-btn" bindtap="onGenerate">生成明信片</view>
   </block>
 
   <!-- 生成中遮罩 -->
