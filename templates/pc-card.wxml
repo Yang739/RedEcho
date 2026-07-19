@@ -1,0 +1,20 @@
+<!-- templates/pc-card.wxml —— 明信片卡片共用模板（生成预览 / 创作画廊 / 作品列表 / 详情共用） -->
+<!-- 调用方：<import src=".../templates/pc-card.wxml" /> 然后 <template is="pcCard" data="{{ card: xxx }}" /> -->
+<!-- card 需含：orient('land'|'port') arrange('h'|'v') position(9宫格) font(scene名) scene quote date gradient imageUrl quoteLines[] quoteFontSize indent -->
+<template name="pcCard">
+  <view class="pc-card pc-card--{{card.orient}} font-{{card.font}} {{card.arrange === 'v' ? 'is-vert' : ''}} pos-{{card.position || 'center'}} {{card.imageUrl ? 'pc-card--img' : ''}}">
+    <image wx:if="{{card.imageUrl}}" class="pc-card__img" src="{{card.imageUrl}}" mode="aspectFill" />
+    <view wx:else class="pc-card__bg" style="background:{{card.gradient}}"></view>
+    <view class="pc-card__scrim"></view>
+    <view class="pc-card__scene">{{card.scene}}</view>
+    <view class="pc-card__date">{{card.date}}</view>
+    <view class="pc-card__quote pc-pos-{{card.position || 'center'}}">
+      <view
+        wx:for="{{card.quoteLines}}"
+        wx:key="index"
+        class="pc-line {{index > 0 && card.indent ? 'pc-line--indent' : ''}}"
+        style="font-size:{{card.quoteFontSize}}rpx"
+      >{{item}}</view>
+    </view>
+  </view>
+</template>
