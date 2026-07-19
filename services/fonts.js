@@ -19,7 +19,7 @@ const FONTS = {
     weight: '700',
     family: "'RE-Mao','STKaiti','KaiTi','Kaiti SC',serif",
     url: '',
-    cloudId: '' // 例：'cloud://cloud1-d1g61edjla151e7c2.xxxx/fonts/maozedong-1.ttf'
+    cloudId: 'cloud://cloud1-d1g61edjla151e7c2.636c-cloud1-d1g61edjla151e7c2-1427800568/fonts/maozedong-1.ttf'
   },
   shoujin: {
     adjective: '铁画银钩',
@@ -27,7 +27,7 @@ const FONTS = {
     weight: '400',
     family: "'RE-Shou','STXingkai','Xingkai SC',serif",
     url: '',
-    cloudId: '' // 'cloud://cloud1-d1g61edjla151e7c2.xxxx/fonts/AaSongHuiZongGuoBaoShouJinShu-2.ttf'
+    cloudId: 'cloud://cloud1-d1g61edjla151e7c2.636c-cloud1-d1g61edjla151e7c2-1427800568/fonts/AaSongHuiZongGuoBaoShouJinShu-2.ttf'
   },
   yan: {
     adjective: '雄浑端庄',
@@ -35,7 +35,7 @@ const FONTS = {
     weight: '800',
     family: "'RE-Yan','STKaiti','KaiTi',serif",
     url: '',
-    cloudId: '' // 'cloud://cloud1-d1g61edjla151e7c2.xxxx/fonts/经典繁颜体字体下载_爱给网_aigei_com.ttf'
+    cloudId: 'cloud://cloud1-d1g61edjla151e7c2.636c-cloud1-d1g61edjla151e7c2-1427800568/fonts/经典繁颜体字体下载_爱给网_aigei_com.ttf'
   },
   liu: {
     adjective: '清健瘦劲',
@@ -43,7 +43,7 @@ const FONTS = {
     weight: '600',
     family: "'RE-Liu','LiSu','STLiti','Kaiti SC',serif",
     url: '',
-    cloudId: '' // 'cloud://cloud1-d1g61edjla151e7c2.xxxx/fonts/柳公权柳体_爱给网_aigei_com.ttf'
+    cloudId: 'cloud://cloud1-d1g61edjla151e7c2.636c-cloud1-d1g61edjla151e7c2-1427800568/fonts/柳公权柳体_爱给网_aigei_com.ttf'
   }
 }
 
