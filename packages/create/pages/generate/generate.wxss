@@ -1,4 +1,4 @@
-.page { padding: 20rpx 28rpx 180rpx; }
+.page { padding: 20rpx 28rpx 40rpx; }
 .intro { padding: 8rpx 4rpx 16rpx; }
 .intro__title { font-size: 36rpx; font-weight: 800; }
 .intro__desc { font-size: 25rpx; color: var(--c-text-2); margin-top: 8rpx; line-height: 1.6; }
@@ -87,8 +87,9 @@
 }
 .preset:active { color: var(--c-primary, #C8161D); border-color: var(--c-primary, #C8161D); }
 
-.gen-btn { margin-top: 36rpx; margin-bottom: 200rpx; }
-.gen-spacer { height: 1rpx; }
+.gen-btn { margin-top: 36rpx; }
+/* 真实高度占位：撑开页面滚动区（margin/padding 不计入滚动高度，会折叠） */
+.gen-spacer { height: 220rpx; }
 
 /* 生成遮罩 */
 .gen-mask {
