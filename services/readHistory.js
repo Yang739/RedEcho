@@ -63,4 +63,11 @@ function formatDate(time) {
   return y + ' 年 ' + m + ' 月 ' + day + ' 日  ' + hh + ' : ' + mm
 }
 
-module.exports = { getList, getEntries, add, clear, formatDate }
+// 删除单条阅读记录（按 id），返回删除后的条目列表
+function remove(id) {
+  const list = getRaw().filter((e) => (typeof e === 'string' ? e : e.id) !== id)
+  try { wx.setStorageSync(KEY, list) } catch (e) {}
+  return getEntries()
+}
+
+module.exports = { getList, getEntries, add, remove, clear, formatDate }
