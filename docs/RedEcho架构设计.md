@@ -49,13 +49,16 @@ RedEcho/
 ├── services/                         # 服务层：按业务聚合云函数调用
 │   ├── auth.js                       #   登录/双因子
 │   ├── show.js                       #   场次/环节/投票
-│   ├── create.js                     #   明信片/AIGC
+│   ├── create.js                     #   明信片/AIGC（含 api.js / postcards.js 本地作品库）
 │   ├── mall.js                       #   商品/订单/核销
-│   └── dash.js                       #   数据看板
+│   ├── dash.js                       #   数据看板
+│   ├── pcLayout.js                   #   明信片排版引擎（九宫格定位/均衡分行/缩进/Canvas 精绘）
+│   └── fonts.js                      #   字体风格注册（修饰词 + 内置字体 loadFontFace 注入）
 ├── store/                            # 轻量全局状态（pub/sub）
 │   ├── user.js                       #   登录态
 │   └── live.js                       #   当前演出实时状态
 ├── components/                       # 复用组件（投票器/弹幕/星级/打印面板…）
+├── templates/                        # 跨页 WXML 模板（pc-card 明信片卡片）
 ├── utils/                            # request.js、im.js、敏感词、日期、防抖
 ├── pages/        (主包·tabBar)       # 首页/演出/创作/我的（轻壳）
 │   └── works/                       # 我的作品列表页（见 pages/works/works）
