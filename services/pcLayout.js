@@ -7,7 +7,7 @@
 
 const { FONTS } = require('./fonts.js')
 const POS_FULL = { top: 1, bottom: 1, center: 1 } // 满宽位置（横排时可整行书写）
-const DEFAULT_QUOTE = '在此写下你的红色金句'
+const DEFAULT_QUOTE = ""
 const SIGN_BAND = 96   // 底部落款带预留高度（Canvas px）
 const SCENE_BAND = 112 // 顶部场景名预留高度（Canvas px）
 
