@@ -132,7 +132,7 @@ module.exports = {
     opts = opts || {}
     const fallback = () => {
       const scene = mock.scenes.find((s) => s.id === sceneId) || mock.scenes[0]
-      const quote = (customText && customText.trim()) || mock.quotes[Math.floor(Math.random() * mock.quotes.length)]
+      const quote = (customText && customText.trim()) || ''
       return delay({
         id: 'p' + Date.now(),
         scene: scene.name,

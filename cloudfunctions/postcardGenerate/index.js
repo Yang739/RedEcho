@@ -92,7 +92,9 @@ exports.main = async (event, context) => {
     return fail('内容包含不适当的词汇，请修改后再生成', 400)
   }
 
-  const finalQuote = (customText || quote || QUOTES[Math.floor(Math.random() * QUOTES.length)])
+  // 自定义金句为空时返回空字符串（原图不带名言）；仅当用户确实输入才带名言。
+  // 不再随机兜底 QUOTES，否则导出图总会带一句预设名言。
+  const finalQuote = (customText || '').trim()
   const ORIENTS = ['land', 'port']
   const ARRANGES = ['h', 'v']
   const FONTS = ['maoti', 'shoujin', 'liu', 'yan']

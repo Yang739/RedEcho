@@ -126,7 +126,7 @@ Page({
   updateDraft() {
     const scenes = this.data.scenes
     const scene = scenes.find((s) => s.id === this.data.selectedId) || scenes[0] || {}
-    const text = (this.data.customText && this.data.customText.trim()) || '在此写下你的红色金句'
+    const text = (this.data.customText && this.data.customText.trim()) || ""
     const base = {
       gradient: scene.gradient || 'linear-gradient(135deg,#C8161D,#7A0A10)',
       colors: scene.colors || ['#C8161D', '#7A0A10'],
@@ -164,7 +164,7 @@ Page({
         scene: scene.name || res.scene,
         gradient: scene.gradient || res.gradient,
         colors: scene.colors || res.colors,
-        quote: (customText && customText.trim()) || res.quote,
+        quote: (customText && customText.trim()) || '',
         orient, arrange, position, font,
         date: postcards.today()
       })
