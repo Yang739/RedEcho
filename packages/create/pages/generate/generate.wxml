@@ -122,7 +122,6 @@
     </view>
 
     <view class="btn btn-primary btn-block tap gen-btn" bindtap="onGenerate">生成明信片</view>
-    <view class="gen-spacer"></view>
   </block>
 
   <!-- 生成中遮罩 -->

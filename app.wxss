@@ -109,7 +109,7 @@ page {
 .btn-ghost { background: var(--c-primary-light); color: var(--c-primary); }
 .btn-ghost:active { transform: scale(.97); }
 .btn-outline { background: transparent; color: var(--c-primary); border: 2rpx solid var(--c-primary); }
-.btn-block { display: flex; width: 100%; }
+.btn-block { display: flex; width: 100%; box-sizing: border-box; }
 .btn[disabled] { opacity: .5; }
 .btn-sm { height: 64rpx; padding: 0 28rpx; font-size: 26rpx; }
 
