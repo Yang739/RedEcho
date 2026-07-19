@@ -10,6 +10,7 @@
 }
 
 .tab {
+  box-sizing: border-box;                  /* min-height 包含 padding，避免总高被撑大 */
   flex: 1;
   min-height: 110rpx;                      /* ≥44px 触控目标（rpx 适配） */
   display: flex;

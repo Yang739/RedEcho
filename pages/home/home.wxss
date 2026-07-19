@@ -1,4 +1,4 @@
-.page { padding: 0 28rpx 140rpx; }
+.page { padding: 0 28rpx calc(120rpx + env(safe-area-inset-bottom)); }
 
 /* Hero */
 .hero {
