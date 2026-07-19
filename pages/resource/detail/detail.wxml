@@ -8,6 +8,15 @@
   </view>
 
   <view class="body">
+    <!-- 相关宣传片（占位） -->
+    <view class="video-card">
+      <view class="video-card__poster" style="background:{{card.gradient}}">
+        <view class="video-card__play">▶</view>
+        <view class="video-card__mask">{{card.video.title}} · 筹备中</view>
+      </view>
+      <view class="video-card__desc">{{card.video.desc}}</view>
+    </view>
+
     <!-- 导语 -->
     <view class="lead">{{card.desc}}</view>
 
