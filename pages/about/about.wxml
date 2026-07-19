@@ -1,7 +1,7 @@
 <view class="page">
   <!-- 品牌头部 -->
   <view class="brand">
-    <view class="brand__logo">红</view>
+    <image class="brand__logo" src="/images/logo-avatar.png" mode="aspectFill" />
     <view class="brand__name">红色回响</view>
     <view class="brand__en">REDECHO</view>
     <view class="brand__tag">红色旧址沉浸式互动演出</view>
