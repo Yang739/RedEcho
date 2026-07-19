@@ -5,19 +5,23 @@
       <text wx:if="{{list.length}}" class="read-clear" bindtap="onClear">清空</text>
     </view>
     <view wx:if="{{list.length}}" class="read-list">
-      <view
-        class="read-item tap"
-        wx:for="{{list}}"
-        wx:key="id"
-        bindtap="onRead"
-        data-id="{{item.id}}"
-      >
-        <view class="read-item__bar" style="background:{{item.gradient}}"></view>
-        <view class="read-item__main">
-          <view class="read-item__title">{{item.title}}</view>
-          <view class="read-item__sub text-3 xs">{{item.catName}} · {{item.subtitle}}</view>
+      <view class="read-item-wrap" wx:for="{{list}}" wx:key="id">
+        <view class="read-item__del" catchtap="onDelete" data-id="{{item.id}}">删除</view>
+        <view
+          class="read-item tap {{item.anim ? 'anim' : ''}}"
+          style="transform: translateX({{item.offset || 0}}px);"
+          data-id="{{item.id}}"
+          bindtouchstart="onSwipeStart"
+          bindtouchmove="onSwipeMove"
+          bindtouchend="onSwipeEnd"
+          bindtap="onRead"
+        >
+          <view class="read-item__bar" style="background:{{item.gradient}}"></view>
+          <view class="read-item__main">
+            <view class="read-item__title">{{item.title}}</view>
+            <view class="read-item__sub text-3 xs">{{item.catName}} · {{item.subtitle}}</view>
+          </view>
         </view>
-        <text class="read-item__fav" catchtap="onToggle" data-id="{{item.id}}">取消</text>
       </view>
     </view>
     <view wx:else class="read-empty text-3 xs">还没有收藏，去资料详情页点「收藏」吧</view>
