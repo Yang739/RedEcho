@@ -39,7 +39,7 @@
         <pc-canvas card="{{preview}}" res="900" />
       </view>
       <view class="preview-actions">
-        <view class="btn btn-primary flex-1 tap" bindtap="onSaveFromPreview">保存</view>
+        <view class="btn btn-ghost flex-1 tap" bindtap="onSaveFromPreview">保存</view>
         <button class="btn btn-ghost flex-1 tap preview-share" open-type="share">分享</button>
         <view class="btn btn-ghost flex-1 tap" bindtap="onPrint">打印</view>
       </view>
