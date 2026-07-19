@@ -8,6 +8,7 @@
 // 约定：所有方法返回 Promise，统一 resolve 业务数据；错误在页面层 catch 处理。
 
 const mock = require('./mock.js')
+const resources = require('./resources.js')
 const { ENV } = require('../config.js')
 
 // 是否启用真实云函数：ENV 不是占位符即视为已配置真实环境
@@ -41,12 +42,16 @@ function jitter(map) {
 module.exports = {
   /* ---------------- 首页 ---------------- */
   getHomeData() {
-    if (IS_CLOUD) return call('getHomeFeed', {})
+    // 资料卡片统一取本地精选内容（湖南主题史料），双模式均稳定展示
+    const recommend = resources.cards
+    if (IS_CLOUD) {
+      return call('getHomeFeed', {}).then((d) => Object.assign({}, d, { recommend }))
+    }
     return delay({
       greeting: '下午好',
       points: 1280,
       todayGain: 60,
-      recommend: mock.cards.slice(0, 3),
+      recommend,
       reading: mock.reading,
       liveShow: mock.shows.find((s) => s.status === 'live') || null
     })

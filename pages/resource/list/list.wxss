@@ -1,0 +1,59 @@
+.page { padding: 0 28rpx 60rpx; }
+
+/* 分类筛选栏 */
+.cat-bar {
+  white-space: nowrap;
+  margin: 12rpx 0 8rpx;
+  padding: 8rpx 0;
+}
+.cat {
+  display: inline-block;
+  padding: 12rpx 30rpx;
+  margin-right: 16rpx;
+  font-size: 26rpx;
+  color: var(--c-text-2);
+  background: var(--c-surface);
+  border-radius: var(--r-pill);
+  box-shadow: var(--s-1);
+}
+.cat--on {
+  color: #fff;
+  background: linear-gradient(135deg, #C8161D 0%, #7A0A10 100%);
+  font-weight: 700;
+}
+
+/* 资料卡片（与首页推荐卡风格一致） */
+.rec {
+  display: flex; gap: 22rpx;
+  background: var(--c-surface);
+  border-radius: var(--r-md);
+  padding: 22rpx;
+  margin-bottom: 20rpx;
+  box-shadow: var(--s-1);
+}
+.rec__cover {
+  position: relative;
+  width: 180rpx; height: 180rpx; flex-shrink: 0;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+.rec__cover-tag {
+  position: absolute; left: 0; top: 0;
+  background: rgba(0,0,0,.35); color: #fff;
+  font-size: 20rpx; padding: 4rpx 14rpx;
+  border-bottom-right-radius: var(--r-sm);
+}
+.rec__cover-era {
+  position: absolute; right: 12rpx; bottom: 8rpx;
+  font-size: 52rpx; font-weight: 800; line-height: 1;
+  color: rgba(255,255,255,.85);
+  letter-spacing: 1rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0,0,0,.25);
+}
+.rec__body { display: flex; flex-direction: column; }
+.rec__title { font-size: 32rpx; font-weight: 700; }
+.rec__sub { margin-top: 4rpx; }
+.rec__desc { margin-top: 8rpx; flex: 1; }
+.rec__meta { margin-top: 12rpx; }
+
+.empty { text-align: center; color: var(--c-text-3); padding: 100rpx 0; font-size: 26rpx; }

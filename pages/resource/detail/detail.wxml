@@ -1,0 +1,43 @@
+<view class="page" wx:if="{{card}}">
+  <!-- 头图 -->
+  <view class="hero" style="background:{{card.gradient}}">
+    <view class="hero__era">{{card.era}}</view>
+    <view class="hero__title">{{card.title}}</view>
+    <view class="hero__sub">{{card.subtitle}}</view>
+    <view class="hero__tag">{{card.tag}}</view>
+  </view>
+
+  <view class="body">
+    <!-- 导语 -->
+    <view class="lead">{{card.desc}}</view>
+
+    <!-- 正文 -->
+    <block wx:if="{{card.body.length}}">
+      <view class="h">详情</view>
+      <view class="p" wx:for="{{card.body}}" wx:key="*this">{{item}}</view>
+    </block>
+
+    <!-- 关键要点 -->
+    <block wx:if="{{card.facts.length}}">
+      <view class="h">关键要点</view>
+      <view class="fact" wx:for="{{card.facts}}" wx:key="*this">
+        <text class="fact__dot">·</text><text class="fact__txt">{{item}}</text>
+      </view>
+    </block>
+
+    <!-- 名言 -->
+    <block wx:if="{{card.quotes.length}}">
+      <view class="quote">
+        <view class="quote__mark">“</view>
+        <view class="quote__txt">{{card.quotes[0]}}</view>
+      </view>
+    </block>
+  </view>
+
+  <view class="footer-tip text-3 xs">红色回响 · 红色旧址沉浸式互动演出</view>
+  <view style="height:40rpx"></view>
+</view>
+
+<view class="empty-page" wx:else>
+  <view class="empty text-3">未找到该资料</view>
+</view>

@@ -11,14 +11,6 @@ const GRAD = {
   mist: 'linear-gradient(135deg,#8E9EAB 0%,#3A3A3A 100%)'
 }
 
-const cards = [
-  { id: 'c1', title: '红船起航', subtitle: '1921 · 嘉兴南湖', desc: '一叶扁舟，劈波斩浪，真理的星光在此点亮。', gradient: GRAD.red, minutes: 6, tag: '必读', read: true },
-  { id: 'c2', title: '井冈星火', subtitle: '1927 · 井冈山', desc: '农村包围城市，星星之火可以燎原。', gradient: GRAD.ember, minutes: 8, tag: '热门', read: false },
-  { id: 'c3', title: '长征万里', subtitle: '1934 · 雪山草地', desc: '双脚丈量信仰，两万五千里写就奇迹。', gradient: GRAD.gold, minutes: 12, tag: '震撼', read: false },
-  { id: 'c4', title: '延安灯火', subtitle: '1935 · 宝塔山下', desc: '窑洞里的灯光，照见一个民族的未来。', gradient: GRAD.ink, minutes: 7, tag: '经典', read: true },
-  { id: 'c5', title: '开国大典', subtitle: '1949 · 天安门', desc: '三十万双手，托起一个崭新的中国。', gradient: GRAD.dawn, minutes: 9, tag: '里程碑', read: false }
-]
-
 const reading = [
   { id: 'r1', title: '红船起航', progress: 100, last: '昨天 21:14', gradient: GRAD.red },
   { id: 'r2', title: '延安灯火', progress: 64, last: '今天 08:02', gradient: GRAD.ink }
@@ -85,4 +77,4 @@ const orders = [
   { id: 'o2', title: '《星火》演出纪念册', spec: '精装 / 签名版', price: 68, status: '配送中', gradient: GRAD.ember }
 ]
 
-module.exports = { GRAD, cards, reading, shows, poll, emotions, branch, notices, scenes, quotes, postcards, orders }
+module.exports = { GRAD, reading, shows, poll, emotions, branch, notices, scenes, quotes, postcards, orders }

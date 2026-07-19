@@ -3,7 +3,9 @@
     "pages/home/home",
     "pages/show/show",
     "pages/create/create",
-    "pages/mine/mine"
+    "pages/mine/mine",
+    "pages/resource/detail/detail",
+    "pages/resource/list/list"
   ],
   "subpackages": [
     {

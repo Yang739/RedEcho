@@ -1,7 +1,9 @@
 // pages/home/home.js
 const api = require('../../services/api.js')
 const store = require('../../store.js')
-const mock = require('../../services/mock.js')
+const res = require('../../services/resources.js')
+
+const HOME_MAX = 3 // 首页随机推荐 3 条（从整个资料库随机挑选）
 
 Page({
   data: {
@@ -9,57 +11,78 @@ Page({
     home: { greeting: '你好', points: 0, todayGain: 0, recommend: [], reading: [], liveShow: null },
     nickname: '旅人',
     avatarText: '红',
-    footerText: '下拉刷新 · 上拉加载更多'
+    hasMore: false
   },
 
   unsub: null,
-  pool: [],
 
   onLoad() {
     this.unsub = store.subscribe((s) => {
       if (s.user) this.setData({ nickname: s.user.nickname, avatarText: s.user.avatarText })
     })
-    // 推荐位已取前 3 篇，剩余放入加载池用于上拉加载
-    this.pool = mock.cards.slice(3)
-    this.load(true)
+    this.load()
   },
 
   onUnload() {
     if (this.unsub) this.unsub()
   },
 
-  load(refresh) {
+  // 从整个资料库随机抽取 n 条（Fisher–Yates 洗牌）
+  pickRandom(list, n) {
+    const arr = list.slice()
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      const t = arr[i]; arr[i] = arr[j]; arr[j] = t
+    }
+    return arr.slice(0, n)
+  },
+
+  // 首页只随机展示 HOME_MAX 条，其余进入「更多」
+  apply(list) {
+    const recommend = this.pickRandom(list, HOME_MAX)
+    this.setData({
+      loading: false,
+      'home.recommend': recommend,
+      hasMore: list.length > HOME_MAX
+    })
+  },
+
+  load() {
     this.setData({ loading: true })
     api.getHomeData()
-      .then((res) => {
-        const recommend = refresh ? res.recommend : this.data.home.recommend.concat(res.recommend)
-        this.setData({ loading: false, home: Object.assign({}, res, { recommend }) })
+      .then((d) => {
+        this.setData({
+          home: Object.assign({}, this.data.home, {
+            greeting: d.greeting,
+            points: d.points,
+            todayGain: d.todayGain,
+            reading: d.reading,
+            liveShow: d.liveShow
+          })
+        })
+        this.apply(res.cards)
         wx.stopPullDownRefresh()
       })
       .catch(() => {
-        this.setData({ loading: false })
+        // 云端异常时仍保证资料卡片可见
+        this.apply(res.cards)
         wx.stopPullDownRefresh()
       })
   },
 
   onPullDownRefresh() {
-    this.load(true)
+    this.load()
   },
 
-  onReachBottom() {
-    if (this.data.loading) return
-    const more = this.pool.splice(0, 2)
-    if (!more.length) {
-      this.setData({ footerText: '— 已经到底啦 —' })
-      return
-    }
-    const recommend = this.data.home.recommend.concat(more)
-    this.setData({ 'home.recommend': recommend })
+  // 进入「更多」资料列表页（列表页内再提供分类筛选）
+  onMore() {
+    wx.navigateTo({ url: '/pages/resource/list/list' })
   },
 
-  onRead() {
-    wx.showToast({ title: '开始阅读 +5 积分', icon: 'none' })
-    store.addPoints(5)
+  // 点击卡片：进入资料详情页
+  onRead(e) {
+    const id = e.currentTarget.dataset.id
+    wx.navigateTo({ url: `/pages/resource/detail/detail?id=${id}` })
   },
 
   goRoom(e) {

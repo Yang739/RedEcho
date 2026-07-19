@@ -6,7 +6,8 @@ RedEcho 是一套基于 **微信小程序原生 + 微信云开发** 的红色旧
 
 核心能力：
 
-- **首页推荐**：卡片流、阅读、直播演出入口、积分概览。
+- **首页推荐**：资料卡片（湖南主题红色史料）、直播演出入口、积分概览。
+- **资料中心**：按分类（历史事件 / 湘籍伟人 / 红色旧址 / 湖湘精神 / 英烈丰碑）浏览全部资料，详情页看全文。
 - **演出实时互动**：投票（原子自增 + 一人一票）、情绪反馈、剧情分支、通知。
 - **明信片 AIGC 创作**：场景模板 + 文生图（腾讯云 AI 绘画）/ 兜底 CSS 渐变卡。
 - **个人中心**：档案、积分、统计、订单、演员 AI 台词助手（腾讯云混元）。
@@ -22,8 +23,10 @@ RedEcho/
 ├── sitemap.json                      # 索引规则
 ├── package.json                      # npm 脚本（deploy 命令行上传）
 ├── store.js                          # 轻量全局状态（用户 / 积分 / 身份）
-├── services/                         # 双模服务层（api.js + mock.js）
+├── services/                         # 双模服务层（api.js + mock.js + resources.js）
+│   └── resources.js                  # 首页资料卡片精选内容（湖南主题红色史料，本地静态源）
 ├── pages/                            # 主包：4 个 tab 页（home/show/create/mine）
+│   └── resource/                     # 资料中心（list 列表页 + detail 详情页）
 ├── packages/                         # 分包：show（房间+回顾）、create（明信片）
 ├── components/                       # 复用组件：re-card / re-skeleton / re-tag
 ├── cloudfunctions/                   # 17 个云函数 + 说明（详见 cloudfunctions/README.md）
@@ -37,7 +40,8 @@ RedEcho/
 | `packages/show/` | 分包 A：演出房间（实时互动）、演出回顾 |
 | `packages/create/` | 分包 B：明信片生成（Canvas / 文生图） |
 | `components/` | 跨页复用 UI 组件 |
-| `services/` | 前端 BFF：封装云函数调用，支持 mock / 真实云双模 |
+| `services/` | 前端 BFF：封装云函数调用，支持 mock / 真实云双模；`resources.js` 为资料卡片本地内容源 |
+| `pages/resource/` | 资料中心：列表页（分类筛选）+ 详情页（正文 / 要点 / 名言） |
 | `cloudfunctions/` | 云函数（每个目录一个，自包含） |
 | `deploy/` | 小程序 + 云函数部署指引与 CI 上传骨架 |
 | `docs/` | 产品需求、架构设计、前端实现、接口列表、建表 SQL |
@@ -135,6 +139,7 @@ flowchart LR
 - **演出实时互动**：投票、情绪、剧情分支、通知。
 - **AIGC 明信片**：文生图 + 兜底渐变卡，一键保存相册。
 - **双模开发**：mock 模式零后端即可演示全流程，配置真实环境后无缝切云。
+- **资料卡片 / 资料中心**：首页随机推荐 3 张湖南主题史料（历史事件 / 湘籍伟人 / 红色旧址 / 湖湘精神 / 英烈丰碑），详情页看全文；数据走本地静态源 `services/resources.js`，无需灌库。
 - **组件化**：`re-card` / `re-skeleton` / `re-tag` 跨页复用。
 
 ## 技术栈
@@ -158,7 +163,7 @@ flowchart LR
 ### 本地预览（mock 模式，零后端）
 
 1. 微信开发者工具 → 导入项目 → 目录选 `RedEcho/`，AppID 使用项目内置（已在 `project.config.json` 配置，勿改）。
-2. 保持 `config.js` 的 `ENV` 为占位符，所有页面自动走 `mock.js` 演示数据。
+2. 若要本地零后端预览：把 `config.js` 的 `ENV` 改回占位符 `your-cloud-env-id`，所有页面自动走 `mock.js` 演示数据；当前项目 `ENV` 已填真实云环境 ID，默认直接连云（资料卡片仍走本地 `resources.js`，无需后端）。
 3. 编译预览即可体验首页 / 演出 / 创作 / 我的全流程。
 
 ### 接入真实云（部署）
@@ -173,9 +178,9 @@ flowchart LR
 
 - [ ] **AIGC 占位接入**：`aiLineGenerate` / `postcardGenerate` 已接通但需配置腾讯云密钥环境变量（`TENCENT_SECRET_ID` / `TENCENT_SECRET_KEY`）方可真实出图 / 出词；未配置时回退示例。
 - [ ] **接口补齐**：完整 ~45 接口清单见 `docs/RedEcho云函数接口列表.md` 与 `cloudfunctions/README.md` 的「待实现函数清单」；部分前端方法在真实云模式下已接通对应云函数。
-- [ ] **种子数据**：云数据库集合需运营先灌种子，否则首页 / 演出列表为空。
+- [ ] **种子数据**：演出 / 订单 / 用户档案等云数据库集合需运营先灌种子；首页「资料卡片」走本地 `services/resources.js`，无需灌库即可展示。
 - [ ] **实时通道**：腾讯云 IM 群组实时广播、微信支付、短信验证码属后续迭代，本轮未实现。
-- [ ] **工程化**：尚未 `git init`；建议初始化并忽略 `keys/`、`.workbuddy/`、`.project`。
+- [x] **工程化**：已 `git init`，`.gitignore` 已忽略 `.workbuddy/`、`project.private.config.json`、`keys/`；敏感密钥只在云函数环境变量，源码公开安全。
 
 ## 文档索引
 

@@ -15,7 +15,10 @@
   </view>
 
   <!-- 为你推荐 -->
-  <view class="section-title">为你推荐</view>
+  <view class="section-title between">
+    <text>为你推荐</text>
+    <view class="more-link" bindtap="onMore">更多 ›</view>
+  </view>
   <block wx:if="{{loading}}">
     <view class="card" wx:for="{{[1,2,3]}}" wx:key="*this" style="margin-bottom:20rpx">
       <re-skeleton rows="{{['55%','90%','45%']}}" rowHeight="28rpx"></re-skeleton>
@@ -30,6 +33,7 @@
       data-id="{{item.id}}"
     >
       <view class="rec__cover" style="background:{{item.gradient}}">
+        <text class="rec__cover-era">{{item.era}}</text>
         <text class="rec__cover-tag">{{item.tag}}</text>
       </view>
       <view class="rec__body flex-1">
@@ -78,5 +82,5 @@
     <view class="live__arrow">进入 ›</view>
   </view>
 
-  <view class="footer-tip text-3 xs">{{footerText}}</view>
+  <view class="footer-tip text-3 xs" wx:if="{{hasMore}}">更多资料请在「更多 ›」中查看</view>
 </view>
