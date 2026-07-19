@@ -2,6 +2,7 @@
 const api = require('../../services/api.js')
 const { loadFonts } = require('../../services/fonts.js')
 const { decorateCard, paintPostcard } = require('../../services/pcLayout.js')
+const postcards = require('../../services/postcards.js')
 
 // 创作页「我的作品」最多展示条数
 const MAX_SHOW = 4
@@ -52,6 +53,28 @@ Page({
 
   onClosePreview() {
     this.setData({ preview: null })
+  },
+
+  // 画廊长按删除作品
+  onDeleteWork(e) {
+    const id = e.currentTarget.dataset.id
+    if (!id) return
+    wx.showModal({
+      title: '删除作品',
+      content: '确定删除这张明信片吗？删除后不可恢复。',
+      confirmText: '删除',
+      confirmColor: '#C8161D',
+      success: (m) => {
+        if (m.confirm) {
+          postcards.remove(id)
+          if (this.data.preview && this.data.preview.id === id) {
+            this.setData({ preview: null })
+          }
+          this.load()
+          wx.showToast({ title: '已删除', icon: 'success' })
+        }
+      }
+    })
   },
 
   noop() {},

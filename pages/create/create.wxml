@@ -23,6 +23,7 @@
       wx:for="{{postcards}}"
       wx:key="id"
       bindtap="onPreview"
+      bindlongpress="onDeleteWork"
       data-id="{{item.id}}"
     >
       <template is="pcCard" data="{{ card: item }}" />
