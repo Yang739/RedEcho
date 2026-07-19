@@ -215,12 +215,18 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
   }
 
   // 水平锚点
-  let x
-  if (position === 'left' || position === 'tl' || position === 'bl') x = pad + fs / 2
-  else if (position === 'center') x = W / 2
-  else x = W - pad - fs / 2
-  // 换列方向：左锚点向右（朝中心展开）、其余向左（右锚点同样朝中心）；均不向边缘扩散
-  const colDir = (position === 'left' || position === 'tl' || position === 'bl') ? 1 : -1
+  let x, colDir
+  if (position === 'left' || position === 'tl' || position === 'bl') {
+    x = pad + fs / 2
+    colDir = 1
+  } else if (position === 'center') {
+    // 居中：以首列（最右列）中心为基准，整块列向中心展开后整体水平居中
+    x = W / 2 + (cols.length - 1) * (fs * 1.15) / 2
+    colDir = -1
+  } else {
+    x = W - pad - fs / 2
+    colDir = -1
+  }
 
   // 续列（换行后 / 段内换行）整体向下缩进两字
   const indentY = fs * 2

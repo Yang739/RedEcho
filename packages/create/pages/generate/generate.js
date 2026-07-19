@@ -14,14 +14,14 @@ const fontList = Object.keys(FONTS).map((key) => ({
 
 // 位置中文名（用于展示）
 const POSITION_NAMES = {
-  top: '上', center: '正中', bottom: '下',
+  top: '上', center: '中', bottom: '下',
   left: '左', right: '右'
 }
 
-// 按「排列」限定可选位置（横排：上/中/下；竖排：左/右）
+// 按「排列」限定可选位置（横排：上/中/下；竖排：左/中/右）
 const POSITIONS_BY_MODE = {
   h: ['top', 'center', 'bottom'],
-  v: ['left', 'right']
+  v: ['left', 'center', 'right']
 }
 
 // 各排列的默认位置（切换排列时回退到该默认，而非首个，体验更自然）

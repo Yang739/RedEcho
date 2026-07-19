@@ -36,10 +36,10 @@
 .pc-share { line-height: 1; padding: 0; margin: 0; }
 .pc-share::after { border: none; }
 
-/* 名言位置：横排=上/中/下 竖排成单列；竖排=左/右 横排成单行 */
+/* 名言位置：横排=上/中/下（单列竖排）；竖排=左/中/右（单行横排） */
 .pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14rpx; }
 .pos-grid--h { grid-template-columns: 1fr; width: 300rpx; margin: 0 auto; }
-.pos-grid--v { grid-template-columns: 1fr 1fr; width: 380rpx; margin: 0 auto; }
+.pos-grid--v { grid-template-columns: repeat(3, 1fr); width: 440rpx; margin: 0 auto; }
 .pos {
   background: var(--c-surface); border-radius: var(--r-md);
   padding: 20rpx 0; text-align: center; font-size: 26rpx; font-weight: 700;
