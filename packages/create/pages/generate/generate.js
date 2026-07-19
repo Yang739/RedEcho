@@ -98,6 +98,7 @@ Page({
     const text = (this.data.customText && this.data.customText.trim()) || '在此写下你的红色金句'
     const base = {
       gradient: scene.gradient || 'linear-gradient(135deg,#C8161D,#7A0A10)',
+      colors: scene.colors || ['#C8161D', '#7A0A10'],
       scene: scene.name || '红色旧址',
       quote: text,
       orient: this.data.orient,

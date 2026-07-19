@@ -58,7 +58,7 @@ RedEcho/
 │   ├── user.js                       #   登录态
 │   └── live.js                       #   当前演出实时状态
 ├── components/                       # 复用组件（投票器/弹幕/星级/打印面板…）
-├── templates/                        # 跨页 WXML 模板（pc-card 明信片卡片）
+├── components/                        # 复用组件（投票器/弹幕/星级/打印面板/pc-canvas 明信片 Canvas 绘制…）
 ├── utils/                            # request.js、im.js、敏感词、日期、防抖
 ├── pages/        (主包·tabBar)       # 首页/演出/创作/我的（轻壳）
 │   └── works/                       # 我的作品列表页（见 pages/works/works）

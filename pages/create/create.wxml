@@ -1,5 +1,3 @@
-<import src="../../templates/pc-card.wxml" />
-
 <view class="page">
   <!-- 引导 + 入口：整张卡片即入口（场景选择在生成页内） -->
   <view class="intro bg-grid fade-up tap" bindtap="onStartCreate">
@@ -27,7 +25,7 @@
       data-id="{{item.id}}"
     >
       <view class="pc-frame pc-frame--{{item.orient}}">
-        <template is="pcCard" data="{{ card: item }}" />
+        <pc-canvas card="{{item}}" />
       </view>
     </view>
   </view>
@@ -38,7 +36,7 @@
   <view wx:if="{{preview}}" class="preview-mask" bindtap="onClosePreview">
     <view class="preview-card" catchtap="noop">
       <view class="pc-frame pc-frame--{{preview.orient}}">
-        <template is="pcCard" data="{{ card: preview }}" />
+        <pc-canvas card="{{preview}}" res="900" />
       </view>
       <view class="preview-actions">
         <view class="btn btn-primary flex-1 tap" bindtap="onSaveFromPreview">保存</view>

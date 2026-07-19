@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "我的作品",
-  "usingComponents": {}
+  "usingComponents": {
+    "pc-canvas": "/components/pc-canvas/pc-canvas"
+  }
 }

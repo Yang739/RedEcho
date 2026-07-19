@@ -1,3 +1,6 @@
 {
+  "usingComponents": {
+    "pc-canvas": "/components/pc-canvas/pc-canvas"
+  },
   "navigationBarTitleText": "生成明信片"
 }

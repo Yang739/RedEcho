@@ -185,82 +185,8 @@ page {
   background-size: 28rpx 28rpx;
 }
 
-/* ---------- 明信片卡片（创作 / 生成 / 作品列表 共用） ---------- */
-/* 尺寸参照实物明信片：横版 148×105mm ≈ 3:2，竖版 105×148mm ≈ 2:3 */
-.pc-card {
-  position: relative;
-  width: 100%;
-  border-radius: var(--r-lg);
-  box-shadow: var(--s-2);
-  overflow: hidden;
-  background: var(--c-surface-2);
-  color: #fff;
-  box-sizing: border-box;
-}
-.pc-card--land { aspect-ratio: 3 / 2; }
-.pc-card--port { aspect-ratio: 2 / 3; }
-.pc-card__img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.pc-card__bg { position: absolute; inset: 0; }
-/* 暗角压暗，保证名言/场景/日期在图上文下均清晰可读 */
-.pc-card__scrim {
-  position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(to top,
-    rgba(0,0,0,.30), rgba(0,0,0,0) 40%,
-    rgba(0,0,0,0) 60%, rgba(0,0,0,.20));
-}
-.pc-card__scene {
-  position: absolute; top: 22rpx; left: 26rpx; right: 26rpx;
-  font-size: 34rpx; font-weight: 800; letter-spacing: 1rpx;
-  text-shadow: 0 2rpx 8rpx rgba(0,0,0,.38); z-index: 2;
-}
-.pc-card__date {
-  position: absolute; right: 26rpx; bottom: 70rpx;
-  font-size: 20rpx; opacity: .9; text-shadow: 0 2rpx 8rpx rgba(0,0,0,.38); z-index: 2;
-}
-.pc-card__sign {
-  position: absolute; right: 26rpx; bottom: 22rpx;
-  font-size: 26rpx; font-weight: 700; letter-spacing: 1rpx; opacity: .96;
-  text-shadow: 0 2rpx 8rpx rgba(0,0,0,.38); z-index: 2;
-}
-.pc-card__quote {
-  position: absolute; z-index: 2; color: #fff;
-  text-shadow: 0 2rpx 10rpx rgba(0,0,0,.42);
-}
-.pc-line { line-height: 1.5; }
-.pc-line--indent { text-indent: 2em; } /* 横排续行缩进两字符 */
-
-/* 9 宫格位置：名言块定位（上/下/左/右/左上/右上/左下/右下/正中） */
-.pc-pos-top    { top: 96rpx;  left: 26rpx; right: 26rpx; text-align: center; }
-.pc-pos-bottom { bottom: 110rpx; left: 26rpx; right: 26rpx; text-align: center; }
-.pc-pos-center { top: 50%; left: 26rpx; right: 26rpx; transform: translateY(-50%); text-align: center; }
-.pc-pos-left   { top: 50%; left: 26rpx; transform: translateY(-50%); text-align: left;  max-width: 64%; }
-.pc-pos-right  { top: 50%; right: 26rpx; transform: translateY(-50%); text-align: right; max-width: 64%; }
-.pc-pos-tl     { top: 96rpx; left: 26rpx;  text-align: left;  max-width: 72%; }
-.pc-pos-tr     { top: 96rpx; right: 26rpx; text-align: right; max-width: 72%; }
-.pc-pos-bl     { bottom: 110rpx; left: 26rpx;  text-align: left;  max-width: 72%; }
-.pc-pos-br     { bottom: 110rpx; right: 26rpx; text-align: right; max-width: 72%; }
-
-/* 字体风格（CSS 模拟；内置字体 url 注入后优先，否则回退系统字体） */
-.font-maoti   { --pc-font: 'RE-Mao','STKaiti','KaiTi','Kaiti SC',serif;       --pc-weight: 700; }
-.font-shoujin { --pc-font: 'RE-Shou','STXingkai','Xingkai SC',serif;          --pc-weight: 400; }
-.font-yan     { --pc-font: 'RE-Yan','STKaiti','KaiTi',serif;                 --pc-weight: 800; }
-.font-liu     { --pc-font: 'RE-Liu','LiSu','STLiti','Kaiti SC',serif;        --pc-weight: 600; }
-.pc-card .pc-card__scene,
-.pc-card .pc-card__quote { font-family: var(--pc-font, serif); font-weight: var(--pc-weight, 700); }
-
-/* 名言竖排（writing-mode；多列自然自右向左） */
-.pc-card.is-vert .pc-card__quote {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  letter-spacing: 6rpx;
-  max-height: 76%;
-}
-.pc-card.is-vert .pc-pos-left  { left: 26rpx;  right: auto; max-width: none; }
-.pc-card.is-vert .pc-pos-right { right: 26rpx; left: auto;  max-width: none; }
-.pc-card.is-vert .pc-pos-tl,
-.pc-card.is-vert .pc-pos-tr { top: 96rpx; }
-.pc-card.is-vert .pc-pos-bl,
-.pc-card.is-vert .pc-pos-br { bottom: 64rpx; }
+/* 明信片卡片现统一由 components/pc-canvas 以 Canvas 绘制（与导出图像素级一致），
+   原 .pc-card / .pc-pos-* / .font-* / .is-vert 等 CSS 类已不再使用，移除。 */
 
 /* 展示框（真实比例，不旋转）：填充模式（生成页预览/结果、预览弹窗），按 orient 设定比例 */
 .pc-frame {
@@ -273,7 +199,6 @@ page {
 }
 .pc-frame.pc-frame--port { aspect-ratio: 2 / 3; }
 .pc-frame.pc-frame--land { aspect-ratio: 3 / 2; }
-.pc-frame > .pc-card { position: absolute; inset: 0; width: 100%; height: 100%; }
 
 /* 画廊 / 列表单元：两列等宽（容器 grid 决定），卡按自身真实比例（竖 2:3 / 横 3:2）
    渲染，正向显示、左缘对齐，像相册墙；圆角/阴影/比例由内层 .pc-frame 提供 */
