@@ -3,7 +3,7 @@ const api = require('../../../../services/api.js')
 const postcards = require('../../../../services/postcards.js')
 const { containsSensitive } = require('../../../../services/sensitive.js')
 const { FONTS, loadFonts } = require('../../../../services/fonts.js')
-const { decorateCard, paintPostcard } = require('../../../../services/pcLayout.js')
+const { decorateCard, paintPostcard, renderPostcard } = require('../../../../services/pcLayout.js')
 
 // 字体风格 → 仅暴露修饰词（不展示具体字体名）
 const fontList = Object.keys(FONTS).map((key) => ({
@@ -165,12 +165,10 @@ Page({
   },
 
   // 离屏画布绘制明信片，导出临时文件用于保存/打印（返回 Promise<tempPath>）
+  // 导出统一为竖版(2:3)，横版内容顺时针旋转 90°（与展示态一致）
   drawPostcard() {
     const r = this.data.result
     if (!r) return Promise.resolve('')
-    const orient = r.orient || 'land'
-    const W = orient === 'port' ? 600 : 900
-    const H = orient === 'port' ? 900 : 600
     return new Promise((resolve) => {
       wx.createSelectorQuery().in(this)
         .select('#pcCanvas')
@@ -178,12 +176,7 @@ Page({
         .exec((res) => {
           if (!res || !res[0] || !res[0].node) return resolve('')
           const canvas = res[0].node
-          const ctx = canvas.getContext('2d')
-          const dpr = (wx.getWindowInfo ? wx.getWindowInfo().pixelRatio : wx.getSystemInfoSync().pixelRatio) || 2
-          canvas.width = W * dpr
-          canvas.height = H * dpr
-          ctx.scale(dpr, dpr)
-          paintPostcard(ctx, W, H, decorateCard(r))
+          renderPostcard(canvas, r)
           wx.canvasToTempFilePath({
             canvas,
             success: (e) => { this.tempPath = e.tempFilePath; resolve(e.tempFilePath) },

@@ -1,7 +1,7 @@
 // pages/create/create.js
 const api = require('../../services/api.js')
 const { loadFonts } = require('../../services/fonts.js')
-const { decorateCard, paintPostcard } = require('../../services/pcLayout.js')
+const { decorateCard, renderPostcard } = require('../../services/pcLayout.js')
 const postcards = require('../../services/postcards.js')
 
 // 创作页「我的作品」最多展示条数
@@ -79,25 +79,18 @@ Page({
 
   noop() {},
 
-  // 从历史记录现绘明信片（CSS 卡无 imageUrl 时），返回 Promise<tempPath>
+  // 从历史记录现绘明信片（无 imageUrl 时），返回 Promise<tempPath>
+  // 导出统一为竖版(2:3)，横版内容顺时针旋转 90°（与展示态一致）
   drawRecord(rec) {
     return new Promise((resolve) => {
       if (!rec) return resolve('')
-      const orient = rec.orient || 'land'
-      const W = orient === 'port' ? 600 : 900
-      const H = orient === 'port' ? 900 : 600
       wx.createSelectorQuery().in(this)
         .select('#pcCanvas')
         .fields({ node: true, size: true })
         .exec((res) => {
           if (!res || !res[0] || !res[0].node) return resolve('')
           const canvas = res[0].node
-          const ctx = canvas.getContext('2d')
-          const dpr = (wx.getWindowInfo ? wx.getWindowInfo().pixelRatio : wx.getSystemInfoSync().pixelRatio) || 2
-          canvas.width = W * dpr
-          canvas.height = H * dpr
-          ctx.scale(dpr, dpr)
-          paintPostcard(ctx, W, H, decorateCard(rec))
+          renderPostcard(canvas, rec)
           wx.canvasToTempFilePath({
             canvas,
             success: (e) => resolve(e.tempFilePath),

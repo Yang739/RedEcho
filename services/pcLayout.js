@@ -220,4 +220,32 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
   }
 }
 
-module.exports = { buildQuote, decorateCard, paintPostcard, DEFAULT_QUOTE }
+// 把明信片绘制到离屏 canvas 并导出：统一为竖版(2:3)，
+// 横版内容顺时针旋转 90° CW（与展示态 .cv--rot 一致），所见即所得。
+// canvas：type=2d 的 canvas node；card：与 paintPostcard 同结构。
+function renderPostcard(canvas, card) {
+  const orient = (card && card.orient) || 'land'
+  const dpr = (wx.getWindowInfo ? wx.getWindowInfo().pixelRatio : wx.getSystemInfoSync().pixelRatio) || 2
+  const W = 600
+  const H = 900
+  canvas.width = W * dpr
+  canvas.height = H * dpr
+  const ctx = canvas.getContext('2d')
+  // 重设 canvas.width 已重置变换矩阵；这里再显式归零，复用同一节点时安全
+  ctx.setTransform(1, 0, 0, 1, 0, 0)
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.scale(dpr, dpr)
+  const c = decorateCard(card)
+  if (orient === 'land') {
+    // 横版 3:2 组合旋转 90° CW 放入 600×900 竖版画布：
+    // 逻辑 900×600 → translate(600,0) + rotate(π/2) 恰好映射到 600×900
+    ctx.translate(W, 0)
+    ctx.rotate(Math.PI / 2)
+    paintPostcard(ctx, 900, 600, c)
+  } else {
+    paintPostcard(ctx, W, H, c)
+  }
+  return canvas
+}
+
+module.exports = { buildQuote, decorateCard, paintPostcard, renderPostcard, DEFAULT_QUOTE }
