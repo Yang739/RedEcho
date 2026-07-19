@@ -90,5 +90,5 @@
     <view class="live__arrow">进入 ›</view>
   </view>
 
-  <view class="footer-tip text-3 xs" wx:if="{{hasMore}}">更多资料请在「更多 ›」中查看</view>
+  <view class="footer-tip text-3 xs">红色回响 · 红色旧址沉浸式互动演出</view>
 </view>
