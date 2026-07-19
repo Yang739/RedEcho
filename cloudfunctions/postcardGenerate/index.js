@@ -84,7 +84,7 @@ async function saveImage(base64) {
 
 exports.main = async (event, context) => {
   const { OPENID } = getOpenid()
-  const { sceneId, quote, customText, layout } = event
+  const { sceneId, quote, customText, orient, arrange, font } = event
   const scene = SCENES[sceneId] || SCENES.sc1
 
   // 自定义金句敏感词拦截（与前端一致）
@@ -93,7 +93,12 @@ exports.main = async (event, context) => {
   }
 
   const finalQuote = (customText || quote || QUOTES[Math.floor(Math.random() * QUOTES.length)])
-  const finalLayout = ['classic', 'center', 'minimal'].indexOf(layout) !== -1 ? layout : 'classic'
+  const ORIENTS = ['land', 'port']
+  const ARRANGES = ['h', 'v']
+  const FONTS = ['maoti', 'shoujin', 'liu', 'yan']
+  const finalOrient = ORIENTS.indexOf(orient) !== -1 ? orient : 'land'
+  const finalArrange = ARRANGES.indexOf(arrange) !== -1 ? arrange : 'h'
+  const finalFont = FONTS.indexOf(font) !== -1 ? font : 'maoti'
 
   let imageUrl = ''
   if (SECRET_ID && SECRET_KEY) {
@@ -117,7 +122,9 @@ exports.main = async (event, context) => {
     colors: scene.colors,
     quote: finalQuote,
     date: today(),
-    layout: finalLayout,
+    orient: finalOrient,
+    arrange: finalArrange,
+    font: finalFont,
     imageUrl,
     placeholder
   }
@@ -133,7 +140,9 @@ exports.main = async (event, context) => {
           colors: scene.colors,
           quote: finalQuote,
           date: result.date,
-          layout: finalLayout,
+          orient: finalOrient,
+          arrange: finalArrange,
+          font: finalFont,
           imageUrl,
           created_at: new Date()
         }
