@@ -41,7 +41,7 @@
         <view class="rec__sub text-3 sm">{{item.subtitle}}</view>
         <view class="rec__desc text-2 sm ellipsis-2">{{item.desc}}</view>
         <view class="rec__meta">
-          <re-tag type="{{item.read ? 'success' : 'primary'}}">{{item.read ? '已读' : item.minutes + ' 分钟'}}</re-tag>
+          <re-tag wx:if="{{item.read}}" type="success">已读</re-tag>
         </view>
       </view>
     </view>

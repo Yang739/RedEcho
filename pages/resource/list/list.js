@@ -1,5 +1,6 @@
 // pages/resource/list/list.js —— 资料中心：按分类展示全部资料，点卡片进详情
 const res = require('../../../services/resources.js')
+const readHistory = require('../../../services/readHistory.js')
 
 Page({
   data: {
@@ -16,7 +17,9 @@ Page({
 
   apply() {
     const cat = this.data.activeCat
-    const list = cat === 'all' ? res.cards : res.cards.filter((x) => x.cat === cat)
+    const readIds = new Set(readHistory.getList())
+    const list = (cat === 'all' ? res.cards : res.cards.filter((x) => x.cat === cat))
+      .map((c) => Object.assign({}, c, { read: readIds.has(c.id) }))
     this.setData({ list })
   },
 
