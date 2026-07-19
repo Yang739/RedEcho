@@ -6,7 +6,9 @@
   grid-template-columns: 1fr 1fr;
   gap: 20rpx;
 }
-.works .pc-card {
+.works .pc-card-wrap {
+  border-radius: var(--r-lg);
+  overflow: hidden;
   box-shadow: var(--s-1);
 }
 
