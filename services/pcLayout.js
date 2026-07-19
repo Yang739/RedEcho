@@ -221,7 +221,7 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
 }
 
 // 把明信片绘制到离屏 canvas 并导出：统一为竖版(2:3)，
-// 横版内容顺时针旋转 90° CW（与展示态 .cv--rot 一致），所见即所得。
+// 横版内容顺时针旋转 90° CW（展示态与导出均统一竖版 2:3、横版内旋），所见即所得。
 // canvas：type=2d 的 canvas node；card：与 paintPostcard 同结构。
 function renderPostcard(canvas, card) {
   const orient = (card && card.orient) || 'land'

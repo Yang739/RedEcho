@@ -1,1 +1,1 @@
-<canvas type="2d" class="cv {{card.orient === 'port' ? '' : 'cv--rot'}}"></canvas>
+<canvas type="2d" class="cv"></canvas>

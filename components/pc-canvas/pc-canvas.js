@@ -1,10 +1,12 @@
 // components/pc-canvas/pc-canvas.js
-// 复用 services/pcLayout.js 的 paintPostcard，将明信片以 Canvas 绘制，
-// 与「保存/分享」导出的离屏画布像素级一致（真正所见即所得）。
+// 复用 services/pcLayout.js 的 paintPostcard，将明信片以 Canvas 绘制。
+// 展示统一为竖版(2:3)：横版内容在 canvas 内部顺时针旋转 90°（与导出一致）。
+// <canvas> 元素始终 100% 填满父容器，无裁剪问题。
 const { paintPostcard, decorateCard } = require('../../services/pcLayout.js')
 
-// 缩略图背存长边上限（px，未乘 dpr）。画廊多卡时控制内存；预览可通过 res 覆盖到 900。
-const MAX_LONG = 480
+// 参考分辨率：统一竖版 600×900（与 .pc-frame aspect-ratio: 2/3 对应）
+const REF_W = 600
+const REF_H = 900
 
 function getDpr() {
   try {
@@ -15,9 +17,8 @@ function getDpr() {
 
 Component({
   properties: {
-    // 明信片数据（与导出同一结构：orient/arrange/position/quote/scene/colors/font/date/sign）
     card: { type: Object, value: null, observer() { this._render() } },
-    // 可选：覆盖长边上限（预览传 900 提升清晰度；默认缩略图 480）
+    // 覆盖长边上限 px（未乘 dpr）。预览传 900 高清；默认缩略图 480 控内存。
     res: { type: Number, value: 0 }
   },
 
@@ -26,9 +27,8 @@ Component({
     ready() { this._query() }
   },
 
-  // 页面 show 时字体可能已加载完成，重绘一次用上真·书法体
   pageLifetimes: {
-    show() { this._render() }
+    show() { this._render() } // 字体加载后重绘用上真·书法体
   },
 
   methods: {
@@ -49,26 +49,30 @@ Component({
       if (!canvas || !card) return
 
       const orient = card.orient || 'land'
-      // 参考分辨率：与导出 Canvas 比例一致（横 3:2 / 竖 2:3）
-      const refW = orient === 'port' ? 600 : 900
-      const refH = orient === 'port' ? 900 : 600
-      const maxLong = (this.data.res && this.data.res > 0) ? this.data.res : MAX_LONG
-      const scale = Math.min(maxLong / refW, maxLong / refH)
+      // 长边上限：按竖版 900 为基准
+      const maxLong = (this.data.res && this.data.res > 0) ? this.data.res : 480
+      const scale = Math.min(maxLong / REF_W, maxLong / REF_H)
 
-      const W = Math.round(refW * scale)
-      const H = Math.round(refH * scale)
       const dpr = getDpr()
+      const W = Math.round(REF_W * scale)
+      const H = Math.round(REF_H * scale)
       canvas.width = W * dpr
       canvas.height = H * dpr
 
       const ctx = canvas.getContext('2d')
-      // 重置变换（重绘时避免叠加），再按 dpr*scale 把参考坐标映射到背存像素
       ctx.setTransform(1, 0, 0, 1, 0, 0)
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.scale(dpr * scale, dpr * scale)
 
-      // 在参考坐标系下绘制，得到与导出图完全一致的版式
-      paintPostcard(ctx, refW, refH, decorateCard(card))
+      const c = decorateCard(card)
+      if (orient === 'land') {
+        // 横版：在 600×900 竖版画布内，translate(600,0)+rotate(π/2) 把 3:2 组合旋转填满
+        ctx.translate(REF_W, 0)
+        ctx.rotate(Math.PI / 2)
+        paintPostcard(ctx, 900, 600, c)
+      } else {
+        paintPostcard(ctx, REF_W, REF_H, c)
+      }
     }
   }
 })
