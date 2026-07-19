@@ -1,37 +1,13 @@
 <view class="page">
-  <!-- 引导 -->
-  <view class="intro bg-grid fade-up">
-    <view class="intro__title">创作红色记忆</view>
-    <view class="intro__desc">选择一处旧址场景，AI 为你生成专属金句明信片，带走这份信仰的温度。</view>
-  </view>
-
-  <!-- 快捷入口：生成明信片主按钮 -->
-  <view class="cta-row">
-    <view class="btn btn-primary btn-block tap" bindtap="onStartCreate">生成明信片</view>
-  </view>
-
-  <!-- 场景选择 -->
-  <view class="section-title">选择场景</view>
-  <block wx:if="{{loading}}">
-    <view class="scenes">
-      <view class="scene" wx:for="{{[1,2,3,4]}}" wx:key="*this">
-        <view class="scene__cover skeleton"></view>
-      </view>
+  <!-- 引导 + 入口：点击卡片进入明信片创作（场景选择在生成页内） -->
+  <view class="intro bg-grid fade-up tap" bindtap="onStartCreate">
+    <view class="intro__main">
+      <view class="intro__title">创作红色记忆</view>
+      <view class="intro__desc">选择一处旧址场景，AI 为你生成专属金句明信片，带走这份信仰的温度。</view>
     </view>
-  </block>
-  <view class="scenes" wx:else>
-    <view
-      class="scene tap"
-      wx:for="{{scenes}}"
-      wx:key="id"
-      bindtap="onSelect"
-      data-id="{{item.id}}"
-    >
-      <view class="scene__cover" style="background:{{item.gradient}}">
-        <text class="scene__go">生成 ›</text>
-      </view>
-      <view class="scene__name">{{item.name}}</view>
-      <view class="scene__desc text-3 xs ellipsis">{{item.desc}}</view>
+    <view class="intro__enter">
+      <text class="intro__enter-text">进入</text>
+      <text class="intro__enter-arrow">›</text>
     </view>
   </view>
 

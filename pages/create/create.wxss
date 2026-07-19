@@ -1,32 +1,27 @@
 .page { padding: 20rpx 28rpx 60rpx; }
 
+/* 创作红色记忆：Hero 风格入口卡片，参考首页「你好，旅人」 */
 .intro {
-  padding: 36rpx 32rpx; border-radius: var(--r-lg);
+  margin: 20rpx 0 8rpx;
+  padding: 36rpx 32rpx;
+  border-radius: var(--r-lg);
   background:
-    radial-gradient(120% 120% at 85% 0%, rgba(255,255,255,.12), transparent 60%),
-    linear-gradient(135deg, #9E0B11 0%, #C8161D 100%);
-  color: #fff; box-shadow: var(--s-2); margin-bottom: 8rpx;
+    radial-gradient(120% 120% at 80% 0%, rgba(255,255,255,.12), transparent 60%),
+    linear-gradient(135deg, #C8161D 0%, #7A0A10 100%);
+  color: #fff; box-shadow: var(--s-2);
+  display: flex; align-items: center; justify-content: space-between;
 }
+.intro__main { flex: 1; min-width: 0; }
 .intro__title { font-size: 38rpx; font-weight: 800; }
 .intro__desc { font-size: 25rpx; opacity: .88; margin-top: 10rpx; line-height: 1.6; }
-
-/* 生成明信片主入口 */
-.cta-row { margin: 20rpx 0 4rpx; }
-
-/* 场景网格 */
-.scenes { display: grid; grid-template-columns: 1fr 1fr; gap: 20rpx; }
-.scene { background: var(--c-surface); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--s-1); }
-.scene__cover {
-  position: relative; height: 200rpx;
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 16rpx;
+.intro__enter {
+  flex-shrink: 0; margin-left: 24rpx;
+  display: flex; align-items: center; gap: 6rpx;
+  background: rgba(255,255,255,.16);
+  padding: 14rpx 22rpx; border-radius: var(--r-pill);
+  font-size: 26rpx; font-weight: 600;
 }
-.scene__go {
-  background: rgba(0,0,0,.35); color: #fff; font-size: 22rpx;
-  padding: 6rpx 18rpx; border-radius: var(--r-pill);
-}
-.scene__name { font-size: 28rpx; font-weight: 700; padding: 16rpx 20rpx 4rpx; }
-.scene__desc { padding: 0 20rpx 20rpx; }
+.intro__enter-arrow { font-size: 32rpx; line-height: 1; }
 
 /* 作品画廊 */
 .gallery { white-space: nowrap; margin-top: 8rpx; }

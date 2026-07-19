@@ -11,7 +11,6 @@ const LAYOUTS = {
 Page({
   data: {
     loading: true,
-    scenes: [],
     postcards: [],
     preview: null
   },
@@ -22,20 +21,14 @@ Page({
 
   load() {
     this.setData({ loading: true })
-    Promise.all([api.getScenes(), api.getPostcards()])
-      .then(([scenes, postcards]) => this.setData({ scenes, postcards, loading: false }))
+    api.getPostcards()
+      .then((postcards) => this.setData({ postcards, loading: false }))
       .catch(() => this.setData({ loading: false }))
   },
 
-  onSelect(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `/packages/create/pages/generate/generate?sceneId=${id}` })
-  },
-
-  // 顶部「生成明信片」主入口：直接进入生成页（默认首个场景）
+  // 「创作红色记忆」卡片入口：进入生成页（场景选择留在生成页内）
   onStartCreate() {
-    const firstId = (this.data.scenes[0] && this.data.scenes[0].id) || ''
-    wx.navigateTo({ url: `/packages/create/pages/generate/generate?sceneId=${firstId}` })
+    wx.navigateTo({ url: '/packages/create/pages/generate/generate' })
   },
 
   // 画廊点击 → 预览
