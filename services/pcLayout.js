@@ -206,7 +206,7 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
   const charH = fs * 1.05
   const cap = Math.floor(maxH / charH)
 
-  // 每段再按列高切列（自右向左）
+  // 每段再按列高切列（列序：续列朝中心方向展开）
   const cols = []
   for (const seg of segs) {
     let i = 0
@@ -218,6 +218,8 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
   if (position === 'left' || position === 'tl' || position === 'bl') x = pad + fs / 2
   else if (position === 'center') x = W / 2
   else x = W - pad - fs / 2
+  // 换列方向：左锚点向右（朝中心展开）、其余向左（右锚点同样朝中心）；均不向边缘扩散
+  const colDir = (position === 'left' || position === 'tl' || position === 'bl') ? 1 : -1
 
   // 续列（换行后 / 段内换行）整体向下缩进两字
   const indentY = fs * 2
@@ -233,7 +235,7 @@ function paintVertical(ctx, q, W, H, F, orient, position) {
   ctx.textAlign = 'center'
   ctx.fillStyle = '#ffffff'
   for (let c = 0; c < cols.length; c++) {
-    const cx = x - c * (fs * 1.15)
+    const cx = x + colDir * c * (fs * 1.15)
     const col = cols[c]
     const yStart = y0 + (c > 0 ? indentY : 0)
     for (let j = 0; j < col.length; j++) {
