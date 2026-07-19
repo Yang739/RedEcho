@@ -48,10 +48,19 @@ function clear() {
   return []
 }
 
-// 阅读时间格式化：2026年7月19日
+// 阅读时间格式化：2026 年 7 月 19 日  14 : 30（24 小时制）
+function pad(n) {
+  return n < 10 ? '0' + n : '' + n
+}
+
 function formatDate(time) {
   const d = new Date(time)
-  return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日'
+  const y = d.getFullYear()
+  const m = d.getMonth() + 1
+  const day = pad(d.getDate())
+  const hh = pad(d.getHours())
+  const mm = pad(d.getMinutes())
+  return y + ' 年 ' + m + ' 月 ' + day + ' 日  ' + hh + ' : ' + mm
 }
 
 module.exports = { getList, getEntries, add, clear, formatDate }

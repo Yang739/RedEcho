@@ -21,7 +21,7 @@
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .read-item__sub { margin-top: 6rpx; }
-.read-item__time { margin-top: 6rpx; color: var(--c-primary, #C8161D); }
+.read-item__time { margin-top: 6rpx; color: #999; }
 .read-item__arrow { color: var(--c-text-3, #bbb); font-size: 36rpx; }
 .read-empty { padding: 24rpx 4rpx; line-height: 1.6; }
 
