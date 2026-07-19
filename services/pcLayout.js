@@ -37,7 +37,7 @@ function formatDate(d) {
 // 计算名言的展示方案（CSS 预览用，与 Canvas 规则对齐）
 function buildQuote(quote, orient, arrange, position) {
   const raw = (quote && String(quote).trim()) || DEFAULT_QUOTE
-  const text = '“' + raw + '”'
+  const text = raw
   const full = !!POS_FULL[position]
 
   if (arrange === 'v') {
@@ -118,9 +118,9 @@ function paintPostcard(ctx, W, H, rec) {
   ctx.font = '700 28px sans-serif'
   ctx.fillText(rec.sign || '红色回响', W - 40, H - 44)
 
-  // 名言（统一加引号，与 CSS 预览一致）
+  // 名言（不加引号，按用户要求纯文本呈现）
   const quote = (rec.quote && String(rec.quote).trim()) ? rec.quote : DEFAULT_QUOTE
-  const q = '“' + quote + '”'
+  const q = quote
   if (arrange === 'v') paintVertical(ctx, q, W, H, F, orient, position)
   else paintHorizontal(ctx, q, W, H, F, orient, position)
 }
