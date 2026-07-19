@@ -36,7 +36,9 @@
   "condition": {},
   "simulatorPluginLibVersion": {},
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "folder", "value": "design" }
+    ],
     "include": []
   },
   "editorSetting": {},
