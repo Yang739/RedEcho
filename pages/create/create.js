@@ -18,6 +18,9 @@ Page({
   onShow() {
     loadFonts()
     this.load()
+    // 自定义 tabBar 由框架渲染在页面 webview 之上，页面内 CSS/组件 hidden 都盖不住它，
+    // 必须用官方 API 控制显隐。回到本页时强制显示，避免从其他页返回后 tabBar 卡在隐藏态。
+    if (typeof wx.showTabBar === 'function') wx.showTabBar({ fail() {} })
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 2 })
     }
@@ -51,11 +54,15 @@ Page({
   onPreview(e) {
     const id = e.currentTarget.dataset.id
     const item = this.data.postcards.find((p) => p.id === id)
-    if (item) this.setData({ preview: item })
+    if (!item) return
+    // 打开预览前先隐藏底部自定义 tabBar（官方 API），否则 tabBar 会浮在遮罩之上仍可点击
+    if (typeof wx.hideTabBar === 'function') wx.hideTabBar({ fail() {} })
+    this.setData({ preview: item })
   },
 
   onClosePreview() {
     this.setData({ preview: null })
+    if (typeof wx.showTabBar === 'function') wx.showTabBar({ fail() {} })
   },
 
   // 画廊长按删除作品
@@ -72,6 +79,8 @@ Page({
           postcards.remove(id)
           if (this.data.preview && this.data.preview.id === id) {
             this.setData({ preview: null })
+            // 预览中被删除，关闭预览的同时恢复 tabBar
+            if (typeof wx.showTabBar === 'function') wx.showTabBar({ fail() {} })
           }
           this.load()
           wx.showToast({ title: '已删除', icon: 'success' })
