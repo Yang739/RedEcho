@@ -1,3 +1,5 @@
+<import src="../../../../templates/pc-card.wxml" />
+
 <view class="page">
   <view class="intro">
     <view class="intro__title">生成你的红色明信片</view>
@@ -7,23 +9,18 @@
   <!-- 结果 -->
   <block wx:if="{{result}}">
     <view class="result">
-      <view class="pc-card pc-card--{{result.orient}} font-{{result.font}} {{result.arrange === 'v' ? 'is-vert' : ''}}">
-        <image wx:if="{{useImage}}" class="pc-card__img" src="{{result.imageUrl}}" mode="aspectFill" />
-        <view wx:else class="pc-card__inner" style="background:{{result.gradient}}">
-          <view class="pc-card__scene">{{result.scene}}</view>
-          <view class="pc-card__quote">“{{result.quote}}”</view>
-          <view class="pc-card__date">{{result.date}} · 红色回响</view>
+      <template is="pcCard" data="{{ card: result }}" />
+      <view class="result-actions">
+        <view class="pc-actions-3">
+          <view class="btn btn-primary flex-1 tap" bindtap="onSave">保存</view>
+          <button class="btn btn-ghost flex-1 tap pc-share" open-type="share">分享</button>
+          <view class="btn btn-ghost flex-1 tap" bindtap="onPrint">打印</view>
+        </view>
+        <view class="pc-actions2">
+          <view class="btn btn-ghost btn-block tap" bindtap="onAgain">再生成一张</view>
         </view>
       </view>
     </view>
-    <view class="pc-actions">
-      <view class="btn btn-primary flex-1 tap" bindtap="onSave">保存相册</view>
-      <button class="btn btn-ghost flex-1 tap pc-share" open-type="share">分享</button>
-    </view>
-    <view class="pc-actions2">
-      <view class="btn btn-ghost btn-block tap" bindtap="onAgain">再生成一张</view>
-    </view>
-    <!-- 离屏画布：用于 CSS 模式下导出图片（透明不占视觉） -->
     <canvas type="2d" id="pcCanvas" class="pc-canvas"></canvas>
   </block>
 
@@ -31,13 +28,7 @@
   <block wx:else>
     <!-- 实时预览 -->
     <view class="preview">
-      <view class="pc-card pc-card--{{draft.orient}} font-{{draft.font}} {{draft.arrange === 'v' ? 'is-vert' : ''}}" style="background:{{draft.gradient}}">
-        <view class="pc-card__inner">
-          <view class="pc-card__scene">{{draft.scene}}</view>
-          <view class="pc-card__quote">“{{draft.quote}}”</view>
-          <view class="pc-card__date">红色回响 · 预览</view>
-        </view>
-      </view>
+      <template is="pcCard" data="{{ card: draft }}" />
     </view>
 
     <view class="section-title">选择场景</view>
@@ -101,7 +92,18 @@
       </view>
     </view>
 
-    <view class="section-title">字体</view>
+    <view class="section-title">名言位置</view>
+    <view class="pos-grid">
+      <view
+        class="pos tap {{position === item.key ? 'pos--on' : ''}}"
+        wx:for="{{positionList}}"
+        wx:key="key"
+        bindtap="onSelectPosition"
+        data-key="{{item.key}}"
+      >{{item.name}}</view>
+    </view>
+
+    <view class="section-title">字体风格</view>
     <view class="opts">
       <view
         class="opt tap {{font === item.key ? 'opt--on' : ''}}"
@@ -111,6 +113,7 @@
         data-key="{{item.key}}"
       >
         <view class="opt__name">{{item.name}}</view>
+        <view class="opt__desc xs text-3">{{item.desc}}</view>
       </view>
     </view>
 
