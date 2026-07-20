@@ -69,37 +69,6 @@
   margin-top: 6rpx;
 }
 
-/* 相关宣传片（占位） */
-.video-card {
-  margin-bottom: 28rpx;
-  background: var(--c-surface, #fff);
-  border-radius: var(--r-md, 16rpx);
-  overflow: hidden;
-  box-shadow: var(--s-1, 0 4rpx 16rpx rgba(0,0,0,.06));
-}
-.video-card__poster {
-  position: relative;
-  height: 320rpx;
-  display: flex; align-items: center; justify-content: center;
-}
-.video-card__play {
-  width: 96rpx; height: 96rpx; border-radius: 50%;
-  background: rgba(255,255,255,.28);
-  border: 3rpx solid rgba(255,255,255,.7);
-  color: #fff; font-size: 40rpx;
-  display: flex; align-items: center; justify-content: center;
-}
-.video-card__mask {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 14rpx 24rpx;
-  font-size: 24rpx; color: #fff;
-  background: linear-gradient(180deg, transparent, rgba(0,0,0,.45));
-}
-.video-card__desc {
-  font-size: 25rpx; color: var(--c-text-2, #888);
-  padding: 18rpx 24rpx; line-height: 1.6;
-}
-
 .empty-page { padding-top: 200rpx; text-align: center; }
 .footer-tip { text-align: center; padding: 40rpx 0 10rpx; }
 

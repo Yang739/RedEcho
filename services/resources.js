@@ -15,11 +15,6 @@
 //   facts   详情页「关键要点」列表
 //   body    详情页正文段落列表
 //   quotes  名言/金句（spirit 类用）
-//   video   短视频（相关内容的简短宣传片）：当前仅占位，未填实际内容
-//           ready    是否已有可播放内容（占位期为 false）
-//           title    宣传片标题
-//           desc     占位说明文案
-//           duration 时长（秒，占位期为 0）
 
 const GRAD = {
   red: 'linear-gradient(135deg,#C8161D 0%,#7A0A10 100%)',
@@ -292,9 +287,5 @@ const cards = [
     quotes: ['砍头不要紧，只要主义真。杀了夏明翰，还有后来人。']
   }
 ]
-
-// 短视频占位：当前无实际内容，统一注入 ready:false 的默认占位对象（无需逐条手写）
-const DEFAULT_VIDEO = { ready: false, title: '相关宣传片', desc: '本资料的简短宣传片，正在筹备中', duration: 0 }
-cards.forEach((c) => { if (!c.video) c.video = { ...DEFAULT_VIDEO } })
 
 module.exports = { GRAD, CATEGORIES, cards }
