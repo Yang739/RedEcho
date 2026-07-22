@@ -90,7 +90,7 @@ function decorateCard(rec) {
     quoteLines: q.lines,
     quoteFontSize: q.fontSizeRpx,
     indent: q.indent,
-    sign: rec.sign || '红色回响',
+    sign: rec.sign || '红韵智演',
     date: formatDate(rec.date)
   })
 }
@@ -119,14 +119,14 @@ function paintPostcard(ctx, W, H, rec) {
   ctx.font = F.weight + ' 40px ' + F.family
   ctx.fillText(rec.scene || '', 40, 40)
 
-  // 落款（右下，双行：日期 / 红色回响）
+  // 落款（右下，双行：日期 / 红韵智演）
   ctx.textAlign = 'right'
   ctx.fillStyle = 'rgba(255,255,255,.9)'
   ctx.font = '400 22px sans-serif'
   ctx.fillText(rec.date || '', W - 40, H - 76)
   ctx.fillStyle = '#ffffff'
   ctx.font = '700 28px sans-serif'
-  ctx.fillText(rec.sign || '红色回响', W - 40, H - 44)
+  ctx.fillText(rec.sign || '红韵智演', W - 40, H - 44)
 
   // 名言（不加引号，按用户要求纯文本呈现）
   const quote = (rec.quote && String(rec.quote).trim()) ? rec.quote : DEFAULT_QUOTE

@@ -39,7 +39,7 @@
     </block>
   </view>
 
-  <view class="footer-tip text-3 xs">红色回响 · 红色旧址沉浸式互动演出</view>
+  <view class="footer-tip text-3 xs">红韵智演 · 红色旧址沉浸式互动演出</view>
 </view>
 
 <view class="empty-page" wx:else>

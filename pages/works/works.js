@@ -112,7 +112,7 @@ Page({
   onShareAppMessage() {
     const p = this.data.preview
     return {
-      title: p ? ('我在红色回响创作了「' + p.scene + '」明信片') : '红色回响 · 我的红色明信片作品',
+      title: p ? ('我在红韵智演创作了「' + p.scene + '」明信片') : '红韵智演 · 我的红色明信片作品',
       path: '/pages/works/works',
       imageUrl: p && p.imageUrl ? p.imageUrl : ''
     }

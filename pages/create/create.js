@@ -158,7 +158,7 @@ Page({
   onShareAppMessage() {
     const p = this.data.preview
     return {
-      title: p ? ('我在红色回响创作了「' + p.scene + '」明信片') : '红色回响 · 创作你的专属红色明信片',
+      title: p ? ('我在红韵智演创作了「' + p.scene + '」明信片') : '红韵智演 · 创作你的专属红色明信片',
       path: '/pages/create/create',
       imageUrl: p && p.imageUrl ? p.imageUrl : ''
     }
