@@ -5,6 +5,8 @@ const { containsSensitive } = require('../../services/sensitive.js')
 const { FONTS, loadFonts } = require('../../../../services/fonts.js')
 const { decorateCard, paintPostcard, renderPostcard } = require('../../../../services/pcLayout.js')
 const { clampQuote, quoteCount, MAX_QUOTE } = require('../../services/quote.js')
+const store = require('../../../../store.js')
+const rewards = require('../../../../services/rewards.js')
 
 // 字体风格 → 仅暴露修饰词（不展示具体字体名）
 const fontList = Object.keys(FONTS).map((key) => ({
@@ -47,6 +49,7 @@ Page({
     result: null,
     generating: false,
     useImage: false,
+    genHint: '',
     // 创作面板状态
     selectedId: '',
     customText: '',
@@ -83,7 +86,7 @@ Page({
       this.setData({
         scenes,
         selectedId: options.sceneId || (scenes[0] && scenes[0].id) || ''
-      }, () => this.updateDraft())
+      }, () => { this.updateDraft(); this.updateGenHint() })
     })
   },
 
@@ -146,6 +149,15 @@ Page({
     this.setData({ draft: decorateCard(base) })
   },
 
+  // 刷新「明信片计费」提示：前 5 次免费，之后每次 -1 积分
+  updateGenHint() {
+    const st = rewards.postcardState()
+    const hint = st.free
+      ? ('前 5 次免费 · 当前第 ' + (st.count + 1) + ' 次')
+      : '本次生成消耗 1 积分'
+    this.setData({ genHint: hint })
+  },
+
   onGenerate() {
     const { selectedId, customText, orient, arrange, position, font } = this.data
     if (!selectedId) {
@@ -159,6 +171,12 @@ Page({
         showCancel: false,
         confirmText: '我知道了'
       })
+      return
+    }
+    // 明信片计费：前 5 次免费，之后每次 -1 积分；积分不足则拦截
+    const st = rewards.postcardState()
+    if (!st.free && store.getState().points < 1) {
+      wx.showToast({ title: '积分不足，无法生成', icon: 'none' })
       return
     }
     this.setData({ generating: true, result: null, useImage: false })
@@ -177,7 +195,11 @@ Page({
       const decorated = decorateCard(finalRec)
       // 落库：保证「已存入我的作品」真实可信
       postcards.add(decorated)
-      wx.showToast({ title: '已存入我的作品', icon: 'success' })
+      // 计费提交：计数 +1；超过免费次数则扣 1 积分
+      const c = rewards.commitPostcard()
+      this.updateGenHint()
+      const tip = c.free ? '已存入（免费）' : '已存入（-1 积分）'
+      wx.showToast({ title: tip, icon: 'success' })
       this.setData({ result: decorated, generating: false, useImage: !!res.imageUrl }, () => {
         if (res.imageUrl) this.loadImage(res.imageUrl)
       })
@@ -258,13 +280,13 @@ Page({
 
   onAgain() {
     this.tempPath = ''
-    this.setData({ result: null, useImage: false, customText: '', quoteCount: 0 }, () => this.updateDraft())
+    this.setData({ result: null, useImage: false, customText: '', quoteCount: 0 }, () => { this.updateDraft(); this.updateGenHint() })
   },
 
   onShareAppMessage() {
     const r = this.data.result
     return {
-      title: r ? ('我在红色回响创作了「' + r.scene + '」明信片') : '红色回响 · 创作你的专属红色明信片',
+      title: r ? ('我在红韵智演创作了「' + r.scene + '」明信片') : '红韵智演 · 创作你的专属红色明信片',
       path: '/pages/create/create',
       imageUrl: this.tempPath || (r && r.imageUrl) || ''
     }

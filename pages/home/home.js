@@ -22,6 +22,8 @@ Page({
   onLoad() {
     this.unsub = store.subscribe((s) => {
       if (s.user) this.setData({ nickname: s.user.nickname, avatarText: s.user.avatarText })
+      // 跨页积分变动后回到首页即时反映
+      this.setData({ 'home.points': s.points, 'home.todayGain': s.todayGain })
     })
     this.load()
   },

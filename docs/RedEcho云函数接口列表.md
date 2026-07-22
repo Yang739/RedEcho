@@ -93,7 +93,7 @@
 | `productList` | 商品列表 | `page`, `category` | 登录 | - |
 | `orderCreate` | 创建兑换订单（积分/混合支付，生成核销码） | `productId`, `quantity`, `payType` | 登录 | - |
 | `orderPay` | 微信支付统一下单（预留） | `orderNo` | 登录 | 微信支付 |
-| `orderList` | 我的订单 | `status`, `page` | 登录 | - |
+| `orderList` | 积分商城兑换订单 | `status`, `page` | 登录 | - |
 | `orderRedeem` | 现场核销（校验核销码） | `redemptionCode` | 场务 | - |
 | `orderCancel` | 取消/退款 | `orderNo` | 登录/场务 | 微信支付(退款) |
 

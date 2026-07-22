@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "re-card": "/components/re-card/re-card"
+  },
+  "navigationBarTitleText": "积分商城"
+}

@@ -1,0 +1,45 @@
+<view class="page">
+  <!-- 顶部 Hero -->
+  <view class="mall-hero bg-grid fade-up">
+    <view class="mall-hero__title">积分商城</view>
+    <view class="mall-hero__sub">用积分兑换红色文创好物</view>
+    <view class="mall-hero__points">
+      <text class="mall-hero__num">{{points}}</text>
+      <text class="mall-hero__lbl">我的积分</text>
+    </view>
+  </view>
+
+  <!-- 文创好物 -->
+  <view class="section-title">文创好物</view>
+  <view class="grid">
+    <view class="prod" wx:for="{{products}}" wx:key="id">
+      <view class="prod__cover" style="background:{{item.gradient}}"></view>
+      <view class="prod__body">
+        <view class="prod__name">{{item.title}}</view>
+        <view class="prod__desc text-3 sm ellipsis">{{item.desc}}</view>
+        <view class="prod__foot between">
+          <view class="prod__price"><text class="prod__price-num">{{item.price}}</text> 积分</view>
+          <view class="prod__buy tap" bindtap="onBuy" data-id="{{item.id}}">兑换</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 我的兑换 -->
+  <view class="section-title">我的兑换</view>
+  <re-card title="兑换记录">
+    <view wx:if="{{!orders.length}}" class="empty">还没有兑换记录，去上方挑一件吧</view>
+    <view class="ord" wx:for="{{orders}}" wx:key="id">
+      <view class="ord__cover" style="background:{{item.gradient}}"></view>
+      <view class="flex-1">
+        <view class="between">
+          <text class="subtitle ellipsis">{{item.title}}</text>
+          <text class="ord__status">{{item.status}}</text>
+        </view>
+        <view class="text-3 xs" style="margin-top:6rpx">消耗 {{item.total}} 积分 · 核销码 {{item.code}}</view>
+      </view>
+    </view>
+  </re-card>
+
+  <view class="footer-tip text-3 xs">红韵智演 · 红色旧址沉浸式互动演出</view>
+</view>

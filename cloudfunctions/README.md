@@ -18,7 +18,7 @@ cloudfunctions/
 ├── aiLineGenerate/     # 演员 AI 台词（接腾讯云混元大模型，未配密钥时回退示例） —— 已实现
 ├── postcardGenerate/   # AIGC 明信片（接腾讯云 AI 绘画文生图，未配密钥时回退 CSS） —— 已实现
 ├── createOrder/        # 商城下单 —— 已实现
-├── getOrders/          # 我的订单 —— 已实现
+├── getOrders/          # 积分商城兑换订单 —— 已实现
 ├── getStatistics/      # 运营数据看板聚合 —— 已实现
 ├── showReview/         # 演出回顾（场次+我的投票+情绪分布+金句） —— 已实现
 ├── postcardSceneList/  # 场景模板列表 —— 已实现
@@ -82,7 +82,7 @@ npm install
 | 🟢 已接入 | aiLineGenerate | 演员 AI 台词（接腾讯云混元大模型，未配密钥自动回退示例） |
 | 🟢 已接入 | postcardGenerate | AIGC 明信片（接腾讯云 AI 绘画文生图，未配密钥自动回退 CSS 渲染） |
 | ✅ 已实现 | createOrder | 商城下单（生成核销码） |
-| ✅ 已实现 | getOrders | 我的订单 |
+| ✅ 已实现 | getOrders | 积分商城兑换订单 |
 | ✅ 已实现 | getStatistics | 运营看板聚合 |
 | ⬜ 待补 | authLogin | 微信手机号一键登录（code2Session+手机号） |
 | ⬜ 待补 | staffLogin | 工作人员登录（手机号+密码/验证码） |

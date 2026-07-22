@@ -1,5 +1,6 @@
 // packages/show/pages/room/room.js
 const api = require('../../../../services/api.js')
+const rewards = require('../../../../services/rewards.js')
 
 function computePct(options) {
   const total = options.reduce((s, o) => s + o.votes, 0) || 1
@@ -25,6 +26,10 @@ Page({
   onLoad(options) {
     const showId = options.id || 's1'
     this.setData({ showId })
+    // 参加一次演出 +5 积分（同一场只加一次）
+    if (rewards.awardShow(showId)) {
+      wx.showToast({ title: '参与演出 +5 积分', icon: 'none' })
+    }
     api.getShowRoom(showId).then((d) => {
       this.setData({
         show: d.show,

@@ -10,6 +10,8 @@
 const mock = require('./mock.js')
 const resources = require('./resources.js')
 const postcards = require('./postcards.js')
+const store = require('../store.js')
+const mall = require('./mall.js')
 const { ENV } = require('../config.js')
 
 // 是否启用真实云函数：ENV 不是占位符即视为已配置真实环境
@@ -50,8 +52,8 @@ module.exports = {
     }
     return delay({
       greeting: '下午好',
-      points: 1280,
-      todayGain: 60,
+      points: store.getState().points,
+      todayGain: store.getState().todayGain,
       recommend,
       reading: mock.reading,
       liveShow: mock.shows.find((s) => s.status === 'live') || null
@@ -170,12 +172,12 @@ module.exports = {
   },
 
   /* ---------------- 我的 ---------------- */
-  // 个人中心：云函数 getUserProfile（档案 + 积分 + 统计 + 我的订单）
+  // 个人中心：云函数 getUserProfile（档案 + 积分 + 统计 + 积分商城兑换）
   getMine() {
     if (IS_CLOUD) return call('getUserProfile', {})
     return delay({
       user: { nickname: '红色旅人', avatarText: '红', level: '长征先锋', isStaff: false },
-      points: 1280,
+      points: store.getState().points,
       stats: { postcards: 2, orders: 2, favorites: 12 },
       orders: mock.orders
     })
@@ -184,5 +186,34 @@ module.exports = {
   getOrders() {
     if (IS_CLOUD) return call('getOrders', {})
     return delay(mock.orders, 300)
+  },
+
+  /* ---------------- 积分商城 ---------------- */
+  // 文创产品目录：云模式回退本地静态目录（便于无后端时预览）
+  getProducts() {
+    if (IS_CLOUD) return call('productList', {}).catch(() => mall.getProducts())
+    return delay(mall.getProducts(), 200)
+  },
+
+  // 我的兑换（积分商城订单）
+  getMallOrders() {
+    if (IS_CLOUD) return call('getOrders', {})
+    return delay(mall.getOrders(), 200)
+  },
+
+  // 兑换文创产品：扣减积分并生成订单；云模式转发 createOrder 云函数
+  purchaseProduct(productId, qty) {
+    if (IS_CLOUD) {
+      const p = mall.getProducts().find((x) => x.id === productId)
+      if (!p) return Promise.reject(new Error('product not found'))
+      return call('createOrder', {
+        productId,
+        title: p.title,
+        spec: p.desc,
+        price: p.price,
+        payType: 'points'
+      }).then((o) => ({ ok: true, order: Object.assign({}, o, { id: o._id || o.id }) }))
+    }
+    return delay(mall.purchase(productId, qty), 260)
   }
 }

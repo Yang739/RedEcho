@@ -124,6 +124,7 @@
       </view>
     </view>
 
+    <view class="gen-hint" wx:if="{{genHint}}">{{genHint}}</view>
     <view class="btn btn-primary btn-block tap gen-btn" bindtap="onGenerate">生成明信片</view>
   </block>
 

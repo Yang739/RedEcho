@@ -1,5 +1,5 @@
 // 云函数：getUserProfile
-// 职责：个人中心信息（档案 + 积分 + 各维度统计 + 我的订单）。
+// 职责：个人中心信息（档案 + 积分 + 各维度统计 + 积分商城兑换）。
 // 读取集合：users / postcards / orders / favorites
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
@@ -24,7 +24,7 @@ exports.main = async (event, context) => {
       db.collection('favorites').where({ openid: OPENID }).count()
     ])
 
-    // 我的订单列表
+    // 积分商城兑换订单列表
     const ordersRes = await db
       .collection('orders')
       .where({ openid: OPENID })

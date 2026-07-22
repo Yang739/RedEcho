@@ -94,6 +94,16 @@
 
 .gen-btn { margin-top: 36rpx; }
 
+.gen-hint {
+  margin-top: 20rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--c-accent, #E8A33D);
+  background: var(--c-accent-light, #FBEFD9);
+  border-radius: var(--r-pill, 999rpx);
+  padding: 12rpx 0;
+}
+
 /* 生成遮罩 */
 .gen-mask {
   position: fixed; inset: 0; z-index: 50;

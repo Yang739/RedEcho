@@ -1,5 +1,5 @@
 // 云函数：getOrders
-// 职责：我的订单列表（可按 status 过滤）。
+// 职责：积分商城兑换订单列表（可按 status 过滤）。
 // 读取集合：orders
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
