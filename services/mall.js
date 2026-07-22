@@ -43,7 +43,6 @@ function purchase(productId, qty) {
   if (!p) return { ok: false, reason: 'notfound' }
   const total = p.price * qty
   if (store.getState().points < total) return { ok: false, reason: 'points' }
-  store.addPoints(-total)
   const order = {
     id: 'mo' + Date.now(),
     productId,
@@ -57,6 +56,7 @@ function purchase(productId, qty) {
     created_at: Date.now(),
     gradient: p.gradient
   }
+  store.addPoints(-total, { type: 'redeem', title: '兑换 ' + p.title, ref: order.id })
   const list = getOrders()
   list.unshift(order)
   storage.set(ORDERS_KEY, list)

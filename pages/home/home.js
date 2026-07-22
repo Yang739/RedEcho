@@ -159,6 +159,6 @@ Page({
   },
 
   goPoints() {
-    wx.switchTab({ url: '/pages/mine/mine' })
+    wx.navigateTo({ url: '/pages/points/points' })
   }
 })

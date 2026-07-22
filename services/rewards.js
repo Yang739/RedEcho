@@ -32,7 +32,7 @@ function awardRead(id) {
   if (!id) return false
   if (getArr(READ_KEY).includes(id)) return false
   pushArr(READ_KEY, id)
-  store.addPoints(1)
+  store.addPoints(1, { type: 'read', title: '阅读文章', ref: id })
   return true
 }
 
@@ -41,7 +41,7 @@ function awardShow(showId) {
   if (!showId) return false
   if (getArr(SHOW_KEY).includes(showId)) return false
   pushArr(SHOW_KEY, showId)
-  store.addPoints(5)
+  store.addPoints(5, { type: 'show', title: '参与演出', ref: showId })
   return true
 }
 
@@ -62,7 +62,7 @@ function commitPostcard() {
   const n = getGenCount()
   const free = n < POSTCARD_FREE
   storage.set(GEN_KEY, n + 1)
-  if (!free) store.addPoints(-1)
+  if (!free) store.addPoints(-1, { type: 'postcard', title: '生成明信片', ref: 'pc' + Date.now() })
   return { free }
 }
 

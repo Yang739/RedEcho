@@ -1,0 +1,36 @@
+<view class="page">
+  <!-- 头部：当前积分 / 今日获得 -->
+  <view class="hd">
+    <view class="hd__col">
+      <view class="hd__num">{{points}}</view>
+      <view class="hd__label">当前积分</view>
+    </view>
+    <view class="hd__divider"></view>
+    <view class="hd__col">
+      <view class="hd__num">{{todayGain}}</view>
+      <view class="hd__label">今日获得</view>
+    </view>
+  </view>
+
+  <!-- 明细列表 -->
+  <view class="list">
+    <block wx:if="{{groups.length}}">
+      <view class="group" wx:for="{{groups}}" wx:key="label" wx:for-item="g">
+        <view class="group__title">{{g.label}}</view>
+        <view class="item" wx:for="{{g.items}}" wx:key="id" wx:for-item="it">
+          <view class="item__icon item__icon--{{it.type}}">{{it.type === 'read' ? '阅' : (it.type === 'show' ? '演' : (it.type === 'postcard' ? '片' : (it.type === 'redeem' ? '兑' : '积')))}}</view>
+          <view class="item__body">
+            <view class="item__title">{{it.title}}</view>
+            <view class="item__time text-3 xs">余 {{it.balance}} · {{it.timeText}}</view>
+          </view>
+          <view class="item__delta {{it.delta > 0 ? 'is-plus' : 'is-minus'}}">{{it.delta > 0 ? '+' : ''}}{{it.delta}}</view>
+        </view>
+      </view>
+    </block>
+    <view wx:else class="empty">
+      <view class="empty__icon">积</view>
+      <view class="empty__text">还没有积分明细</view>
+      <view class="empty__sub text-3 sm">阅读文章、参与演出、生成明信片、兑换文创都会记录在这里</view>
+    </view>
+  </view>
+</view>

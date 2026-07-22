@@ -9,8 +9,10 @@ const storage = require('./services/storage.js')
 
 const POINTS_KEY = 'rede_points'
 const TODAY_KEY = 'rede_today'
+const POINT_LOG_KEY = 'rede_points_log'  // 积分明细（流水）记录
 const POINTS_INIT_KEY = 'rede_points_init' // 迁移标记：旧版曾把种子 1280 写入本地，升级后统一归零
 const SEED_POINTS = 0
+const LOG_MAX = 100               // 明细最多保留条数
 
 function todayStr() {
   const d = new Date()
@@ -38,13 +40,19 @@ function loadToday() {
   return 0
 }
 
+function loadLog() {
+  const v = storage.get(POINT_LOG_KEY, [])
+  return Array.isArray(v) ? v : []
+}
+
 const state = {
   user: null,        // { openid, nickname, avatar, level, isStaff }
   points: loadPoints(),         // 当前积分余额（持久化）
   isStaff: false,    // 是否为工作人员（场务/演员）
   loaded: false,
   todayGain: loadToday(),       // 今日获得的积分（持久化，按日清零）
-  todayDate: todayStr()
+  todayDate: todayStr(),
+  log: loadLog()                // 积分明细流水（持久化，最近 LOG_MAX 条）
 }
 
 const subs = new Set()
@@ -68,13 +76,17 @@ function ensureToday() {
 module.exports = {
   getState() { return state },
 
+  getLog() { return state.log },
+
   setUser(user) {
     Object.assign(state, user)
     state.loaded = true
     notify()
   },
 
-  addPoints(delta) {
+  // delta 为积分变动量（正=获得，负=消费）；opts 为可选的明细描述：
+  //   { type: 'read'|'show'|'postcard'|'redeem'|'adjust', title: '阅读文章', ref: id }
+  addPoints(delta, opts) {
     state.points = Math.max(0, state.points + delta)
     // 仅正向奖励累计「今日获得」；消费（负向）不影响今日获得
     if (delta > 0) {
@@ -83,6 +95,22 @@ module.exports = {
       storage.set(TODAY_KEY, { date: state.todayDate, gain: state.todayGain })
     }
     storage.set(POINTS_KEY, state.points)
+    // 记录积分明细（流水）
+    const o = opts || {}
+    const entry = {
+      id: 'pl' + Date.now() + Math.random().toString(36).slice(2, 6),
+      type: o.type || 'adjust',
+      title: o.title || (delta > 0 ? '积分奖励' : '积分消费'),
+      ref: o.ref || '',
+      delta: delta,
+      balance: state.points,
+      time: Date.now()
+    }
+    const log = state.log.slice()
+    log.unshift(entry)
+    if (log.length > LOG_MAX) log.length = LOG_MAX
+    state.log = log
+    storage.set(POINT_LOG_KEY, log)
     notify()
   },
 

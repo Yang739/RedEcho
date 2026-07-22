@@ -71,7 +71,7 @@ Page({
   },
 
   onPoints() {
-    wx.showToast({ title: '积分明细开发中', icon: 'none' })
+    wx.navigateTo({ url: '/pages/points/points' })
   },
 
   onStat(e) {

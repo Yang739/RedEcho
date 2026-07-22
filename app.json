@@ -10,7 +10,8 @@
     "pages/resource/list/list",
     "pages/favorites/favorites",
     "pages/about/about",
-    "pages/mall/mall"
+    "pages/mall/mall",
+    "pages/points/points"
   ],
   "subpackages": [
     {
