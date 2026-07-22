@@ -9,7 +9,7 @@ Page({
   data: {
     user: { nickname: '红色旅人', avatarText: '红', level: '长征先锋' },
     points: 0,
-    todayGain: 60,
+    todayGain: 0,
     statsList: [],
     menus: [
       { key: 'postcards', name: '我的作品' },

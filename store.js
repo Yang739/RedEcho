@@ -9,7 +9,8 @@ const storage = require('./services/storage.js')
 
 const POINTS_KEY = 'rede_points'
 const TODAY_KEY = 'rede_today'
-const SEED_POINTS = 1280
+const POINTS_INIT_KEY = 'rede_points_init' // 迁移标记：旧版曾把种子 1280 写入本地，升级后统一归零
+const SEED_POINTS = 0
 
 function todayStr() {
   const d = new Date()
@@ -17,10 +18,15 @@ function todayStr() {
   return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate())
 }
 
+// 首次使用（或旧版升级）写入初始积分；旧版曾把种子 1280 写入本地存储，这里统一归零。
 function loadPoints() {
+  if (storage.get(POINTS_INIT_KEY, null) !== 'v1') {
+    storage.set(POINTS_INIT_KEY, 'v1')
+    storage.set(POINTS_KEY, SEED_POINTS)
+    return SEED_POINTS
+  }
   const v = storage.get(POINTS_KEY, null)
   if (typeof v === 'number') return v
-  storage.set(POINTS_KEY, SEED_POINTS) // 首次使用：种子积分
   return SEED_POINTS
 }
 
