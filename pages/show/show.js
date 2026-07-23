@@ -12,7 +12,8 @@ Page({
     filter: 'all',
     list: [],
     loading: true,
-    statusText: { live: '直播中', upcoming: '即将开始', ended: '已结束' }
+    statusText: { live: '直播中', upcoming: '即将开始', ended: '已结束' },
+    ctaText: { live: '进入直播间 ›', upcoming: '查看预告 ›', ended: '查看回顾 ›' }
   },
 
   onLoad() { this.load() },
@@ -38,8 +39,12 @@ Page({
     this.load()
   },
 
-  goRoom(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `/packages/show/pages/room/room?id=${id}` })
+  // 按状态分流：已结束 → 演出回顾页；直播中 / 即将开始 → 演出房间页
+  goContent(e) {
+    const { id, status } = e.currentTarget.dataset
+    const url = status === 'ended'
+      ? `/packages/show/pages/review/review?id=${id}`
+      : `/packages/show/pages/room/room?id=${id}`
+    wx.navigateTo({ url })
   }
 })

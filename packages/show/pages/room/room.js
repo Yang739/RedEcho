@@ -18,7 +18,9 @@ Page({
     messages: [],
     voted: '',
     selectedEmotion: '',
-    inputValue: ''
+    inputValue: '',
+    statusBanner: '',
+    isEnded: false
   },
 
   timer: null,
@@ -26,19 +28,24 @@ Page({
   onLoad(options) {
     const showId = options.id || 's1'
     this.setData({ showId })
-    // 参加一次演出 +5 积分（同一场只加一次）
-    if (rewards.awardShow(showId)) {
-      wx.showToast({ title: '参与演出 +5 积分', icon: 'none' })
-    }
     api.getShowRoom(showId).then((d) => {
+      const status = d.show.status
+      // 仅「直播中」的演出计为参与并发 +5（同一场只加一次）；即将开始 / 已结束不发放
+      let awardTip = ''
+      if (status === 'live' && rewards.awardShow(showId)) {
+        awardTip = '参与演出 +5 积分'
+      }
       this.setData({
         show: d.show,
         poll: Object.assign({}, d.poll, { options: computePct(d.poll.options) }),
         emotions: d.emotions,
         branch: d.branch,
-        notices: d.notices
+        notices: d.notices,
+        statusBanner: status === 'upcoming' ? '演出即将开始，敬请期待' : (status === 'ended' ? '本场演出已落幕' : ''),
+        isEnded: status === 'ended'
       })
-      // 模拟实时：仅直播且投票开启时轮询结果
+      if (awardTip) wx.showToast({ title: awardTip, icon: 'none' })
+      // 模拟实时：仅直播且投票开启时轮询结果（降级路径；wss 接入后由 socketClient 替代，见 RedEcho×RPC集成设计）
       if (d.show.pollOpen) {
         this.timer = setInterval(() => this.tick(), 2600)
       }
@@ -80,12 +87,18 @@ Page({
   onSend() {
     const text = (this.data.inputValue || '').trim()
     if (!text) return
+    // 弹幕本地预览：真实上行与房间广播将在 wss 阶段接入（见 RedEcho×RPC集成设计 R-T1/R-T5），此处仅本地回显兜底
     const msg = { id: 'm' + Date.now(), text, time: this.now() }
     this.setData({ messages: this.data.messages.concat(msg), inputValue: '' })
   },
 
   goGenerate() {
     wx.navigateTo({ url: '/packages/create/pages/generate/generate' })
+  },
+
+  // 演出已结束 → 跳转本场回顾
+  goReview() {
+    wx.navigateTo({ url: `/packages/show/pages/review/review?id=${this.data.showId}` })
   },
 
   now() {

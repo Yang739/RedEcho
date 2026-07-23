@@ -15,6 +15,8 @@
 
   <scroll-view scroll-y class="room__body" enhanced show-scrollbar="{{false}}">
 
+    <view wx:if="{{statusBanner}}" class="room__banner">{{statusBanner}}</view>
+
     <!-- 实时投票 -->
     <re-card title="剧情投票" wx:if="{{show.pollOpen}}">
       <view slot="extra" wx:if="{{voted}}" class="text-3 xs">已投票</view>
@@ -76,6 +78,7 @@
         <view wx:for="{{messages}}" wx:key="id" class="danmu__item">{{item.text}}</view>
         <view wx:if="{{!messages.length}}" class="empty">还没有弹幕，来发第一条吧</view>
       </view>
+      <view wx:if="{{isEnded}}" class="room__cta btn btn-ghost btn-block tap" bindtap="goReview">查看本场回顾 ›</view>
       <view class="room__cta btn btn-ghost btn-block tap" bindtap="goGenerate">生成我的红色明信片 ›</view>
     </re-card>
 

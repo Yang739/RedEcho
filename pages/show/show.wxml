@@ -22,8 +22,9 @@
       class="show tap"
       wx:for="{{list}}"
       wx:key="id"
-      bindtap="goRoom"
+      bindtap="goContent"
       data-id="{{item.id}}"
+      data-status="{{item.status}}"
     >
       <view class="show__cover" style="background:{{item.gradient}}">
         <view wx:if="{{item.status === 'live'}}" class="live__badge">
@@ -34,11 +35,14 @@
         <view class="show__title ellipsis">{{item.title}}</view>
         <view class="show__venue text-3 sm">{{item.venue}}</view>
         <view class="show__foot between">
-          <text class="text-3 xs">{{item.date}}</text>
-          <re-tag
-            type="{{item.status === 'live' ? 'live' : (item.status === 'upcoming' ? 'accent' : 'default')}}"
-            solid="{{item.status === 'live'}}"
-          >{{statusText[item.status]}}</re-tag>
+          <view class="show__meta">
+            <text class="text-3 xs">{{item.date}}</text>
+            <re-tag
+              type="{{item.status === 'live' ? 'live' : (item.status === 'upcoming' ? 'accent' : 'default')}}"
+              solid="{{item.status === 'live'}}"
+            >{{statusText[item.status]}}</re-tag>
+          </view>
+          <view class="show__cta">{{ctaText[item.status]}}</view>
         </view>
       </view>
     </view>
