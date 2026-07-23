@@ -11,7 +11,9 @@
     "pages/favorites/favorites",
     "pages/about/about",
     "pages/mall/mall",
-    "pages/points/points"
+    "pages/points/points",
+    "pages/settings/settings",
+    "pages/staff/staff"
   ],
   "subpackages": [
     {

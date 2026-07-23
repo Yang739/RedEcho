@@ -1,0 +1,42 @@
+<view class="page">
+  <!-- 账户 -->
+  <view class="profile">
+    <view class="profile__avatar">{{avatarText}}</view>
+    <view class="flex-1">
+      <view class="profile__name">{{nickname}}</view>
+      <view class="profile__sub">当前积分 {{points}}</view>
+    </view>
+  </view>
+
+  <re-card title="账号与身份">
+    <view class="row tap" bindtap="onPoints">
+      <text class="row__label">积分明细</text>
+      <text class="row__arrow">›</text>
+    </view>
+    <view class="row tap" bindtap="onStaff">
+      <text class="row__label">操作人员入口</text>
+      <text class="row__val">{{isStaff ? (staff.roleName + '已登录') : '未登录'}}</text>
+      <text class="row__arrow">›</text>
+    </view>
+  </re-card>
+
+  <re-card title="数据与缓存">
+    <view class="row tap" bindtap="onClear">
+      <text class="row__label">清除本地数据</text>
+      <text class="row__arrow">›</text>
+    </view>
+  </re-card>
+
+  <re-card title="关于">
+    <view class="row tap" bindtap="onAbout">
+      <text class="row__label">关于 红韵智演</text>
+      <text class="row__arrow">›</text>
+    </view>
+    <view class="row">
+      <text class="row__label">版本</text>
+      <text class="row__val">{{version}}</text>
+    </view>
+  </re-card>
+
+  <view class="footer-tip text-3 xs">红韵智演 · 红色旧址沉浸式互动演出</view>
+</view>

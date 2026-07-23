@@ -13,6 +13,7 @@ const POINT_LOG_KEY = 'rede_points_log'  // 积分明细（流水）记录
 const POINTS_INIT_KEY = 'rede_points_init' // 迁移标记：旧版曾把种子 1280 写入本地，升级后统一归零
 const SEED_POINTS = 0
 const LOG_MAX = 100               // 明细最多保留条数
+const STAFF_KEY = 'rede_staff'    // 操作人员（场务/演员）登录态
 
 function todayStr() {
   const d = new Date()
@@ -45,10 +46,17 @@ function loadLog() {
   return Array.isArray(v) ? v : []
 }
 
+// 操作人员（场务/演员）登录态：存储 { phone, name, role, roleName }
+function loadStaff() {
+  const v = storage.get(STAFF_KEY, null)
+  return v && typeof v === 'object' ? v : null
+}
+
 const state = {
   user: null,        // { openid, nickname, avatar, level, isStaff }
   points: loadPoints(),         // 当前积分余额（持久化）
-  isStaff: false,    // 是否为工作人员（场务/演员）
+  isStaff: !!loadStaff(), // 是否为工作人员（场务/演员），随登录态初始化
+  staff: loadStaff(),   // 操作人员信息 { phone, name, role, roleName }
   loaded: false,
   todayGain: loadToday(),       // 今日获得的积分（持久化，按日清零）
   todayDate: todayStr(),
@@ -120,6 +128,23 @@ module.exports = {
     notify()
   },
 
+  // 切换为操作人员（场务/演员）：写入登录态并持久化
+  setStaff(info) {
+    if (!info || !info.phone) return
+    state.staff = Object.assign({}, info)
+    state.isStaff = true
+    storage.set(STAFF_KEY, state.staff)
+    notify()
+  },
+
+  // 退出操作人员：清除登录态
+  clearStaff() {
+    state.staff = null
+    state.isStaff = false
+    storage.set(STAFF_KEY, null)
+    notify()
+  },
+
   subscribe(fn) {
     subs.add(fn)
     // 立即回放一次当前状态
@@ -131,8 +156,10 @@ module.exports = {
     state.user = null
     state.points = 0
     state.isStaff = false
+    state.staff = null
     state.loaded = false
     storage.set(POINTS_KEY, 0)
+    storage.set(STAFF_KEY, null)
     storage.set(TODAY_KEY, { date: todayStr(), gain: 0 })
     notify()
   }

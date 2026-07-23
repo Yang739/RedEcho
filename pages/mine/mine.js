@@ -88,6 +88,7 @@ Page({
     else if (key === 'reads') wx.navigateTo({ url: '/pages/read/read' })
     else if (key === 'favorites') wx.navigateTo({ url: '/pages/favorites/favorites' })
     else if (key === 'about') wx.navigateTo({ url: '/pages/about/about' })
+    else if (key === 'settings') wx.navigateTo({ url: '/pages/settings/settings' })
     else wx.showToast({ title: '功能开发中', icon: 'none' })
   }
 })
