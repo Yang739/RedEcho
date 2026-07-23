@@ -25,9 +25,12 @@
   font-size: 36rpx;
   margin-right: 24rpx;
   flex-shrink: 0;
+  overflow: hidden;
 }
+.profile__img { width: 100%; height: 100%; border-radius: 50%; }
 .profile__name { font-size: 34rpx; font-weight: 600; color: #222; }
 .profile__sub { font-size: 26rpx; color: #999; margin-top: 6rpx; }
+.profile__edit { font-size: 26rpx; color: #C8161D; margin-left: 12rpx; flex-shrink: 0; }
 
 re-card { display: block; margin-bottom: 24rpx; }
 
@@ -43,3 +46,17 @@ re-card { display: block; margin-bottom: 24rpx; }
 .row__arrow { font-size: 32rpx; color: #ccc; }
 
 .footer-tip { text-align: center; margin-top: 40rpx; }
+
+/* 底部账号操作 */
+.actions { margin-top: 8rpx; }
+.actions__btn {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  text-align: center;
+  font-size: 30rpx;
+  color: #222;
+  margin-bottom: 20rpx;
+  box-shadow: var(--s-1);
+}
+.actions__btn--danger { color: #C8161D; font-weight: 600; }

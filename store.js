@@ -14,6 +14,7 @@ const POINTS_INIT_KEY = 'rede_points_init' // 迁移标记：旧版曾把种子 
 const SEED_POINTS = 0
 const LOG_MAX = 100               // 明细最多保留条数
 const STAFF_KEY = 'rede_staff'    // 操作人员（场务/演员）登录态
+const PROFILE_KEY = 'rede_profile' // 个人资料（昵称 / 头像）
 
 function todayStr() {
   const d = new Date()
@@ -52,11 +53,26 @@ function loadStaff() {
   return v && typeof v === 'object' ? v : null
 }
 
+// 个人资料（昵称 / 头像）：avatar 为上传图片持久化路径；avatarEmoji + avatarGradient 为预设形象
+function loadProfile() {
+  const def = {
+    nickname: '红色旅人',
+    avatarText: '红',
+    avatar: '',
+    avatarEmoji: '🎯',
+    avatarGradient: 'linear-gradient(135deg,#C8161D,#7A0A10)'
+  }
+  const v = storage.get(PROFILE_KEY, null)
+  if (v && typeof v === 'object') return Object.assign({}, def, v)
+  return def
+}
+
 const state = {
   user: null,        // { openid, nickname, avatar, level, isStaff }
   points: loadPoints(),         // 当前积分余额（持久化）
   isStaff: !!loadStaff(), // 是否为工作人员（场务/演员），随登录态初始化
   staff: loadStaff(),   // 操作人员信息 { phone, name, role, roleName }
+  profile: loadProfile(), // 个人资料（昵称 / 头像），持久化
   loaded: false,
   todayGain: loadToday(),       // 今日获得的积分（持久化，按日清零）
   todayDate: todayStr(),
@@ -125,6 +141,14 @@ module.exports = {
   setPoints(points) {
     state.points = points
     storage.set(POINTS_KEY, state.points)
+    notify()
+  },
+
+  // 更新个人资料（昵称 / 头像）：合并后持久化
+  setProfile(patch) {
+    if (!patch || typeof patch !== 'object') return
+    state.profile = Object.assign({}, state.profile, patch)
+    storage.set(PROFILE_KEY, state.profile)
     notify()
   },
 

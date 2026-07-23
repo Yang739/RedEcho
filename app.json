@@ -13,7 +13,8 @@
     "pages/mall/mall",
     "pages/points/points",
     "pages/settings/settings",
-    "pages/staff/staff"
+    "pages/staff/staff",
+    "pages/profile/profile"
   ],
   "subpackages": [
     {

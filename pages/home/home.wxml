@@ -6,7 +6,11 @@
         <view class="hero__greet">{{home.greeting}}，{{nickname}}</view>
         <view class="hero__sub">重温红色记忆，点亮信仰之光</view>
       </view>
-      <view class="hero__avatar">{{avatarText}}</view>
+      <view class="hero__avatar" style="{{avatar ? 'background:transparent' : 'background:' + avatarGradient}}">
+        <image wx:if="{{avatar}}" class="hero__img" src="{{avatar}}" mode="aspectFill"/>
+        <text wx:elif="{{avatarEmoji}}">{{avatarEmoji}}</text>
+        <text wx:else>{{avatarText}}</text>
+      </view>
     </view>
     <view class="hero__points tap" bindtap="goPoints">
       <view class="hero__points-num">{{home.points}}</view>

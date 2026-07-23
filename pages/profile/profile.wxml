@@ -1,0 +1,32 @@
+<view class="page">
+  <re-card title="头像">
+    <view class="pf-avatar tap" bindtap="onChooseImage">
+      <image wx:if="{{avatar}}" class="pf-avatar__img" src="{{avatar}}" mode="aspectFill"/>
+      <text wx:else class="pf-avatar__emoji" style="background:{{avatarGradient}}">{{avatarEmoji}}</text>
+      <view class="pf-avatar__mask">点击更换</view>
+    </view>
+    <view class="pf-tip text-3 xs">支持从相册 / 相机选择照片，或使用下方预设形象</view>
+  </re-card>
+
+  <re-card title="昵称">
+    <view class="form-row">
+      <input class="form-input" value="{{nickname}}" bindinput="onNickname" maxlength="20" placeholder="请输入昵称"/>
+    </view>
+  </re-card>
+
+  <re-card title="预设形象">
+    <view class="pf-grid">
+      <view
+        wx:for="{{presets}}"
+        wx:key="emoji"
+        class="pf-grid__item {{avatarMode==='emoji' && avatarEmoji===item.emoji ? 'is-active' : ''}}"
+        style="background:{{item.gradient}}"
+        bindtap="onSelectPreset"
+        data-idx="{{index}}"
+      ><text>{{item.emoji}}</text></view>
+    </view>
+  </re-card>
+
+  <button class="btn btn-primary btn-block pf-save" bindtap="onSave">保存</button>
+  <view class="footer-tip text-3 xs">个人资料仅保存在本设备</view>
+</view>

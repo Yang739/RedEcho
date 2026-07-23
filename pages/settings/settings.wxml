@@ -1,16 +1,21 @@
 <view class="page">
-  <!-- 账户 -->
-  <view class="profile">
-    <view class="profile__avatar">{{avatarText}}</view>
+  <!-- 个人资料概览（点击编辑） -->
+  <view class="profile tap" bindtap="onProfile">
+    <view class="profile__avatar" style="{{profile.avatar ? 'background:transparent' : 'background:' + profile.avatarGradient}}">
+      <image wx:if="{{profile.avatar}}" class="profile__img" src="{{profile.avatar}}" mode="aspectFill"/>
+      <text wx:elif="{{profile.avatarEmoji}}">{{profile.avatarEmoji}}</text>
+      <text wx:else>{{profile.avatarText}}</text>
+    </view>
     <view class="flex-1">
-      <view class="profile__name">{{nickname}}</view>
+      <view class="profile__name">{{profile.nickname}}</view>
       <view class="profile__sub">当前积分 {{points}}</view>
     </view>
+    <text class="profile__edit">编辑 ›</text>
   </view>
 
   <re-card title="账号与身份">
-    <view class="row tap" bindtap="onPoints">
-      <text class="row__label">积分明细</text>
+    <view class="row tap" bindtap="onProfile">
+      <text class="row__label">个人资料</text>
       <text class="row__arrow">›</text>
     </view>
     <view class="row tap" bindtap="onStaff">
@@ -27,16 +32,11 @@
     </view>
   </re-card>
 
-  <re-card title="关于">
-    <view class="row tap" bindtap="onAbout">
-      <text class="row__label">关于 红韵智演</text>
-      <text class="row__arrow">›</text>
-    </view>
-    <view class="row">
-      <text class="row__label">版本</text>
-      <text class="row__val">{{version}}</text>
-    </view>
-  </re-card>
+  <!-- 账号操作 -->
+  <view class="actions">
+    <view class="actions__btn tap" bindtap="onSwitchAccount">切换账号</view>
+    <view class="actions__btn actions__btn--danger tap" bindtap="onLogout">退出登录</view>
+  </view>
 
   <view class="footer-tip text-3 xs">红韵智演 · 红色旧址沉浸式互动演出</view>
 </view>

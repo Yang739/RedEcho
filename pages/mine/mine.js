@@ -8,6 +8,7 @@ const mall = require('../../services/mall.js')
 Page({
   data: {
     user: { nickname: '红色旅人', avatarText: '红', level: '长征先锋' },
+    pf: { nickname: '红色旅人', avatarText: '红', avatar: '', avatarEmoji: '🎯', avatarGradient: 'linear-gradient(135deg,#C8161D,#7A0A10)' },
     points: 0,
     todayGain: 0,
     statsList: [],
@@ -27,6 +28,7 @@ Page({
     this.unsub = store.subscribe((s) => {
       if (s.user) this.setData({ user: s.user, points: s.points, todayGain: s.todayGain })
       else this.setData({ points: s.points, todayGain: s.todayGain })
+      this.setData({ pf: s.profile })
     })
     api.getMine().then((d) => {
       this.setData({

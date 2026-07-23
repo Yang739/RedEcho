@@ -1,9 +1,13 @@
 <view class="page">
   <!-- 个人信息 -->
   <view class="profile bg-grid fade-up">
-    <view class="profile__avatar">{{user.avatarText}}</view>
+    <view class="profile__avatar" style="{{pf.avatar ? 'background:transparent' : 'background:' + pf.avatarGradient}}">
+      <image wx:if="{{pf.avatar}}" class="profile__img" src="{{pf.avatar}}" mode="aspectFill"/>
+      <text wx:elif="{{pf.avatarEmoji}}">{{pf.avatarEmoji}}</text>
+      <text wx:else>{{pf.avatarText}}</text>
+    </view>
     <view class="flex-1">
-      <view class="profile__name">{{user.nickname}}</view>
+      <view class="profile__name">{{pf.nickname}}</view>
       <re-tag type="accent" solid>{{user.level}}</re-tag>
     </view>
   </view>

@@ -14,6 +14,9 @@ Page({
     home: { greeting: '你好', points: 0, todayGain: 0, recommend: [], reading: [], liveShow: null },
     nickname: '旅人',
     avatarText: '红',
+    avatar: '',
+    avatarEmoji: '🎯',
+    avatarGradient: 'linear-gradient(135deg,#C8161D,#7A0A10)',
     hasMore: false
   },
 
@@ -21,9 +24,17 @@ Page({
 
   onLoad() {
     this.unsub = store.subscribe((s) => {
-      if (s.user) this.setData({ nickname: s.user.nickname, avatarText: s.user.avatarText })
-      // 跨页积分变动后回到首页即时反映
-      this.setData({ 'home.points': s.points, 'home.todayGain': s.todayGain })
+      const pf = s.profile || {}
+      this.setData({
+        nickname: (s.user && s.user.nickname) || pf.nickname || '旅人',
+        avatarText: (s.user && s.user.avatarText) || pf.avatarText || '红',
+        avatar: pf.avatar || '',
+        avatarEmoji: pf.avatarEmoji || '🎯',
+        avatarGradient: pf.avatarGradient || 'linear-gradient(135deg,#C8161D,#7A0A10)',
+        // 跨页积分变动后回到首页即时反映
+        'home.points': s.points,
+        'home.todayGain': s.todayGain
+      })
     })
     this.load()
   },

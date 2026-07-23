@@ -1,0 +1,45 @@
+.page { padding: 24rpx; min-height: 100vh; background: #f5f5f5; box-sizing: border-box; }
+
+/* 头像预览 */
+.pf-avatar {
+  position: relative;
+  width: 160rpx; height: 160rpx;
+  margin: 8rpx auto 4rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: var(--s-1);
+}
+.pf-avatar__img { width: 100%; height: 100%; }
+.pf-avatar__emoji {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+  font-size: 72rpx;
+}
+.pf-avatar__mask {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  text-align: center; font-size: 22rpx; color: #fff;
+  padding: 8rpx 0; background: rgba(0,0,0,.42);
+}
+.pf-tip { text-align: center; margin-top: 4rpx; }
+
+/* 昵称输入 */
+.form-row { padding: 8rpx 4rpx; }
+.form-input { font-size: 30rpx; color: #222; flex: 1; }
+
+/* 预设形象网格 */
+.pf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20rpx; padding: 8rpx 0; }
+.pf-grid__item {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48rpx;
+  box-shadow: var(--s-1);
+  transition: transform .14s ease;
+}
+.pf-grid__item.is-active {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 4rpx #C8161D, var(--s-1);
+}
+
+.pf-save { margin-top: 32rpx; }
