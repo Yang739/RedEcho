@@ -25,6 +25,7 @@ const shows = [
 
 const poll = {
   question: '你认为主角此刻应当如何抉择？',
+  synopsis: '第二幕·突围：转移途中敌军封锁骤紧，主角攥着家书在生死边缘徘徊，全场的每一票都将左右剧情走向。',
   options: [
     { id: 'o1', label: '冒险突围', votes: 412 },
     { id: 'o2', label: '蛰伏待机', votes: 286 },

@@ -51,6 +51,7 @@
       <!-- 实时投票 -->
       <re-card title="剧情投票" wx:if="{{show.pollOpen}}">
         <view slot="extra" wx:if="{{voted}}" class="text-3 xs">已投票</view>
+        <view class="poll__synopsis">{{poll.synopsis}}</view>
         <view class="poll__q">{{poll.question}}</view>
         <view class="poll__opts">
           <view

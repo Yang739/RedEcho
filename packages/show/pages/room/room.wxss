@@ -20,6 +20,7 @@
 
 /* 投票 */
 .poll__q { font-size: 30rpx; font-weight: 600; margin-bottom: 20rpx; }
+.poll__synopsis { font-size: 26rpx; line-height: 1.7; color: var(--c-text-2); margin-bottom: 20rpx; }
 .poll__opts { display: flex; flex-direction: column; gap: 16rpx; }
 .poll__opt {
   position: relative; overflow: hidden;
