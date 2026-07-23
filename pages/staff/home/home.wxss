@@ -25,6 +25,7 @@
 .section-title { font-size: 30rpx; font-weight: 700; color: #222; padding: 24rpx 8rpx 16rpx; }
 .grid { display: flex; flex-wrap: wrap; gap: 16rpx; justify-content: center; }
 .grid__item {
+  box-sizing: border-box;               /* 关键：width 含 padding，否则两列被内边距撑破换行成单列 */
   width: calc((100% - 16rpx) / 2);
   background: #fff; border-radius: 16rpx; padding: 28rpx 16rpx; text-align: center;
   box-shadow: 0 2rpx 12rpx rgba(0,0,0,.04);

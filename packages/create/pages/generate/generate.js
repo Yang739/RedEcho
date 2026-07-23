@@ -81,12 +81,16 @@ Page({
   tempPath: '',
 
   onLoad(options) {
-    loadFonts()
+    try { loadFonts() } catch (e) { console.error('[generate] loadFonts 出错', e) }
     api.getScenes().then((scenes) => {
       this.setData({
         scenes,
         selectedId: options.sceneId || (scenes[0] && scenes[0].id) || ''
       }, () => { this.updateDraft(); this.updateGenHint() })
+    }).catch((e) => {
+      console.error('[generate] 获取场景失败', e)
+      // 兜底：即便拉取失败也保证页面可用（场景选择为空时引导用户刷新）
+      this.setData({ selectedId: '' })
     })
   },
 

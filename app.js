@@ -8,6 +8,15 @@ App({
     userInfo: null
   },
 
+  // 全局错误捕获：把运行时异常 / 未处理的 Promise 拒绝暴露到 vConsole，
+  // 便于定位"页面无响应 / 数据不出现"等只在真机/模拟器才暴露的问题。
+  onError(err) {
+    console.error('[RedEcho] 运行时错误:', err)
+  },
+  onUnhandledRejection(res) {
+    console.error('[RedEcho] 未处理的 Promise 拒绝:', res && res.reason)
+  },
+
   onLaunch() {
     if (!wx.cloud) {
       console.error('[RedEcho] 当前基础库版本过低，请使用 2.2.3 及以上的基础库以使用云能力')

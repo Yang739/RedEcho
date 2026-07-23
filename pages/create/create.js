@@ -16,12 +16,20 @@ Page({
   },
 
   onShow() {
-    loadFonts()
-    this.load()
-    // 回到本页时：若预览仍打开则保持 tabBar 隐藏（如打印系统看图器关闭会触发 onShow），
-    // 否则恢复显示；同时高亮当前 tab。
+    // 诊断标记：确认本页 JS 是否真正执行（若 vConsole 看不到此日志，说明页面未被编译/初始化）
+    console.log('[create] onShow 执行')
+
+    // 先把当前 tab 高亮设好：即便后面加载出错，tab 也不会回落到首页（避免"点一下亮一下又灭"）
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 2, hidden: !!this.data.preview })
+    }
+
+    try {
+      loadFonts()
+      this.load()
+    } catch (e) {
+      // 加载链路异常不能影响 tab 高亮与页面存活；把错误抛到全局便于排查
+      console.error('[create] onShow 加载出错', e)
     }
   },
 
