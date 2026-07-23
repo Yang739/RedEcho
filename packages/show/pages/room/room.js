@@ -46,9 +46,18 @@ Page({
       }
       // 邀请码门禁：仅「直播中」场次需要；按场次持久化解锁记录判断，未开始 / 已结束无需门禁
       const unlocked = !!storage.get('rede_invite_unlocked', {})[showId]
+      // 恢复本场已持久化的个人选择（投票 / 情绪），退出重进不再丢失
+      const votes = storage.get('rede_show_votes', {})
+      const emos = storage.get('rede_show_emotions', {})
+      const myVote = votes[showId] || ''
+      let pollOpts = d.poll.options
+      if (myVote) {
+        // 重进后把「我的那一票」补回进度条（mock 降级：云端由原子自增保证持久）
+        pollOpts = pollOpts.map((o) => o.id === myVote ? Object.assign({}, o, { votes: o.votes + 1 }) : o)
+      }
       this.setData({
         show: d.show,
-        poll: Object.assign({}, d.poll, { options: computePct(d.poll.options) }),
+        poll: Object.assign({}, d.poll, { options: computePct(pollOpts) }),
         emotions: d.emotions,
         branch: d.branch,
         notices: d.notices,
@@ -58,6 +67,8 @@ Page({
         isUpcoming,
         unlocked,
         gateNeeded: isLive && !unlocked,
+        voted: myVote,
+        selectedEmotion: emos[showId] || '',
         inviteError: ''
       })
       if (awardTip) wx.showToast({ title: awardTip, icon: 'none' })
@@ -74,7 +85,11 @@ Page({
 
   tick() {
     api.pollResult(this.data.showId).then((opts) => {
-      this.setData({ 'poll.options': computePct(opts) })
+      // 轮询刷新时也保留「我的那一票」（mock 降级：云端由服务端票数保证）
+      const list = this.data.voted
+        ? opts.map((o) => o.id === this.data.voted ? Object.assign({}, o, { votes: o.votes + 1 }) : o)
+        : opts
+      this.setData({ 'poll.options': computePct(list) })
     })
   },
 
@@ -85,6 +100,10 @@ Page({
       const opts = this.data.poll.options.map((o) =>
         o.id === id ? Object.assign({}, o, { votes: o.votes + 1 }) : o
       )
+      // 按场次持久化已投票选项，退出重进仍保留
+      const votes = storage.get('rede_show_votes', {})
+      votes[this.data.showId] = id
+      storage.set('rede_show_votes', votes)
       this.setData({ voted: id, 'poll.options': computePct(opts) })
       wx.showToast({ title: '投票成功', icon: 'success' })
     })
@@ -93,6 +112,10 @@ Page({
   onEmotion(e) {
     const id = e.currentTarget.dataset.id
     this.setData({ selectedEmotion: id })
+    // 按场次持久化情绪选择，退出重进仍保留
+    const emos = storage.get('rede_show_emotions', {})
+    emos[this.data.showId] = id
+    storage.set('rede_show_emotions', emos)
     api.submitEmotion(this.data.showId, id) //  fire-and-forget
   },
 
