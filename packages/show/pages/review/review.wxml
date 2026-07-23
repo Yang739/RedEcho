@@ -26,6 +26,6 @@
     <view class="rv-quote">“{{quote}}”</view>
   </re-card>
 
-  <view class="btn btn-primary btn-block tap" bindtap="goGenerate">把这份感动做成明信片 ›</view>
+  <view class="btn btn-primary btn-block tap rv-cta" bindtap="goGenerate">把这份感动做成明信片 ›</view>
   <view style="height:40rpx"></view>
 </view>

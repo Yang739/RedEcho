@@ -1,14 +1,21 @@
-.room { display: flex; flex-direction: column; height: 100vh; background: var(--c-bg); }
-.room__hero { position: relative; padding: 40rpx 32rpx 36rpx; }
+.room { display: flex; flex-direction: column; height: 100vh; width: 100%; box-sizing: border-box; overflow: hidden; background: var(--c-bg); }
+.room__hero { position: relative; padding: 40rpx 32rpx 36rpx; width: 100%; box-sizing: border-box; }
 .room__hero-mask {
   position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.28));
 }
-.room__hero-inner { position: relative; color: #fff; }
+.room__hero-inner { position: relative; color: #fff; width: 100%; box-sizing: border-box; }
 .room__title { font-size: 36rpx; font-weight: 700; max-width: 480rpx; }
 .room__seg { font-size: 24rpx; opacity: .88; margin-top: 10rpx; }
 
-.room__body { flex: 1; padding: 24rpx 28rpx 0; }
+.room__body { flex: 1; width: 100%; box-sizing: border-box; padding: 24rpx 28rpx 0; }
+
+/* 未开始：演出信息行 */
+.up-row { display: flex; align-items: center; justify-content: space-between; padding: 16rpx 0; }
+.up-row + .up-row { border-top: 2rpx solid var(--c-divider); }
+.up-label { font-size: 26rpx; color: var(--c-text-3); flex-shrink: 0; }
+.up-val { font-size: 28rpx; font-weight: 600; color: var(--c-text); text-align: right; }
+.up-time { font-size: 30rpx; font-weight: 700; color: var(--c-primary); text-align: right; }
 
 /* 投票 */
 .poll__q { font-size: 30rpx; font-weight: 600; margin-bottom: 20rpx; }
@@ -76,6 +83,7 @@
 /* 底部输入 */
 .room__foot {
   display: flex; align-items: center; gap: 16rpx;
+  width: 100%; box-sizing: border-box;
   padding: 16rpx 28rpx;
   background: var(--c-surface);
   box-shadow: 0 -4rpx 16rpx rgba(0,0,0,.05);

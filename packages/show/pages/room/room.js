@@ -22,8 +22,10 @@ Page({
     inputValue: '',
     statusBanner: '',
     isEnded: false,
+    isLive: false,      // 是否直播中
+    isUpcoming: false,  // 是否未开始
     unlocked: false,    // 本场邀请码是否已核验解锁互动
-    gateNeeded: false,  // 是否需要邀请码门禁（未解锁 且 非已结束场次）
+    gateNeeded: false,  // 是否需要邀请码门禁（仅直播中 且 未解锁）
     inviteInput: '',
     inviteError: ''
   },
@@ -35,12 +37,14 @@ Page({
     this.setData({ showId })
     api.getShowRoom(showId).then((d) => {
       const status = d.show.status
+      const isLive = status === 'live'
+      const isUpcoming = status === 'upcoming'
       // 仅「直播中」的演出计为参与并发 +5（同一场只加一次）；即将开始 / 已结束不发放
       let awardTip = ''
-      if (status === 'live' && rewards.awardShow(showId)) {
+      if (isLive && rewards.awardShow(showId)) {
         awardTip = '参与演出 +5 积分'
       }
-      // 邀请码门禁：按场次持久化解锁记录判断，已结束场次无需门禁
+      // 邀请码门禁：仅「直播中」场次需要；按场次持久化解锁记录判断，未开始 / 已结束无需门禁
       const unlocked = !!storage.get('rede_invite_unlocked', {})[showId]
       this.setData({
         show: d.show,
@@ -48,10 +52,12 @@ Page({
         emotions: d.emotions,
         branch: d.branch,
         notices: d.notices,
-        statusBanner: status === 'upcoming' ? '演出即将开始，敬请期待' : (status === 'ended' ? '本场演出已落幕' : ''),
+        statusBanner: status === 'ended' ? '本场演出已落幕' : '',
         isEnded: status === 'ended',
+        isLive,
+        isUpcoming,
         unlocked,
-        gateNeeded: !unlocked && status !== 'ended',
+        gateNeeded: isLive && !unlocked,
         inviteError: ''
       })
       if (awardTip) wx.showToast({ title: awardTip, icon: 'none' })
@@ -125,10 +131,6 @@ Page({
     // 弹幕本地预览：真实上行与房间广播将在 wss 阶段接入（见 RedEcho×RPC集成设计 R-T1/R-T5），此处仅本地回显兜底
     const msg = { id: 'm' + Date.now(), text, time: this.now() }
     this.setData({ messages: this.data.messages.concat(msg), inputValue: '' })
-  },
-
-  goGenerate() {
-    wx.navigateTo({ url: '/packages/create/pages/generate/generate' })
   },
 
   // 演出已结束 → 跳转本场回顾
