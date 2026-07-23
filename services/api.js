@@ -136,7 +136,7 @@ module.exports = {
   getReview(showId) {
     if (IS_CLOUD) return call('showReview', { showId })
     return delay({
-      show: mock.shows[0],
+      show: mock.shows.find((s) => s.id === showId) || mock.shows[0],
       myVote: '冒险突围',
       emotionDist: [
         { label: '感动', pct: 42 },
