@@ -44,9 +44,9 @@ const branch = {
   current: '剧情走向，由你的选择决定',
   locked: false,
   options: [
-    { id: 'b1', label: '冒险突围' },
-    { id: 'b2', label: '蛰伏待机' },
-    { id: 'b3', label: '寻求外援' }
+    { id: 'b1', label: '孤胆突围' },
+    { id: 'b2', label: '隐忍潜伏' },
+    { id: 'b3', label: '千里求援' }
   ]
 }
 

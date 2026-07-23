@@ -13,7 +13,7 @@
     </view>
   </view>
 
-  <scroll-view scroll-y class="room__body" enhanced show-scrollbar="{{false}}">
+  <view class="room__body">
 
     <!-- 已结束横幅 -->
     <view wx:if="{{statusBanner}}" class="room__banner">{{statusBanner}}</view>
@@ -123,7 +123,7 @@
 
       <view style="height:30rpx"></view>
     </block>
-  </scroll-view>
+  </view>
 
   <!-- 底部弹幕输入：仅直播中已解锁时显示 -->
   <view class="room__foot" wx:if="{{!gateNeeded && isLive}}" style="padding-bottom:calc(16rpx + var(--safe-bottom))">
