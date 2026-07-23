@@ -17,10 +17,10 @@ const reading = [
 ]
 
 const shows = [
-  { id: 's1', title: '《星火》沉浸式实景演出', venue: '红船剧场 · 主舞台', date: '2026-07-18 19:30', status: 'live', gradient: GRAD.ember, segment: '第二幕 · 突围', online: 1284, pollOpen: true },
-  { id: 's2', title: '《长征组歌》光影剧', venue: '长征广场 · 水幕', date: '2026-07-18 20:00', status: 'upcoming', gradient: GRAD.gold, segment: '未开始', online: 0, pollOpen: false },
-  { id: 's3', title: '《延安纪事》互动话剧', venue: '延安窑洞 · 情景厅', date: '2026-07-18 18:00', status: 'ended', gradient: GRAD.ink, segment: '已落幕', online: 0, pollOpen: false },
-  { id: 's4', title: '《烽火家书》沉浸剧场', venue: '烽火台 · 密室', date: '2026-07-19 19:00', status: 'upcoming', gradient: GRAD.dawn, segment: '未开始', online: 0, pollOpen: false }
+  { id: 's1', title: '《星火》沉浸式实景演出', venue: '红船剧场 · 主舞台', date: '2026-07-18 19:30', status: 'live', gradient: GRAD.ember, segment: '第二幕 · 突围', online: 1284, pollOpen: true, inviteCode: 'XINGHUO' },
+  { id: 's2', title: '《长征组歌》光影剧', venue: '长征广场 · 水幕', date: '2026-07-18 20:00', status: 'upcoming', gradient: GRAD.gold, segment: '未开始', online: 0, pollOpen: false, inviteCode: 'CHANGZHENG' },
+  { id: 's3', title: '《延安纪事》互动话剧', venue: '延安窑洞 · 情景厅', date: '2026-07-18 18:00', status: 'ended', gradient: GRAD.ink, segment: '已落幕', online: 0, pollOpen: false, inviteCode: 'YANAN' },
+  { id: 's4', title: '《烽火家书》沉浸剧场', venue: '烽火台 · 密室', date: '2026-07-19 19:00', status: 'upcoming', gradient: GRAD.dawn, segment: '未开始', online: 0, pollOpen: false, inviteCode: 'FENGHUO' }
 ]
 
 const poll = {

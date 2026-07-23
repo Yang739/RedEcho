@@ -17,6 +17,26 @@
 
     <view wx:if="{{statusBanner}}" class="room__banner">{{statusBanner}}</view>
 
+    <!-- 邀请码核验：未解锁且非已结束场次 -->
+    <re-card wx:if="{{gateNeeded}}" title="演出现场邀请码">
+      <view class="invite__hint">本场互动需核验演出现场邀请码。邀请码由现场工作人员或舞台大屏给出，请在现场获取后输入。</view>
+      <view class="invite__row">
+        <input
+          class="invite__input"
+          placeholder="请输入邀请码"
+          value="{{inviteInput}}"
+          bindinput="onInviteInput"
+          confirm-type="done"
+          bindconfirm="onUnlock"
+        />
+        <view class="invite__btn btn btn-primary btn-sm tap {{inviteInput ? '' : 'invite__btn--off'}}" bindtap="onUnlock">解锁</view>
+      </view>
+      <view wx:if="{{inviteError}}" class="invite__err">{{inviteError}}</view>
+    </re-card>
+
+    <!-- 互动区：已解锁 或 已结束场次 -->
+    <block wx:if="{{!gateNeeded}}">
+
     <!-- 实时投票 -->
     <re-card title="剧情投票" wx:if="{{show.pollOpen}}">
       <view slot="extra" wx:if="{{voted}}" class="text-3 xs">已投票</view>
@@ -83,10 +103,11 @@
     </re-card>
 
     <view style="height:30rpx"></view>
+    </block>
   </scroll-view>
 
-  <!-- 底部弹幕输入 -->
-  <view class="room__foot" style="padding-bottom:calc(16rpx + var(--safe-bottom))">
+  <!-- 底部弹幕输入：仅互动区可见时 -->
+  <view class="room__foot" wx:if="{{!gateNeeded}}" style="padding-bottom:calc(16rpx + var(--safe-bottom))">
     <input
       class="room__input"
       placeholder="发条弹幕，与现场共鸣…"

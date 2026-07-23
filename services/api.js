@@ -79,6 +79,17 @@ module.exports = {
     })
   },
 
+  // 邀请码核验：演示用本地比对 mock.shows.inviteCode；
+  // 生产环境应改为服务端校验（云函数 verifyInvite），且邀请码不应下发到客户端。
+  // 房间页据此解锁互动（弹幕 / 投票 / 情绪 / 分支）；实时校验后端由用户后续接入。
+  verifyInvite(showId, code) {
+    if (IS_CLOUD) return call('verifyInvite', { showId, code })
+    const show = mock.shows.find((s) => s.id === showId)
+    const expect = show && show.inviteCode
+    const ok = !!expect && String(code || '').trim().toUpperCase() === String(expect).trim().toUpperCase()
+    return delay({ ok }, 220)
+  },
+
   // 投票（真实环境：云函数 pollVote 原子自增 + 一人一票校验）
   submitVote(showId, optionId) {
     if (IS_CLOUD) return call('pollVote', { showId, optionId })
