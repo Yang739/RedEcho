@@ -84,24 +84,6 @@
         </view>
       </re-card>
 
-      <!-- 剧情分支 -->
-      <re-card title="剧情分支">
-        <view class="branch__text">{{branch.text}}</view>
-        <view class="branch__opts">
-          <view
-            wx:for="{{branch.options}}"
-            wx:key="id"
-            class="branch__opt tap {{branchChoice ? 'branch__opt--done' : ''}} {{branchChoice === item.id ? 'branch__opt--mine' : ''}}"
-            bindtap="onBranch"
-            data-id="{{item.id}}"
-          >{{item.label}}</view>
-        </view>
-        <view class="branch__state">
-          <re-tag type="primary" solid>{{branchChoice ? '已选定' : '进行中'}}</re-tag>
-          <text class="text-3 sm">{{branchChoice ? branchChoiceLabel : branch.current}}</text>
-        </view>
-      </re-card>
-
       <!-- 现场实时 -->
       <re-card title="现场实时">
         <view class="notice">

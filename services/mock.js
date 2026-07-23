@@ -39,17 +39,6 @@ const emotions = [
   { id: 'e4', label: '沉思', color: '#6B6661' }
 ]
 
-const branch = {
-  text: '枪声响起，主角攥紧胸前的家书，转身没入夜色。这一路，注定九死一生，但火种不能灭。',
-  current: '剧情走向，由你的选择决定',
-  locked: false,
-  options: [
-    { id: 'b1', label: '孤胆突围' },
-    { id: 'b2', label: '隐忍潜伏' },
-    { id: 'b3', label: '千里求援' }
-  ]
-}
-
 const notices = [
   { id: 'n1', text: '场务提示：第二幕即将切换灯光', time: '19:32' },
   { id: 'n2', text: '演员已就位，请保持安静', time: '19:30' },
@@ -82,4 +71,4 @@ const orders = [
   { id: 'o2', title: '《星火》演出纪念册', spec: '精装 / 签名版', price: 68, status: '配送中', gradient: GRAD.ember }
 ]
 
-module.exports = { GRAD, reading, shows, poll, emotions, branch, notices, scenes, quotes, postcards, orders }
+module.exports = { GRAD, reading, shows, poll, emotions, notices, scenes, quotes, postcards, orders }

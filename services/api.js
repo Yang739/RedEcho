@@ -100,7 +100,6 @@ module.exports = {
       show,
       poll: mock.poll,
       emotions: mock.emotions,
-      branch: mock.branch,
       notices: mock.notices
     })
   },
