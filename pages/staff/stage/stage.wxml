@@ -1,0 +1,29 @@
+<view class="page">
+  <view class="hero">舞台总控</view>
+  <view class="sub">弹幕 / 情绪上屏</view>
+
+  <view wx:if="{{!canPush}}" class="deny">你当前身份无舞台总控权限（仅场务 / 管理员可操作）</view>
+
+  <block wx:else>
+    <view class="section-title">弹幕上屏</view>
+    <re-card title="推送弹幕">
+      <input class="manage__input" placeholder="输入弹幕内容" value="{{input}}" bindinput="onInput" />
+      <view class="btn btn-primary btn-block tap" style="margin-top:20rpx" bindtap="onPushDanmaku">上屏</view>
+    </re-card>
+
+    <view class="section-title">情绪上屏</view>
+    <re-card title="推送情绪">
+      <view class="emo">
+        <view wx:for="{{emotions}}" wx:key="id" class="emo__item tap" style="border-color:{{item.color}};color:{{item.color}}" bindtap="onPushEmotion" data-type="{{item.id}}">{{item.label}}</view>
+      </view>
+    </re-card>
+
+    <view class="section-title">最近弹幕</view>
+    <re-card title="记录">
+      <view wx:if="{{!danmaku.length}}" class="empty">暂无弹幕上屏</view>
+      <view wx:for="{{danmaku}}" wx:key="id" class="danmu__item">{{item.text}}</view>
+    </re-card>
+  </block>
+
+  <view class="footer-tip text-3 xs">红韵智演 · 工作人员端</view>
+</view>

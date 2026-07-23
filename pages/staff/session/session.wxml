@@ -1,0 +1,33 @@
+<view class="page">
+  <view class="hero">场次管理</view>
+  <view class="sub">开场 / 散场 / 状态切换</view>
+
+  <view wx:if="{{!canControl}}" class="deny">你当前身份无开场 / 散场权限（仅场务 / 管理员可操作）</view>
+
+  <block wx:else>
+    <re-card title="当前场次">
+      <view class="show">
+        <view class="show__cover" style="background:{{show.gradient}}">
+          <view wx:if="{{show.status === 'live'}}" class="live__badge"><view class="live-dot"></view><text>直播中</text></view>
+          <view wx:elif="{{show.status === 'upcoming'}}" class="show__soon">即将开始</view>
+        </view>
+        <view class="flex-1">
+          <view class="subtitle ellipsis">{{show.title}}</view>
+          <view class="text-3 sm">{{show.venue}}</view>
+          <view class="text-3 xs" style="margin-top:6rpx">{{show.date}}</view>
+        </view>
+      </view>
+
+      <view class="status-row">
+        <text class="status-label">当前状态</text>
+        <text class="status-val {{show.status === 'live' ? 'status-val--live' : (show.status === 'upcoming' ? 'status-val--up' : 'status-val--ended')}}">{{show.status === 'live' ? '直播中' : (show.status === 'upcoming' ? '即将开始' : '已结束')}}</text>
+      </view>
+
+      <view class="btn btn-primary btn-block tap" bindtap="onToggle">{{show.status === 'live' ? '结束演出' : '开始演出'}}</view>
+    </re-card>
+
+    <view class="tip">开场后观众可进入互动；散场后进入剧情回顾。</view>
+  </block>
+
+  <view class="footer-tip text-3 xs">红韵智演 · 工作人员端</view>
+</view>

@@ -15,52 +15,6 @@
 
   <view class="room__body">
 
-    <!-- 工作人员管控条（manage=1 且当前身份有权限时显示） -->
-    <view wx:if="{{isManage}}" class="manage">
-      <re-card title="演出管控 · 工作人员">
-        <view wx:if="{{canShowControl}}" class="manage__row">
-          <text class="manage__label">演出状态：{{show.status === 'live' ? '直播中' : (show.status === 'upcoming' ? '即将开始' : '已结束')}}</text>
-          <view class="btn btn-sm btn-primary tap" bindtap="onManageToggleShow">{{show.status === 'live' ? '结束演出' : '开始演出'}}</view>
-        </view>
-        <view wx:if="{{canPollManage}}" class="manage__row">
-          <text class="manage__label">投票通道：{{pollOpen ? '开启' : '关闭'}}</text>
-          <view class="btn btn-sm btn-primary tap" bindtap="onManageTogglePoll">{{pollOpen ? '关闭投票' : '开启投票'}}</view>
-        </view>
-        <view wx:if="{{canInviteSet}}" class="manage__row col">
-          <text class="manage__label">邀请码：{{show.inviteCode || '未设置'}}</text>
-          <view class="manage__inline">
-            <input class="manage__input" placeholder="设置邀请码" value="{{inviteInput2}}" bindinput="onInviteInput2" />
-            <view class="btn btn-sm btn-primary tap" bindtap="onManageSetInvite">保存</view>
-          </view>
-        </view>
-        <view wx:if="{{canNoticePush}}" class="manage__row col">
-          <text class="manage__label">推送现场通知</text>
-          <view class="manage__inline">
-            <input class="manage__input" placeholder="通知内容" value="{{noticeInput}}" bindinput="onNoticeInput" />
-            <view class="btn btn-sm btn-primary tap" bindtap="onManagePushNotice">推送</view>
-          </view>
-        </view>
-        <view wx:if="{{canBranchLock}}" class="manage__row col">
-          <text class="manage__label">锁定剧情分支</text>
-          <view class="branch__opts">
-            <view wx:for="{{branchOptions}}" wx:key="id" class="branch__opt tap {{branchChoice === item.id ? 'branch__opt--mine' : ''}}" bindtap="onBranchPick" data-id="{{item.id}}">{{item.label}}</view>
-          </view>
-          <view class="btn btn-sm btn-primary tap" bindtap="onManageLockBranch">锁定</view>
-        </view>
-        <view wx:if="{{canStagePush}}" class="manage__row col">
-          <text class="manage__label">舞台总控 · 弹幕上屏</text>
-          <view class="manage__inline">
-            <input class="manage__input" placeholder="弹幕内容" value="{{stageDanmaku}}" bindinput="onStageDanmakuInput" />
-            <view class="btn btn-sm btn-primary tap" bindtap="onManagePushDanmaku">上屏</view>
-          </view>
-          <view class="emo">
-            <view wx:for="{{emotions}}" wx:key="id" class="emo__item tap" style="border-color:{{item.color}};color:{{item.color}}" bindtap="onManagePushEmotion" data-type="{{item.id}}">{{item.label}}</view>
-          </view>
-        </view>
-        <view wx:if="{{!canShowControl && !canPollManage && !canInviteSet && !canNoticePush && !canBranchLock && !canStagePush}}" class="manage__none">你当前身份无现场管控权限，仅可查看。</view>
-      </re-card>
-    </view>
-
     <!-- 已结束横幅 -->
     <view wx:if="{{statusBanner}}" class="room__banner">{{statusBanner}}</view>
 

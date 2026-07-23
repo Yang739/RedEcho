@@ -1,0 +1,22 @@
+.page { padding: 24rpx; min-height: 100vh; background: #f5f5f5; box-sizing: border-box; }
+.hero { font-size: 36rpx; font-weight: 700; color: #222; padding: 16rpx 8rpx 12rpx; }
+.sub { font-size: 26rpx; color: #999; padding: 0 8rpx 8rpx; }
+
+.deny {
+  margin-top: 24rpx; background: #fff; border-radius: 16rpx;
+  padding: 28rpx; font-size: 28rpx; color: #C8161D; line-height: 1.6;
+}
+
+.section-title { font-size: 30rpx; font-weight: 700; color: #222; padding: 28rpx 8rpx 12rpx; }
+.tip { font-size: 24rpx; color: #999; margin-top: 16rpx; }
+.footer-tip { text-align: center; margin-top: 40rpx; }
+.empty { color: #999; font-size: 26rpx; padding: 20rpx 0; text-align: center; }
+
+.notice__area {
+  width: 100%; box-sizing: border-box; min-height: 160rpx;
+  padding: 20rpx; background: #f5f5f5; border-radius: 12rpx; font-size: 28rpx;
+}
+.notice__item { display: flex; padding: 16rpx 0; border-bottom: 1rpx solid #f0f0f0; }
+.notice__item:last-child { border-bottom: none; }
+.notice__time { width: 96rpx; font-size: 24rpx; color: #999; flex-shrink: 0; }
+.notice__text { flex: 1; font-size: 27rpx; color: #333; }

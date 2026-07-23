@@ -4,19 +4,17 @@ const store = require('../../../store.js')
 const api = require('../../../services/api.js')
 const perm = require('../../../services/permission.js')
 
-// 功能快捷入口：action 决定可见性（staffCan），url 决定去向
-//   url='room'      → 进房间管理页 /packages/show/pages/room/room?id=xxx&manage=1
-//   url='redeem'    → 订单核销页
-//   url='dashboard' → 数据看板页
+// 功能快捷入口：action 决定可见性（staffCan），page 决定去向，needShow 决定是否带 ?id=场次
+// 每项均为独立子页面（各功能单独分页，不再共用 room?manage=1）
 const FUNC_ITEMS = [
-  { key: 'show',    action: 'show_control',  name: '场次管理', desc: '开场 / 散场 / 状态', icon: '🎬', url: 'room' },
-  { key: 'poll',    action: 'poll_manage',   name: '投票发布', desc: '开关投票 / 改题',   icon: '🗳️', url: 'room' },
-  { key: 'invite',  action: 'invite_set',    name: '邀请码',   desc: '设置 / 重置',       icon: '🔑', url: 'room' },
-  { key: 'notice',  action: 'notice_push',   name: '现场通知', desc: '推送场务提示',     icon: '📢', url: 'room' },
-  { key: 'branch',  action: 'branch_lock',   name: '分支总控', desc: '锁定剧情走向',     icon: '🌿', url: 'room' },
-  { key: 'stage',   action: 'stage_push',    name: '舞台总控', desc: '弹幕 / 情绪上屏',  icon: '🖥️', url: 'room' },
-  { key: 'redeem',  action: 'order_redeem',  name: '订单核销', desc: '扫码核销文创',     icon: '✅', url: 'redeem' },
-  { key: 'board',   action: 'view_data',     name: '数据看板', desc: '实时票数 / 情绪',  icon: '📊', url: 'dashboard' }
+  { key: 'show',   action: 'show_control',  name: '场次管理', desc: '开场 / 散场 / 状态', icon: '🎬', page: '/pages/staff/session/session', needShow: true },
+  { key: 'poll',   action: 'poll_manage',   name: '投票发布', desc: '开关投票 / 改题',   icon: '🗳️', page: '/pages/staff/poll/poll',       needShow: true },
+  { key: 'invite', action: 'invite_set',    name: '邀请码',   desc: '设置 / 重置',       icon: '🔑', page: '/pages/staff/invite/invite',   needShow: true },
+  { key: 'notice', action: 'notice_push',   name: '现场通知', desc: '推送场务提示',     icon: '📢', page: '/pages/staff/notice/notice',   needShow: true },
+  { key: 'branch', action: 'branch_lock',   name: '分支总控', desc: '锁定剧情走向',     icon: '🌿', page: '/pages/staff/branch/branch',   needShow: true },
+  { key: 'stage',  action: 'stage_push',    name: '舞台总控', desc: '弹幕 / 情绪上屏',  icon: '🖥️', page: '/pages/staff/stage/stage',     needShow: true },
+  { key: 'redeem', action: 'order_redeem',  name: '订单核销', desc: '扫码核销文创',     icon: '✅', page: '/pages/staff/redeem/redeem',   needShow: false },
+  { key: 'board',  action: 'view_data',     name: '数据看板', desc: '实时票数 / 情绪',  icon: '📊', page: '/pages/staff/dashboard/dashboard', needShow: true }
 ]
 
 Page({
@@ -91,18 +89,14 @@ Page({
     })
   },
 
-  // 跳转功能子页
+  // 跳转功能子页（各功能独立分页）
   onFunc(e) {
     const item = e.currentTarget.dataset.item
-    if (item.url === 'room') {
-      const id = (this.data.currentShow && this.data.currentShow.id) || 's1'
-      wx.navigateTo({ url: `/packages/show/pages/room/room?id=${id}&manage=1` })
-    } else if (item.url === 'redeem') {
-      wx.navigateTo({ url: '/pages/staff/redeem/redeem' })
-    } else if (item.url === 'dashboard') {
-      const id = (this.data.currentShow && this.data.currentShow.id) || 's1'
-      wx.navigateTo({ url: `/pages/staff/dashboard/dashboard?id=${id}` })
-    }
+    if (!item || !item.page) return
+    const url = item.needShow
+      ? `${item.page}?id=${(this.data.currentShow && this.data.currentShow.id) || 's1'}`
+      : item.page
+    wx.navigateTo({ url })
   },
 
   // 开场 / 散场
