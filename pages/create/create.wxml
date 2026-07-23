@@ -7,25 +7,27 @@
     </view>
   </view>
 
-  <!-- 我的作品 -->
-  <view class="section-title between">
-    <text>我的作品</text>
-    <view wx:if="{{hasWorks}}" class="more-link tap" bindtap="onAll">全部 ›</view>
-  </view>
-  <re-card wx:if="{{!postcards.length && !loading}}" title="暂无作品">
-    <view class="empty">生成第一张明信片，记录你的红色足迹</view>
-  </re-card>
-  <view wx:else class="works-grid pc-grid">
-    <view
-      class="pc-cell tap"
-      wx:for="{{postcards}}"
-      wx:key="id"
-      bindtap="onPreview"
-      bindlongpress="onDeleteWork"
-      data-id="{{item.id}}"
-    >
-      <view class="pc-frame pc-frame--{{item.orient}}">
-        <pc-canvas card="{{item}}" />
+  <!-- 我的作品（预览打开时整体移除画廊，避免 type=2d canvas 合成层浮在预览弹层之上挡住保存/分享/打印按钮） -->
+  <view wx:if="{{!preview}}">
+    <view class="section-title between">
+      <text>我的作品</text>
+      <view wx:if="{{hasWorks}}" class="more-link tap" bindtap="onAll">全部 ›</view>
+    </view>
+    <re-card wx:if="{{!postcards.length && !loading}}" title="暂无作品">
+      <view class="empty">生成第一张明信片，记录你的红色足迹</view>
+    </re-card>
+    <view wx:else class="works-grid pc-grid">
+      <view
+        class="pc-cell tap"
+        wx:for="{{postcards}}"
+        wx:key="id"
+        bindtap="onPreview"
+        bindlongpress="onDeleteWork"
+        data-id="{{item.id}}"
+      >
+        <view class="pc-frame pc-frame--{{item.orient}}">
+          <pc-canvas card="{{item}}" />
+        </view>
       </view>
     </view>
   </view>

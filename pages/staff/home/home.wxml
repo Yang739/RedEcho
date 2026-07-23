@@ -34,21 +34,22 @@
     <view wx:else class="empty">当前没有进行中或即将开始的演出</view>
   </re-card>
 
-  <!-- 功能快捷入口（按角色过滤） -->
-  <view class="section-title">管理功能</view>
-  <view class="grid">
-    <view
-      wx:for="{{funcs}}"
-      wx:key="key"
-      class="grid__item tap"
-      bindtap="onFunc"
-      data-item="{{item}}"
-    >
-      <view class="grid__icon">{{item.icon}}</view>
-      <view class="grid__name">{{item.name}}</view>
-      <view class="grid__desc text-3 xs">{{item.desc}}</view>
+  <!-- 功能快捷入口（按角色过滤，独立成卡，与其他区块切分） -->
+  <re-card title="管理功能">
+    <view class="grid">
+      <view
+        wx:for="{{funcs}}"
+        wx:key="key"
+        class="grid__item tap"
+        bindtap="onFunc"
+        data-item="{{item}}"
+      >
+        <view class="grid__icon">{{item.icon}}</view>
+        <view class="grid__name">{{item.name}}</view>
+        <view class="grid__desc text-3 xs">{{item.desc}}</view>
+      </view>
     </view>
-  </view>
+  </re-card>
 
   <!-- 现场通知（所有 staff 可见，与房间页同源） -->
   <view class="section-title">现场通知</view>

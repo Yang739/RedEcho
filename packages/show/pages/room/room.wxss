@@ -108,6 +108,7 @@
 /* 工作人员管控条 */
 .manage { margin-bottom: 24rpx; }
 .manage__row { display: flex; align-items: center; justify-content: space-between; padding: 16rpx 0; }
+.manage__row + .manage__row { border-top: 1rpx solid var(--c-divider); margin-top: 8rpx; padding-top: 22rpx; }
 .manage__row.col { flex-direction: column; align-items: stretch; }
 .manage__label { font-size: 28rpx; color: var(--c-text); }
 .manage__inline { display: flex; align-items: center; gap: 16rpx; margin-top: 16rpx; }

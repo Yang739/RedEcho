@@ -1,4 +1,4 @@
-.page { padding: 20rpx 28rpx calc(120rpx + env(safe-area-inset-bottom)); }
+.page { padding: 20rpx 28rpx calc(120rpx + env(safe-area-inset-bottom)); min-height: 100vh; box-sizing: border-box; }
 
 .profile {
   display: flex; align-items: center; gap: 24rpx;
@@ -30,6 +30,8 @@
 .points__label { font-size: 22rpx; color: var(--c-text-2); margin-top: 4rpx; }
 .points__divider { width: 1rpx; height: 60rpx; background: var(--c-divider); }
 .points__cta { color: var(--c-primary); font-weight: 700; padding-left: 20rpx; }
+
+.block-mt { margin-top: 24rpx; }
 
 .menu { display: flex; flex-direction: column; }
 .menu__item {

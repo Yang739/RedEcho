@@ -1,4 +1,4 @@
-.page { padding: 20rpx 28rpx calc(120rpx + env(safe-area-inset-bottom)); }
+.page { padding: 20rpx 28rpx calc(120rpx + env(safe-area-inset-bottom)); min-height: 100vh; box-sizing: border-box; }
 
 /* 分段控件 */
 .seg {
