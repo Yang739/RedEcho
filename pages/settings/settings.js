@@ -1,12 +1,17 @@
-// pages/settings/settings.js —— 设置
+// pages/settings/settings.js —— 设置（重新规划后的中枢页）
 const store = require('../../store.js')
 
-// 清除本地数据时需移除的键（覆盖积分、阅读、收藏、明信片、兑换等本地状态；个人资料不在其列）
+// 清除本地数据需移除的键（覆盖积分、阅读、收藏、明信片、兑换等本地状态）。
+// 注意：个人资料(rede_profile)、应用设置(rede_settings)、意见反馈(rede_feedback)
+// 均不在此列，清缓存不会重置它们。
 const LOCAL_KEYS = [
   'rede_points', 'rede_points_init', 'rede_today', 'rede_points_log',
   'rede_awarded_reads', 'rede_awarded_shows', 'rede_postcard_count',
   'rede_mall_orders', 'rede_favorites', 'rede_read_history', 'rede_postcards'
 ]
+
+// 客服联系方式（演示）：wx.openCustomerServiceChat 需后台配置，失败则降级为复制
+const SERVICE_WECHAT = 'RedEcho2026'
 
 Page({
   data: {
@@ -28,25 +33,81 @@ Page({
     if (this.unsub) this.unsub()
   },
 
-  // 进入头像编辑（仅修改头像）：顶部资料卡「编辑 ›」入口
+  // 个人资料编辑（综合：昵称/签名/性别/生日/手机 + 更换头像入口）
   onProfile() {
-    wx.navigateTo({ url: '/pages/profile/profile' })
+    wx.navigateTo({ url: '/pages/info/info' })
   },
 
-  // 进入个人资料（修改昵称 / 签名 / 性别 / 生日 / 手机 / 密码）：账号卡片「个人资料」入口
+  // 个人资料（与顶部资料卡同指 info；info 内含「更换头像」进入头像编辑）
   onInfo() {
     wx.navigateTo({ url: '/pages/info/info' })
   },
 
-  // 进入操作人员入口（登录 / 切换工作人员模式）
+  // 修改密码（账号与安全）
+  onAccount() {
+    wx.navigateTo({ url: '/pages/account/account' })
+  },
+
+  // 工作人员模式（场务/演员登录与功能面板）
   onStaff() {
     wx.navigateTo({ url: '/pages/staff/staff' })
+  },
+
+  // 通知设置
+  onNotification() {
+    wx.navigateTo({ url: '/pages/notification/notification' })
+  },
+
+  // 帮助中心
+  onHelp() {
+    wx.navigateTo({ url: '/pages/help/help' })
+  },
+
+  // 意见反馈
+  onFeedback() {
+    wx.navigateTo({ url: '/pages/feedback/feedback' })
+  },
+
+  // 联系客服
+  onContact() {
+    if (typeof wx.openCustomerServiceChat === 'function') {
+      wx.openCustomerServiceChat({
+        extInfo: { url: '' },
+        success: () => {},
+        fail: () => { this.fallbackContact() }
+      })
+    } else {
+      this.fallbackContact()
+    }
+  },
+
+  fallbackContact() {
+    wx.showModal({
+      title: '联系客服',
+      content: '客服微信：' + SERVICE_WECHAT + '\n（演示环境，复制后添加）',
+      confirmText: '复制',
+      success: (r) => {
+        if (r.confirm) {
+          wx.setClipboardData({ data: SERVICE_WECHAT })
+        }
+      }
+    })
+  },
+
+  // 隐私政策
+  onPrivacy() {
+    wx.navigateTo({ url: '/pages/privacy/privacy' })
+  },
+
+  // 关于
+  onAbout() {
+    wx.navigateTo({ url: '/pages/about/about' })
   },
 
   onClear() {
     wx.showModal({
       title: '清除本地数据',
-      content: '将清除积分、积分明细、阅读历史、收藏、明信片与兑换记录等本地数据（不影响个人资料），确定继续？',
+      content: '将清除积分、积分明细、阅读历史、收藏、明信片与兑换记录等本地数据（不影响个人资料、通知设置与反馈），确定继续？',
       confirmText: '清除',
       confirmColor: '#C8161D',
       success: (r) => { if (r.confirm) this.doClear() }
@@ -57,24 +118,15 @@ Page({
     LOCAL_KEYS.forEach((k) => {
       try { wx.removeStorageSync(k) } catch (e) {}
     })
-    store.reset() // 重置内存态（积分/登录态归零）；个人资料保留
+    store.reset() // 重置内存态（积分/登录态归零）；个人资料、设置、反馈保留
     wx.showToast({ title: '已清除本地数据', icon: 'success' })
   },
 
-  // 切换账号：进入操作人员登录页（演示用，可切换为另一操作员）
-  onSwitchAccount() {
-    wx.navigateTo({ url: '/pages/staff/staff' })
-  },
-
-  // 退出登录：退出当前操作人员（场务/演员）身份
+  // 退出工作人员登录（仅工作人员身份）
   onLogout() {
-    if (!this.data.isStaff) {
-      wx.showToast({ title: '尚未登录操作人员账号', icon: 'none' })
-      return
-    }
     wx.showModal({
-      title: '退出登录',
-      content: '将退出当前操作人员（场务/演员）身份，确定继续？',
+      title: '退出工作人员登录',
+      content: '将退出当前工作人员（场务/演员）身份，确定继续？',
       confirmText: '退出',
       confirmColor: '#C8161D',
       success: (r) => {

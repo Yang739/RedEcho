@@ -20,4 +20,11 @@
 .form-picker { flex: 1; }
 .form-picker__val { text-align: right; font-size: 30rpx; color: var(--c-text-2); }
 
+.form-avatar {
+  width: 72rpx; height: 72rpx; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 30rpx; flex: none; overflow: hidden;
+}
+.form-avatar__img { width: 100%; height: 100%; border-radius: 50%; }
+
 .pf-save { margin-top: 32rpx; }

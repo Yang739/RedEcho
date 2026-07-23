@@ -1,0 +1,19 @@
+<view class="page">
+  <re-card title="账号安全">
+    <view class="form-row">
+      <text class="form-label">手机号</text>
+      <view class="form-val tap" bindtap="onEditPhone">{{phone || '未设置'}} ›</view>
+    </view>
+    <view class="form-row">
+      <text class="form-label">新密码</text>
+      <input class="form-input" password value="{{pwd}}" bindinput="onPwd" maxlength="20" placeholder="请输入新密码"/>
+    </view>
+    <view class="form-row">
+      <text class="form-label">确认密码</text>
+      <input class="form-input" password value="{{pwd2}}" bindinput="onPwd2" maxlength="20" placeholder="再次输入新密码"/>
+    </view>
+  </re-card>
+
+  <button class="btn btn-primary btn-block ac-save" bindtap="onSave">保存</button>
+  <view class="footer-tip text-3 xs">密码仅保存在本设备，用于演示；生产环境请勿明文存储。</view>
+</view>

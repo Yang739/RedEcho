@@ -1,0 +1,13 @@
+.page { padding: 24rpx; min-height: 100vh; background: var(--c-bg); box-sizing: border-box; }
+
+.pv-head {
+  padding: 16rpx 8rpx 24rpx;
+}
+.pv-title { font-size: 38rpx; font-weight: 700; color: var(--c-text); }
+.pv-updated { font-size: 22rpx; color: var(--c-text-3); margin-top: 8rpx; }
+
+.pv-sec { margin-bottom: 20rpx; border-radius: var(--r-md); box-shadow: var(--s-1); }
+.pv-h { font-size: 30rpx; font-weight: 700; color: var(--c-primary); margin-bottom: 12rpx; }
+.pv-p { font-size: 27rpx; color: var(--c-text-2); line-height: 1.75; }
+
+.tip { padding: 24rpx 8rpx; line-height: 1.7; }

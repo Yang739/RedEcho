@@ -1,0 +1,18 @@
+.page { padding: 24rpx; min-height: 100vh; background: var(--c-bg); box-sizing: border-box; }
+
+.form-row {
+  display: flex; align-items: center; gap: 20rpx;
+  padding: 24rpx 4rpx 4rpx;
+}
+.form-label { width: 150rpx; font-size: 30rpx; color: var(--c-text); flex: none; }
+.form-input { flex: 1; font-size: 30rpx; color: var(--c-text); text-align: right; }
+
+.fb-input {
+  width: 100%; min-height: 200rpx;
+  font-size: 28rpx; color: var(--c-text); line-height: 1.6;
+  padding: 8rpx 4rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.fb-submit { margin-top: 32rpx; }
+.footer-tip { text-align: center; margin-top: 40rpx; }

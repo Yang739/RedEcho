@@ -17,8 +17,7 @@ Page({
       { key: 'mall', name: '积分商城' },
       { key: 'reads', name: '我的阅读' },
       { key: 'favorites', name: '阅读收藏' },
-      { key: 'settings', name: '设置' },
-      { key: 'about', name: '关于 红韵智演' }
+      { key: 'settings', name: '设置' }
     ]
   },
 

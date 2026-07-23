@@ -13,29 +13,70 @@
     <text class="profile__edit">编辑 ›</text>
   </view>
 
-  <re-card title="账号与身份">
+  <!-- 账号与安全 -->
+  <re-card title="账号与安全">
     <view class="row tap" bindtap="onInfo">
       <text class="row__label">个人资料</text>
       <text class="row__arrow">›</text>
     </view>
+    <view class="row tap" bindtap="onAccount">
+      <text class="row__label">修改密码</text>
+      <text class="row__arrow">›</text>
+    </view>
     <view class="row tap" bindtap="onStaff">
-      <text class="row__label">操作人员入口</text>
+      <text class="row__label">工作人员模式</text>
       <text class="row__val">{{isStaff ? (staff.roleName + '已登录') : '未登录'}}</text>
       <text class="row__arrow">›</text>
     </view>
   </re-card>
 
-  <re-card title="数据与缓存">
+  <!-- 通知与消息 -->
+  <re-card title="通知与消息">
+    <view class="row tap" bindtap="onNotification">
+      <text class="row__label">通知设置</text>
+      <text class="row__arrow">›</text>
+    </view>
+  </re-card>
+
+  <!-- 通用 -->
+  <re-card title="通用">
     <view class="row tap" bindtap="onClear">
       <text class="row__label">清除本地数据</text>
       <text class="row__arrow">›</text>
     </view>
   </re-card>
 
-  <!-- 账号操作 -->
-  <view class="actions">
-    <view class="actions__btn tap" bindtap="onSwitchAccount">切换账号</view>
-    <view class="actions__btn actions__btn--danger tap" bindtap="onLogout">退出登录</view>
+  <!-- 帮助与反馈 -->
+  <re-card title="帮助与反馈">
+    <view class="row tap" bindtap="onHelp">
+      <text class="row__label">帮助中心</text>
+      <text class="row__arrow">›</text>
+    </view>
+    <view class="row tap" bindtap="onFeedback">
+      <text class="row__label">意见反馈</text>
+      <text class="row__arrow">›</text>
+    </view>
+    <view class="row tap" bindtap="onContact">
+      <text class="row__label">联系客服</text>
+      <text class="row__arrow">›</text>
+    </view>
+    <view class="row tap" bindtap="onPrivacy">
+      <text class="row__label">隐私政策</text>
+      <text class="row__arrow">›</text>
+    </view>
+  </re-card>
+
+  <!-- 关于 -->
+  <re-card title="关于">
+    <view class="row tap" bindtap="onAbout">
+      <text class="row__label">关于 红韵智演</text>
+      <text class="row__arrow">›</text>
+    </view>
+  </re-card>
+
+  <!-- 账号操作：仅工作人员登录时显示退出 -->
+  <view class="actions" wx:if="{{isStaff}}">
+    <view class="actions__btn actions__btn--danger tap" bindtap="onLogout">退出工作人员登录</view>
   </view>
 
   <view class="footer-tip text-3 xs">红韵智演 · 红色旧址沉浸式互动演出</view>

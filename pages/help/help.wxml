@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="section-title">常见问题</view>
+
+  <view class="card faq" wx:for="{{faqs}}" wx:key="q">
+    <view class="faq__q tap" bindtap="onToggle" data-index="{{index}}">
+      <text class="faq__mark">Q</text>
+      <text class="faq__title">{{item.q}}</text>
+      <text class="faq__arrow">{{open === index ? '−' : '+'}}</text>
+    </view>
+    <view class="faq__a" wx:if="{{open === index}}">{{item.a}}</view>
+  </view>
+
+  <view class="tip">未找到答案？可在「设置 → 帮助与反馈 → 意见反馈」向我们留言。</view>
+</view>

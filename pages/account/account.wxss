@@ -1,0 +1,14 @@
+.page { padding: 24rpx; min-height: 100vh; background: var(--c-bg); box-sizing: border-box; }
+
+.form-row {
+  display: flex; align-items: center; gap: 20rpx;
+  padding: 24rpx 4rpx;
+}
+.form-row + .form-row { border-top: 1rpx solid var(--c-divider); }
+
+.form-label { width: 150rpx; font-size: 30rpx; color: var(--c-text); flex: none; }
+.form-input { flex: 1; font-size: 30rpx; color: var(--c-text); text-align: right; }
+.form-val { flex: 1; font-size: 30rpx; color: var(--c-text-2); text-align: right; }
+
+.ac-save { margin-top: 32rpx; }
+.footer-tip { text-align: center; margin-top: 40rpx; }

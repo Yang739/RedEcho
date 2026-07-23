@@ -1,0 +1,27 @@
+<view class="page">
+  <re-card title="新消息通知">
+    <view class="switch-row">
+      <view class="switch-row__main">
+        <view class="switch-row__title">开演提醒</view>
+        <view class="switch-row__desc">演出即将开始时通知你</view>
+      </view>
+      <switch checked="{{showRemind}}" color="#C8161D" bindchange="onShowRemind"/>
+    </view>
+    <view class="switch-row">
+      <view class="switch-row__main">
+        <view class="switch-row__title">互动通知</view>
+        <view class="switch-row__desc">投票结果与表情反馈提醒</view>
+      </view>
+      <switch checked="{{interactNotify}}" color="#C8161D" bindchange="onInteract"/>
+    </view>
+    <view class="switch-row">
+      <view class="switch-row__main">
+        <view class="switch-row__title">全部静音</view>
+        <view class="switch-row__desc">关闭以上所有通知</view>
+      </view>
+      <switch checked="{{quiet}}" color="#C8161D" bindchange="onQuiet"/>
+    </view>
+  </re-card>
+
+  <view class="tip">通知开关仅保存在本设备，用于演示；接入云开发后可与订阅消息联动。</view>
+</view>

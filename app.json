@@ -15,7 +15,12 @@
     "pages/settings/settings",
     "pages/staff/staff",
     "pages/profile/profile",
-    "pages/info/info"
+    "pages/info/info",
+    "pages/account/account",
+    "pages/notification/notification",
+    "pages/help/help",
+    "pages/feedback/feedback",
+    "pages/privacy/privacy"
   ],
   "subpackages": [
     {

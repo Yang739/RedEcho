@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "通知与消息",
+  "usingComponents": {
+    "re-card": "/components/re-card/re-card"
+  }
+}

@@ -1,0 +1,19 @@
+<view class="page">
+  <re-card title="意见反馈">
+    <textarea
+      class="fb-input"
+      value="{{content}}"
+      bindinput="onContent"
+      maxlength="500"
+      placeholder="请描述你遇到的问题或建议（最多 500 字）"
+      auto-height
+    />
+    <view class="form-row">
+      <text class="form-label">联系方式</text>
+      <input class="form-input" value="{{contact}}" bindinput="onContact" placeholder="选填，方便我们回复"/>
+    </view>
+  </re-card>
+
+  <button class="btn btn-primary btn-block fb-submit" bindtap="onSubmit" disabled="{{submitting}}">提交反馈</button>
+  <view class="footer-tip text-3 xs">反馈仅保存在本设备，用于演示；接入云开发后可上传至后台。</view>
+</view>
