@@ -13,6 +13,12 @@ App({
       return
     }
 
+    // 占位符环境 ID 表示使用本地 mock 调试，无需初始化云开发（避免控制台报 env 不存在）
+    if (ENV === 'your-cloud-env-id') {
+      if (DEBUG) console.log('[RedEcho] 未配置云环境，使用本地 mock 数据调试')
+      return
+    }
+
     wx.cloud.init({
       // 使用你在「云开发控制台 - 设置」中看到的环境 ID
       env: ENV,
