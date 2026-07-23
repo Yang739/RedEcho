@@ -12,9 +12,24 @@
     <text>我的作品</text>
     <view wx:if="{{hasWorks}}" class="more-link tap" bindtap="onAll">全部 ›</view>
   </view>
-  <re-card wx:if="{{!postcards.length && !loading}}" title="暂无作品">
-    <view class="empty">生成第一张明信片，记录你的红色足迹</view>
+
+  <!-- 加载中：骨架占位，保证有可见反馈（避免空白被误判为“未渲染”） -->
+  <view wx:if="{{loading}}" class="works-grid pc-grid">
+    <view class="pc-cell" wx:for="{{[0,1,2,3]}}" wx:key="*this">
+      <view class="pc-frame skeleton"></view>
+    </view>
+  </view>
+
+  <!-- 空态：明确文案 + 行动召唤（视觉醒目，杜绝“看不见=没渲染”的歧义） -->
+  <re-card wx:elif="{{!postcards.length}}" title="暂无作品">
+    <view class="empty">
+      <view class="empty__txt">还没有明信片哦～</view>
+      <view class="empty__sub">生成第一张明信片，记录你的红色足迹</view>
+      <view class="btn btn-primary empty__cta tap" bindtap="onStartCreate">去创作第一张</view>
+    </view>
   </re-card>
+
+  <!-- 有作品：画廊 -->
   <view wx:else class="works-grid pc-grid">
     <view
       class="pc-cell tap"

@@ -21,6 +21,11 @@
 .works-grid { margin-top: 8rpx; }
 /* 画廊卡片外观统一由 app.wxss .pc-cell / .pc-frame 提供 */
 
+/* 空态：加粗深色主文案 + 行动召唤按钮，确保一眼可见（避免浅灰小字被误判为"未渲染"） */
+.empty__txt { font-size: 30rpx; font-weight: 600; color: var(--c-text); }
+.empty__sub { font-size: 25rpx; color: var(--c-text-3); margin-top: 12rpx; line-height: 1.6; }
+.empty__cta { margin-top: 28rpx; }
+
 /* 预览层 */
 .preview-mask {
   position: fixed; inset: 0; z-index: 60;

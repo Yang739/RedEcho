@@ -35,16 +35,30 @@ Page({
 
   load() {
     this.setData({ loading: true })
+    // 防御：任何异常（含极偶发的 promise 不 settle）都强制在 1.5s 后结束 loading，
+    // 避免出现"画廊永久空白"被误判为未渲染。
+    const guard = setTimeout(() => {
+      if (this.data.loading) {
+        console.warn('[create] 加载超时兜底：强制结束 loading，避免画廊空白')
+        this.setData({ loading: false })
+      }
+    }, 1500)
     api.getPostcards()
       .then((list) => {
+        clearTimeout(guard)
         const decorated = list.map((p) => decorateCard(p))
         this.setData({
           postcards: decorated.slice(0, MAX_SHOW),
           hasWorks: list.length > 0,
           loading: false
         })
+        console.log('[create] 作品加载完成', { raw: list.length, shown: decorated.length, hasWorks: list.length > 0 })
       })
-      .catch(() => this.setData({ loading: false }))
+      .catch((e) => {
+        clearTimeout(guard)
+        console.error('[create] 获取作品失败', e)
+        this.setData({ loading: false })
+      })
   },
 
   // 「创作红色记忆」卡片入口：进入生成页（场景选择留在生成页内）
