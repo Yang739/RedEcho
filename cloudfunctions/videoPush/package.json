@@ -1,0 +1,9 @@
+{
+  "name": "videoPush",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: videoPush",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

@@ -49,8 +49,13 @@ Page({
   },
 
   // 工作人员模式（场务/演员登录与功能面板）
+  // 已登录 → 直接回工作人员主页；未登录 → 进入登录页
   onStaff() {
-    wx.navigateTo({ url: '/pages/staff/staff' })
+    if (this.data.isStaff) {
+      wx.reLaunch({ url: '/pages/staff/home/home' })
+    } else {
+      wx.navigateTo({ url: '/pages/staff/staff' })
+    }
   },
 
   // 通知设置
@@ -132,7 +137,7 @@ Page({
       success: (r) => {
         if (r.confirm) {
           store.clearStaff()
-          wx.showToast({ title: '已退出登录', icon: 'none' })
+          wx.reLaunch({ url: '/pages/home/home' })
         }
       }
     })

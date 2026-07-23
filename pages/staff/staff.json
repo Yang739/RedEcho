@@ -1,6 +1,4 @@
 {
-  "navigationBarTitleText": "操作人员入口",
-  "usingComponents": {
-    "re-card": "/components/re-card/re-card"
-  }
+  "navigationBarTitleText": "工作人员登录",
+  "usingComponents": {}
 }

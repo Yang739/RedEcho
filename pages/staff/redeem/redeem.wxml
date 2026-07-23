@@ -1,0 +1,49 @@
+<view class="page">
+  <view class="hero">订单核销</view>
+  <view class="sub">扫描或输入文创兑换核销码，完成现场核销</view>
+
+  <view wx:if="{{!canRedeem}}" class="deny">你当前身份无订单核销权限（仅场务 / 管理员可操作）</view>
+
+  <block wx:else>
+    <view class="form">
+      <view class="field">
+        <text class="field__label">核销码</text>
+        <input class="field__input" placeholder="输入核销码，如 R..." value="{{code}}" bindinput="onCode" />
+      </view>
+      <view class="btn-row">
+        <view class="btn btn-ghost btn-sm tap" bindtap="onScan">扫码核销</view>
+        <view class="btn btn-primary btn-sm tap" bindtap="onRedeem">确认核销</view>
+      </view>
+    </view>
+
+    <!-- 核销结果 -->
+    <view wx:if="{{result}}" class="result {{result.ok ? 'result--ok' : 'result--fail'}}">
+      <block wx:if="{{result.ok}}">
+        <view class="result__title">✓ 核销成功</view>
+        <view class="result__line">商品：{{result.order.title}}</view>
+        <view class="result__line">规格：{{result.order.desc}}</view>
+        <view class="result__line">核销码：{{result.order.code}}</view>
+      </block>
+      <block wx:else>
+        <view class="result__title">✗ 核销失败</view>
+        <view class="result__line">{{result.reason === 'notfound' ? '核销码不存在' : (result.reason === 'redeemed' ? '该订单已核销' : '请重试')}}</view>
+      </block>
+    </view>
+
+    <!-- 最近订单 -->
+    <view class="section-title">最近订单（点击快速核销）</view>
+    <view class="orders">
+      <view wx:for="{{recent}}" wx:key="id" class="order tap" bindtap="onPickRecent" data-code="{{item.code}}">
+        <view class="order__cover" style="background:{{item.gradient}}"></view>
+        <view class="flex-1">
+          <view class="order__title ellipsis">{{item.title}}</view>
+          <view class="text-3 xs">{{item.code}} · {{item.status}}</view>
+        </view>
+        <text class="order__arrow">›</text>
+      </view>
+      <view wx:if="{{!recent.length}}" class="empty">暂无订单记录</view>
+    </view>
+  </block>
+
+  <view class="footer-tip text-3 xs">红韵智演 · 工作人员端</view>
+</view>

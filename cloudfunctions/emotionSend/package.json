@@ -1,0 +1,9 @@
+{
+  "name": "emotionSend",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: emotionSend",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

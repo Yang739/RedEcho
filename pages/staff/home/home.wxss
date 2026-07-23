@@ -1,0 +1,53 @@
+.page { padding: 24rpx; min-height: 100vh; background: #f5f5f5; box-sizing: border-box; }
+
+/* Hero（镜像游客首页） */
+.hero { border-radius: 20rpx; padding: 32rpx; margin-bottom: 24rpx; background: linear-gradient(135deg, #C8161D, #7A0A10); }
+.hero__top { display: flex; align-items: center; }
+.hero__greet { font-size: 36rpx; font-weight: 700; color: #fff; }
+.hero__sub { font-size: 24rpx; color: rgba(255,255,255,.85); margin-top: 8rpx; }
+.hero__role {
+  font-size: 24rpx; color: #fff; background: rgba(255,255,255,.22);
+  padding: 8rpx 20rpx; border-radius: 40rpx; margin-left: 16rpx; flex-shrink: 0;
+}
+.hero__logout { font-size: 26rpx; color: rgba(255,255,255,.9); margin-left: 16rpx; flex-shrink: 0; }
+
+/* 当前演出卡 */
+.cur { display: flex; align-items: center; }
+.cur__cover {
+  width: 120rpx; height: 120rpx; border-radius: 14rpx; flex-shrink: 0; margin-right: 24rpx;
+  position: relative; display: flex; align-items: flex-end; padding: 10rpx; box-sizing: border-box;
+}
+.cur__soon { color: #fff; font-size: 22rpx; opacity: .9; }
+.cur__op { margin-top: 24rpx; }
+.tip { font-size: 26rpx; color: #999; margin-top: 18rpx; }
+
+/* 功能九宫格 */
+.section-title { font-size: 30rpx; font-weight: 700; color: #222; padding: 24rpx 8rpx 16rpx; }
+.grid { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.grid__item {
+  width: calc((100% - 32rpx) / 3);
+  background: #fff; border-radius: 16rpx; padding: 28rpx 16rpx; text-align: center;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,.04);
+}
+.grid__icon { font-size: 48rpx; }
+.grid__name { font-size: 28rpx; font-weight: 600; color: #222; margin-top: 12rpx; }
+.grid__desc { margin-top: 6rpx; line-height: 1.4; }
+
+/* 通知 */
+.notice__item { display: flex; padding: 16rpx 0; border-bottom: 1rpx solid #f0f0f0; }
+.notice__item:last-child { border-bottom: none; }
+.notice__time { width: 96rpx; font-size: 24rpx; color: #999; flex-shrink: 0; }
+.notice__text { flex: 1; font-size: 27rpx; color: #333; }
+
+.footer-tip { text-align: center; margin-top: 40rpx; }
+.empty { color: #999; font-size: 26rpx; padding: 20rpx 0; text-align: center; }
+
+.tip { font-size: 26rpx; color: #999; margin-top: 18rpx; }
+
+/* 直播徽标（与房间页一致） */
+.live__badge {
+  display: inline-flex; align-items: center; gap: 8rpx;
+  background: rgba(0,0,0,.35); color: #fff; font-size: 22rpx;
+  padding: 6rpx 16rpx; border-radius: 40rpx;
+}
+.live-dot { width: 12rpx; height: 12rpx; border-radius: 50%; background: #ff5a5a; box-shadow: 0 0 8rpx #ff5a5a; }

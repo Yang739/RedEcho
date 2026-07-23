@@ -1,0 +1,41 @@
+.page { padding: 24rpx; min-height: 100vh; background: #f5f5f5; box-sizing: border-box; }
+.hero { font-size: 36rpx; font-weight: 700; color: #222; padding: 16rpx 8rpx 12rpx; }
+.sub { font-size: 26rpx; color: #999; padding: 0 8rpx 8rpx; }
+
+.deny {
+  margin-top: 24rpx; background: #fff; border-radius: 16rpx;
+  padding: 28rpx; font-size: 28rpx; color: #C8161D; line-height: 1.6;
+}
+
+.stat {
+  margin-top: 24rpx; background: linear-gradient(135deg, #C8161D, #7A0A10);
+  border-radius: 16rpx; padding: 32rpx; color: #fff; text-align: center;
+}
+.stat__num { font-size: 56rpx; font-weight: 800; }
+.stat__label { margin-top: 6rpx; color: rgba(255,255,255,.85); }
+
+.section-title { font-size: 30rpx; font-weight: 700; color: #222; padding: 28rpx 8rpx 12rpx; }
+
+/* 票数柱 */
+.bar { display: flex; align-items: center; padding: 14rpx 0; }
+.bar__label { width: 140rpx; font-size: 27rpx; color: #333; flex-shrink: 0; }
+.bar__track { flex: 1; height: 28rpx; background: #f0f0f0; border-radius: 14rpx; overflow: hidden; margin: 0 16rpx; }
+.bar__fill { height: 100%; background: linear-gradient(90deg, #E8A33D, #C8161D); border-radius: 14rpx; transition: width .6s ease; }
+.bar__pct { width: 80rpx; text-align: right; font-size: 26rpx; color: #C8161D; font-weight: 600; flex-shrink: 0; }
+
+/* 情绪 */
+.emo { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.emo__item {
+  padding: 14rpx 30rpx; border-radius: 40rpx;
+  border: 2rpx solid #ccc; font-size: 26rpx; font-weight: 600;
+}
+.tip { font-size: 24rpx; color: #999; margin-top: 16rpx; }
+
+/* 弹幕 */
+.danmu__item {
+  display: inline-block; background: #f5f5f5; border-radius: 40rpx;
+  padding: 12rpx 22rpx; font-size: 26rpx; margin: 0 12rpx 12rpx 0;
+}
+
+.footer-tip { text-align: center; margin-top: 40rpx; }
+.empty { color: #999; font-size: 26rpx; padding: 20rpx 0; text-align: center; }

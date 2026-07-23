@@ -15,6 +15,18 @@ cloudfunctions/
 ├── pollVote/           # 游客投票（原子自增 + 一人一票校验） —— 已实现
 ├── submitEmotion/      # 情绪反馈写库 —— 已实现
 ├── getBranch/          # 分支进度 —— 已实现
+├── staffLogin/         # 工作人员登录（手机号+密码） —— 已建（桩）
+├── staffVerify/        # 工作人员 token 校验 —— 已建（桩）
+├── showControl/        # 翻转演出状态（开场/散场） —— 已建（桩）
+├── pollUpdate/         # 开关投票 / 改题 / 改选项 —— 已建（桩）
+├── inviteSet/          # 设置 / 重置邀请码（服务端存储） —— 已建（桩）
+├── verifyInvite/       # 邀请码核验（服务端读取，不下发客户端） —— 已建（桩）
+├── noticePush/         # 推送现场通知 —— 已建（桩）
+├── branchLock/         # 锁定剧情分支走向 —— 已建（桩）
+├── videoPush/          # 弹幕上舞台大屏 —— 已建（桩）
+├── emotionSend/        # 情绪上舞台大屏 —— 已建（桩）
+├── orderRedeem/        # 现场核销文创订单 —— 已建（桩）
+├── dashboardShow/      # 单场次数据看板聚合 —— 已建（桩）
 ├── aiLineGenerate/     # 演员 AI 台词（接腾讯云混元大模型，未配密钥时回退示例） —— 已实现
 ├── postcardGenerate/   # AIGC 明信片（接腾讯云 AI 绘画文生图，未配密钥时回退 CSS） —— 已实现
 ├── createOrder/        # 商城下单 —— 已实现
@@ -85,8 +97,8 @@ npm install
 | ✅ 已实现 | getOrders | 积分商城兑换订单 |
 | ✅ 已实现 | getStatistics | 运营看板聚合 |
 | ⬜ 待补 | authLogin | 微信手机号一键登录（code2Session+手机号） |
-| ⬜ 待补 | staffLogin | 工作人员登录（手机号+密码/验证码） |
-| ⬜ 待补 | staffVerify | 工作人员双因子二次验证 |
+| 🟢 已建 | staffLogin | 工作人员登录（手机号+密码） |
+| 🟢 已建 | staffVerify | 工作人员 token 校验 |
 | ✅ 已实现 | getUserProfile | 个人中心信息（档案+积分+统计+订单） |
 | ⬜ 待补 | updateUserProfile | 更新昵称/头像/字号偏好 |
 | ⬜ 待补 | cardList | 卡片列表（分页/分类/关键词） |
@@ -100,18 +112,20 @@ npm install
 | ✅ 已实现 | showReview | 演出回顾（场次+我的投票+情绪分布+金句） |
 | ⬜ 待补 | showCreate | 场务创建场次 |
 | ⬜ 待补 | showUpdate | 场务编辑场次 |
-| ⬜ 待补 | showControl | 环节总控（投票/短片/结束） |
+| 🟢 已建 | showControl | 翻转演出状态（开场/散场） |
+| 🟢 已建 | inviteSet | 设置/重置邀请码（服务端存储） |
+| 🟢 已建 | verifyInvite | 邀请码核验（服务端读取，不下发客户端） |
 | ⬜ 待补 | segmentStart | 开始某环节 |
 | ⬜ 待补 | segmentEnd | 结束某环节 |
-| ⬜ 待补 | pollUpdate | 实时修改题目/选项 |
-| ⬜ 待补 | branchLock | 根据投票锁定剧情分支 |
-| ⬜ 待补 | videoPush | 上传并推送历史短片 |
+| 🟢 已建 | pollUpdate | 开关投票/改题/改选项 |
+| 🟢 已建 | branchLock | 锁定剧情分支走向 |
+| 🟢 已建 | videoPush | 弹幕上舞台大屏 |
 | ⬜ 待补 | activityStart | 发起现场答题抽奖 |
 | ⬜ 待补 | activityJudge | 自动判分并发放积分 |
 | ⬜ 待补 | showHistory | 历史演出数据 |
 | ⬜ 待补 | pollStart | 场务发布投票（推 IM 群） |
 | ⬜ 待补 | pollResult | 实时投票结果（柱状图/弹幕） |
-| ⬜ 待补 | emotionSend | 发送表情/短语（可上大屏） |
+| 🟢 已建 | emotionSend | 情绪上舞台大屏 |
 | ⬜ 待补 | emotionStats | 表情统计（大屏用） |
 | ⬜ 待补 | videoGet | 游客获取当前推送短片地址 |
 | ⬜ 待补 | aiLineList | 台词本（历史 AI 台词） |
@@ -124,10 +138,10 @@ npm install
 | ⬜ 待补 | postcardShare | 保存高清图/生成分享卡片 |
 | ⬜ 待补 | productList | 商品列表 |
 | ⬜ 待补 | orderPay | 微信支付统一下单（预留） |
-| ⬜ 待补 | orderRedeem | 现场核销（校验核销码） |
+| 🟢 已建 | orderRedeem | 现场核销文创订单 |
 | ⬜ 待补 | orderCancel | 取消/退款 |
 | ⬜ 待补 | dashboardDaily | 当日运营明细 |
-| ⬜ 待补 | dashboardShow | 单场次运营明细 |
+| 🟢 已建 | dashboardShow | 单场次数据看板聚合 |
 | ⬜ 待补 | imUserSig | 获取腾讯云 IM 用户签名 |
 | ⬜ 待补 | imCallback | IM 消息回调落库 |
 | ⬜ 待补 | taskDailyReset | 每日 0 点重置与生成统计（定时） |

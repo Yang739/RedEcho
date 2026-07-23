@@ -1,0 +1,9 @@
+{
+  "name": "staffLogin",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: staffLogin",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

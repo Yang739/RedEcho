@@ -12,6 +12,7 @@ const resources = require('./resources.js')
 const postcards = require('./postcards.js')
 const store = require('../store.js')
 const mall = require('./mall.js')
+const storage = require('./storage.js')
 const { ENV } = require('../config.js')
 
 // 是否启用真实云函数：ENV 不是占位符即视为已配置真实环境
@@ -65,7 +66,57 @@ function sortShows(list, filter) {
   return active.concat(ended)
 }
 
+// ===== 工作人员模式（双轨：mock 本地 + 云函数） =====
+// 演示账号（与 staff.js 共用，单一数据源）
+const DEMO_ACCOUNTS = {
+  '13700000000': { name: '管理员演示员', role: 'admin', roleName: '管理员' },
+  '13800000000': { name: '场务演示员', role: 'field', roleName: '场务' },
+  '13900000000': { name: '演员演示员', role: 'actor', roleName: '演员' }
+}
+const DEMO_PWD = '123456'
+
+// 工作人员对演出的本地配置覆盖：{ [showId]: { status, inviteCode, pollOpen, question, options, branch } }
+// 重进保留，使 mock 模式下工作人员操作可持久化（云模式由服务端保证）。
+const SHOW_CFG_KEY = 'rede_show_config'
+const NOTICE_KEY = 'rede_notices'
+const STAGE_KEY = 'rede_stage'
+
+function readShowConfig() { return storage.get(SHOW_CFG_KEY, {}) }
+function writeShowConfig(map) { storage.set(SHOW_CFG_KEY, map) }
+
+// 应用覆盖到演出对象（不污染 mock 源）
+function applyShowConfig(show) {
+  const cfg = readShowConfig()[show.id]
+  if (!cfg) return show
+  const out = Object.assign({}, show)
+  if (cfg.status !== undefined) out.status = cfg.status
+  if (cfg.inviteCode !== undefined) out.inviteCode = cfg.inviteCode
+  if (cfg.pollOpen !== undefined) out.pollOpen = cfg.pollOpen
+  return out
+}
+
+// 应用工作人员改过的投票题目 / 选项
+function applyPollConfig(showId) {
+  const cfg = readShowConfig()[showId]
+  const p = Object.assign({}, mock.poll)
+  if (cfg) {
+    if (cfg.question !== undefined) p.question = cfg.question
+    if (cfg.options !== undefined) p.options = cfg.options
+  }
+  return p
+}
+
+function readNoticeOverride() { return storage.get(NOTICE_KEY, {}) }
+
+function dashPct(options) {
+  const total = options.reduce((s, o) => s + o.votes, 0) || 1
+  return options.map((o) => Object.assign({}, o, { pct: Math.round((o.votes / total) * 100) }))
+}
+
 module.exports = {
+  DEMO_ACCOUNTS,
+  DEMO_PWD,
+
   /* ---------------- 首页 ---------------- */
   getHomeData() {
     // 资料卡片统一取本地精选内容（湖南主题史料），双模式均稳定展示
@@ -95,12 +146,15 @@ module.exports = {
 
   getShowRoom(showId) {
     if (IS_CLOUD) return call('getShowRoom', { showId })
-    const show = mock.shows.find((s) => s.id === showId) || mock.shows[0]
+    let show = mock.shows.find((s) => s.id === showId) || mock.shows[0]
+    show = applyShowConfig(show)            // 应用工作人员改过的 status/inviteCode/pollOpen
+    const poll = applyPollConfig(showId)    // 应用工作人员改过的 question/options
+    const notices = (readNoticeOverride()[showId]) || mock.notices
     return delay({
       show,
-      poll: mock.poll,
+      poll,
       emotions: mock.emotions,
-      notices: mock.notices
+      notices
     })
   },
 
@@ -245,5 +299,117 @@ module.exports = {
       }).then((o) => ({ ok: true, order: Object.assign({}, o, { id: o._id || o.id }) }))
     }
     return delay(mall.purchase(productId, qty), 260)
+  },
+
+  /* ---------------- 工作人员模式（双轨） ---------------- */
+  // 登录：mock 比对 DEMO_ACCOUNTS；云模式走 staffLogin 云函数（返回 {role, roleName, name}）
+  staffLogin(phone, pwd) {
+    if (IS_CLOUD) return call('staffLogin', { phone, pwd })
+    const acc = DEMO_ACCOUNTS[phone]
+    if (!acc || pwd !== DEMO_PWD) return delay({ ok: false, msg: '演示账号或密码错误' }, 200)
+    return delay({ ok: true, name: acc.name, role: acc.role, roleName: acc.roleName }, 200)
+  },
+
+  // 校验工作人员 token（云模式由 staffVerify 校验；mock 直接通过）
+  staffVerify(token, code) {
+    if (IS_CLOUD) return call('staffVerify', { token, code })
+    return delay({ ok: true }, 200)
+  },
+
+  // 翻转演出状态：upcoming→live（开场）/ live→ended（散场）
+  setShowStatus(showId, status) {
+    if (IS_CLOUD) return call('showControl', { showId, status })
+    const cfg = readShowConfig()
+    cfg[showId] = Object.assign({}, cfg[showId], { status })
+    writeShowConfig(cfg)
+    return delay({ ok: true, showId, status }, 200)
+  },
+
+  // 投票管控：patch = { pollOpen?, question?, options? }
+  setPoll(showId, patch) {
+    if (IS_CLOUD) return call('pollUpdate', { showId, patch })
+    const cfg = readShowConfig()
+    cfg[showId] = Object.assign({}, cfg[showId], patch)
+    writeShowConfig(cfg)
+    return delay({ ok: true, showId, patch }, 200)
+  },
+
+  // 设置 / 重置邀请码（注意：生产应服务端存储，不得下发客户端）
+  setInvite(showId, code) {
+    if (IS_CLOUD) return call('inviteSet', { showId, code })
+    const cfg = readShowConfig()
+    cfg[showId] = Object.assign({}, cfg[showId], { inviteCode: (code || '').toUpperCase() })
+    writeShowConfig(cfg)
+    return delay({ ok: true, showId, code }, 200)
+  },
+
+  // 推送现场通知（场务提示），按场次持久化
+  pushNotice(showId, text) {
+    if (IS_CLOUD) return call('noticePush', { showId, text })
+    const all = readNoticeOverride()
+    const base = all[showId] ? all[showId].slice() : mock.notices.slice()
+    const d = new Date()
+    const time = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0')
+    base.unshift({ id: 'n' + Date.now(), text, time })
+    all[showId] = base
+    storage.set(NOTICE_KEY, all)
+    return delay({ ok: true }, 200)
+  },
+
+  // 锁定剧情分支走向
+  lockBranch(showId, branchId) {
+    if (IS_CLOUD) return call('branchLock', { showId, branchId })
+    const cfg = readShowConfig()
+    cfg[showId] = Object.assign({}, cfg[showId], { branch: branchId })
+    writeShowConfig(cfg)
+    return delay({ ok: true, showId, branchId }, 200)
+  },
+
+  // 弹幕上大屏（舞台总控）
+  pushDanmaku(showId, text) {
+    if (IS_CLOUD) return call('videoPush', { showId, text })
+    const stage = storage.get(STAGE_KEY, {})
+    const d = stage[showId] || { danmaku: [], emotions: [] }
+    d.danmaku = d.danmaku.concat({ id: 'm' + Date.now(), text, time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) })
+    stage[showId] = d
+    storage.set(STAGE_KEY, stage)
+    return delay({ ok: true }, 200)
+  },
+
+  // 情绪上大屏（舞台总控）
+  pushEmotion(showId, type) {
+    if (IS_CLOUD) return call('emotionSend', { showId, type })
+    const stage = storage.get(STAGE_KEY, {})
+    const d = stage[showId] || { danmaku: [], emotions: [] }
+    d.emotions = d.emotions.concat({ type })
+    stage[showId] = d
+    storage.set(STAGE_KEY, stage)
+    return delay({ ok: true }, 200)
+  },
+
+  // 订单核销：按核销码查找本地订单，置「已核销」
+  redeemOrder(code) {
+    if (IS_CLOUD) return call('orderRedeem', { code })
+    const list = mall.getOrders()
+    const idx = list.findIndex((o) => o.code === code)
+    if (idx === -1) return delay({ ok: false, reason: 'notfound' }, 200)
+    if (list[idx].status === '已核销') return delay({ ok: false, reason: 'redeemed' }, 200)
+    list[idx] = Object.assign({}, list[idx], { status: '已核销', redeemed_at: Date.now() })
+    storage.set('rede_mall_orders', list)
+    return delay({ ok: true, order: list[idx] }, 200)
+  },
+
+  // 数据看板聚合：投票实时分布 + 情绪类型 + 弹幕流 + 在线人数
+  getDashboard(showId) {
+    if (IS_CLOUD) return call('dashboardShow', { showId })
+    const poll = applyPollConfig(showId)
+    const stage = (storage.get(STAGE_KEY, {})[showId]) || { danmaku: [], emotions: [] }
+    const show = mock.shows.find((s) => s.id === showId) || mock.shows[0]
+    return delay({
+      poll: Object.assign({}, poll, { options: dashPct(poll.options) }),
+      emotions: mock.emotions,
+      danmaku: stage.danmaku.slice(-30).reverse(),
+      online: show.online || 0
+    }, 300)
   }
 }

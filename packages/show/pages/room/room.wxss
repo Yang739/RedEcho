@@ -104,3 +104,21 @@
 .invite__btn { height: 80rpx; min-width: 150rpx; display: flex; align-items: center; justify-content: center; }
 .invite__btn--off { opacity: .45; }
 .invite__err { margin-top: 16rpx; font-size: 24rpx; color: #E23744; }
+
+/* 工作人员管控条 */
+.manage { margin-bottom: 24rpx; }
+.manage__row { display: flex; align-items: center; justify-content: space-between; padding: 16rpx 0; }
+.manage__row.col { flex-direction: column; align-items: stretch; }
+.manage__label { font-size: 28rpx; color: var(--c-text); }
+.manage__inline { display: flex; align-items: center; gap: 16rpx; margin-top: 16rpx; }
+.manage__input { flex: 1; background: var(--c-bg); border: 1rpx solid var(--c-border); border-radius: 12rpx; padding: 16rpx 20rpx; font-size: 28rpx; }
+.manage__none { font-size: 26rpx; color: var(--c-text-3); padding: 12rpx 0; }
+
+/* 分支选项（工作人员锁定用） */
+.branch__opts { display: flex; flex-wrap: wrap; gap: 16rpx; margin-top: 16rpx; }
+.branch__opt {
+  padding: 14rpx 30rpx; border-radius: var(--r-pill);
+  border: 2rpx solid var(--c-border); font-size: 28rpx; font-weight: 600;
+  color: var(--c-text-2); background: var(--c-surface);
+}
+.branch__opt--mine { border-color: var(--c-primary); color: var(--c-primary); }

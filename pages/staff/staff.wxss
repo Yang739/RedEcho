@@ -6,6 +6,7 @@
 }
 
 .hero { font-size: 36rpx; font-weight: 700; color: #222; padding: 16rpx 8rpx 24rpx; }
+.sub { font-size: 26rpx; color: #999; padding: 0 8rpx 8rpx; }
 
 .form { background: #fff; border-radius: 16rpx; padding: 24rpx; }
 .field { display: flex; align-items: center; padding: 24rpx 8rpx; border-bottom: 1rpx solid #f0f0f0; }

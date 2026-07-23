@@ -1,35 +1,29 @@
-// pages/staff/staff.js —— 操作人员（场务/演员）入口
+// pages/staff/staff.js —— 工作人员（场务/演员/管理员）登录页
+// 登录成功后 reLaunch 进入工作人员主页 /pages/staff/home/home（与游客端主页对应）。
+// 已登录状态从设置页二次进入时，自动跳转回主页。
 const store = require('../../store.js')
+const api = require('../../services/api.js')
 
-// 演示用操作人员账号（云函数 staffLogin 未实现前的本地校验）
-const DEMO_ACCOUNTS = {
-  '13800000000': { name: '场务演示员', role: 'field', roleName: '场务' },
-  '13900000000': { name: '演员演示员', role: 'actor', roleName: '演员' }
-}
-const DEMO_PWD = '123456'
-
-const FUNCS = [
-  { key: 'show', name: '场次管理', desc: '创建 / 编辑演出场次' },
-  { key: 'poll', name: '投票发布', desc: '发起实时投票与短片推送' },
-  { key: 'redeem', name: '订单核销', desc: '现场核销文创兑换码' },
-  { key: 'board', name: '数据看板', desc: '游客人数与积分发放统计' }
-]
+const DEMO_ACCOUNTS = api.DEMO_ACCOUNTS
+const DEMO_PWD = api.DEMO_PWD
 
 Page({
   data: {
     phone: '',
     password: '',
     error: '',
-    isStaff: false,
-    staff: null,
-    funcs: FUNCS
+    isStaff: false
   },
 
   unsub: null,
 
   onLoad() {
     this.unsub = store.subscribe((s) => {
-      this.setData({ isStaff: s.isStaff, staff: s.staff })
+      this.setData({ isStaff: s.isStaff })
+      // 已登录：直接回工作人员主页（如从设置二次进入）
+      if (s.isStaff) {
+        wx.reLaunch({ url: '/pages/staff/home/home' })
+      }
     })
   },
 
@@ -43,28 +37,25 @@ Page({
   onLogin() {
     const phone = (this.data.phone || '').trim()
     const pwd = this.data.password || ''
-    if (!/^\d{11}$/.test(phone) || !DEMO_ACCOUNTS[phone]) {
-      this.setData({ error: '请输入有效的演示手机号（13800000000 / 13900000000）' })
+    if (!/^\d{11}$/.test(phone)) {
+      this.setData({ error: '请输入有效的手机号' })
       return
     }
-    if (pwd !== DEMO_PWD) {
-      this.setData({ error: '密码错误，演示密码为 123456' })
-      return
-    }
-    const info = Object.assign({ phone: phone }, DEMO_ACCOUNTS[phone])
-    store.setStaff(info)
-    wx.showToast({ title: '已切换操作人员', icon: 'success' })
-  },
-
-  onFunc(e) {
-    const key = e.currentTarget.dataset.key
-    const map = { show: '场次管理', poll: '投票发布', redeem: '订单核销', board: '数据看板' }
-    wx.showToast({ title: (map[key] || '功能') + '演示中', icon: 'none' })
+    api.staffLogin(phone, pwd).then((r) => {
+      if (!r.ok) {
+        this.setData({ error: r.msg || '账号或密码错误' })
+        return
+      }
+      store.setStaff({ phone: phone, name: r.name, role: r.role, roleName: r.roleName })
+      wx.reLaunch({ url: '/pages/staff/home/home' })
+    }).catch(() => {
+      this.setData({ error: '登录服务异常，请稍后重试' })
+    })
   },
 
   onLogout() {
     store.clearStaff()
     this.setData({ phone: '', password: '', error: '' })
-    wx.showToast({ title: '已退出操作人员', icon: 'none' })
+    wx.reLaunch({ url: '/pages/home/home' })
   }
 })

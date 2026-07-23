@@ -1,0 +1,9 @@
+{
+  "name": "pollUpdate",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: pollUpdate",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

@@ -1,0 +1,64 @@
+<view class="page">
+  <!-- 顶部 Hero（镜像游客首页：角色问候 + 角色徽标 + 退出） -->
+  <view class="hero bg-grid fade-up">
+    <view class="hero__top">
+      <view class="flex-1">
+        <view class="hero__greet">{{greeting}}，{{staff.name}}</view>
+        <view class="hero__sub">红韵智演 · 工作人员模式</view>
+      </view>
+      <view class="hero__role">{{staff.roleName}}</view>
+      <view class="hero__logout tap" bindtap="onLogout">退出 ›</view>
+    </view>
+  </view>
+
+  <!-- 当前演出状态卡 -->
+  <re-card title="当前演出">
+    <block wx:if="{{currentShow}}">
+      <view class="cur">
+        <view class="cur__cover" style="background:{{currentShow.gradient}}">
+          <view wx:if="{{currentShow.status === 'live'}}" class="live__badge"><view class="live-dot"></view><text>直播中</text></view>
+          <view wx:elif="{{currentShow.status === 'upcoming'}}" class="cur__soon">即将开始</view>
+        </view>
+        <view class="cur__body flex-1">
+          <view class="subtitle ellipsis">{{currentShow.title}}</view>
+          <view class="text-3 sm">{{currentShow.venue}}</view>
+          <view class="text-3 xs" style="margin-top:6rpx">{{currentShow.date}}</view>
+        </view>
+      </view>
+      <view wx:if="{{canShowControl}}" class="cur__op">
+        <view class="btn btn-primary btn-block tap"
+          bindtap="onToggleShow">{{currentShow.status === 'live' ? '结束演出' : '开始演出'}}</view>
+      </view>
+      <view wx:else class="tip">你有权查看本场状态，但无开场/散场操作权限</view>
+    </block>
+    <view wx:else class="empty">当前没有进行中或即将开始的演出</view>
+  </re-card>
+
+  <!-- 功能快捷入口（按角色过滤） -->
+  <view class="section-title">管理功能</view>
+  <view class="grid">
+    <view
+      wx:for="{{funcs}}"
+      wx:key="key"
+      class="grid__item tap"
+      bindtap="onFunc"
+      data-item="{{item}}"
+    >
+      <view class="grid__icon">{{item.icon}}</view>
+      <view class="grid__name">{{item.name}}</view>
+      <view class="grid__desc text-3 xs">{{item.desc}}</view>
+    </view>
+  </view>
+
+  <!-- 现场通知（所有 staff 可见，与房间页同源） -->
+  <view class="section-title">现场通知</view>
+  <re-card title="实时提示">
+    <view wx:if="{{!notices.length}}" class="empty">暂无现场通知</view>
+    <view wx:for="{{notices}}" wx:key="id" class="notice__item">
+      <text class="notice__time">{{item.time}}</text>
+      <text class="notice__text">{{item.text}}</text>
+    </view>
+  </re-card>
+
+  <view class="footer-tip text-3 xs">红韵智演 · 工作人员端</view>
+</view>

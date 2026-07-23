@@ -1,0 +1,145 @@
+// pages/staff/home/home.js —— 工作人员主页（与游客端 /pages/home/home 对应）
+// 登录后进入；结构镜像游客首页：Hero(角色问候) + 当前演出状态卡 + 功能快捷入口 + 现场通知。
+const store = require('../../../store.js')
+const api = require('../../../services/api.js')
+const perm = require('../../../services/permission.js')
+
+// 功能快捷入口：action 决定可见性（staffCan），url 决定去向
+//   url='room'      → 进房间管理页 /packages/show/pages/room/room?id=xxx&manage=1
+//   url='redeem'    → 订单核销页
+//   url='dashboard' → 数据看板页
+const FUNC_ITEMS = [
+  { key: 'show',    action: 'show_control',  name: '场次管理', desc: '开场 / 散场 / 状态', icon: '🎬', url: 'room' },
+  { key: 'poll',    action: 'poll_manage',   name: '投票发布', desc: '开关投票 / 改题',   icon: '🗳️', url: 'room' },
+  { key: 'invite',  action: 'invite_set',    name: '邀请码',   desc: '设置 / 重置',       icon: '🔑', url: 'room' },
+  { key: 'notice',  action: 'notice_push',   name: '现场通知', desc: '推送场务提示',     icon: '📢', url: 'room' },
+  { key: 'branch',  action: 'branch_lock',   name: '分支总控', desc: '锁定剧情走向',     icon: '🌿', url: 'room' },
+  { key: 'stage',   action: 'stage_push',    name: '舞台总控', desc: '弹幕 / 情绪上屏',  icon: '🖥️', url: 'room' },
+  { key: 'redeem',  action: 'order_redeem',  name: '订单核销', desc: '扫码核销文创',     icon: '✅', url: 'redeem' },
+  { key: 'board',   action: 'view_data',     name: '数据看板', desc: '实时票数 / 情绪',  icon: '📊', url: 'dashboard' }
+]
+
+Page({
+  data: {
+    staff: { name: '', roleName: '', role: '' },
+    greeting: '你好',
+    currentShow: null,     // 当前 live/upcoming 场次
+    canShowControl: false, // 是否有开场/散场权限
+    funcs: [],             // 按权限过滤后的功能项
+    notices: []
+  },
+
+  unsub: null,
+
+  onLoad() {
+    this.unsub = store.subscribe((s) => {
+      if (!s.isStaff) {
+        // 已退出：回游客端
+        wx.reLaunch({ url: '/pages/home/home' })
+        return
+      }
+      const staff = s.staff || { name: '工作人员', roleName: '', role: '' }
+      this.setData({
+        staff,
+        greeting: this.greet(),
+        funcs: FUNC_ITEMS
+          .filter((f) => perm.staffCan(f.action))
+          .map((f) => Object.assign({}, f, { can: true }))
+      })
+    })
+    this.loadShow()
+  },
+
+  onShow() {
+    // 从子页返回时刷新通知与功能
+    this.loadShow()
+  },
+
+  onUnload() {
+    if (this.unsub) this.unsub()
+  },
+
+  greet() {
+    const h = new Date().getHours()
+    if (h < 6) return '夜深了'
+    if (h < 12) return '早上好'
+    if (h < 14) return '中午好'
+    if (h < 18) return '下午好'
+    return '晚上好'
+  },
+
+  // 取当前演出（优先 live，否则 upcoming），并拉取现场通知
+  loadShow() {
+    const pick = (list) => {
+      const live = list.find((s) => s.status === 'live')
+      const up = list.find((s) => s.status === 'upcoming')
+      return live || up || null
+    }
+    api.getShows('all').then((list) => {
+      const cur = pick(list)
+      this.setData({
+        currentShow: cur,
+        canShowControl: perm.staffCan('show_control')
+      })
+      if (cur) {
+        api.getShowRoom(cur.id).then((d) => {
+          this.setData({ notices: d.notices || [] })
+        })
+      } else {
+        this.setData({ notices: [] })
+      }
+    })
+  },
+
+  // 跳转功能子页
+  onFunc(e) {
+    const item = e.currentTarget.dataset.item
+    if (item.url === 'room') {
+      const id = (this.data.currentShow && this.data.currentShow.id) || 's1'
+      wx.navigateTo({ url: `/packages/show/pages/room/room?id=${id}&manage=1` })
+    } else if (item.url === 'redeem') {
+      wx.navigateTo({ url: '/pages/staff/redeem/redeem' })
+    } else if (item.url === 'dashboard') {
+      const id = (this.data.currentShow && this.data.currentShow.id) || 's1'
+      wx.navigateTo({ url: `/pages/staff/dashboard/dashboard?id=${id}` })
+    }
+  },
+
+  // 开场 / 散场
+  onToggleShow() {
+    const cur = this.data.currentShow
+    if (!cur) return
+    const toEnded = cur.status === 'live'
+    const next = toEnded ? 'ended' : 'live'
+    const tip = toEnded ? '确认结束本场演出？' : '确认开始本场演出？'
+    wx.showModal({
+      title: '演出状态',
+      content: tip,
+      confirmText: toEnded ? '结束' : '开始',
+      confirmColor: '#C8161D',
+      success: (r) => {
+        if (!r.confirm) return
+        api.setShowStatus(cur.id, next).then(() => {
+          wx.showToast({ title: toEnded ? '已结束演出' : '已开始演出', icon: 'success' })
+          this.loadShow()
+        })
+      }
+    })
+  },
+
+  // 退出工作人员登录：回游客端首页
+  onLogout() {
+    wx.showModal({
+      title: '退出工作人员登录',
+      content: '将退出当前工作人员身份，返回游客端。',
+      confirmText: '退出',
+      confirmColor: '#C8161D',
+      success: (r) => {
+        if (r.confirm) {
+          store.clearStaff()
+          wx.reLaunch({ url: '/pages/home/home' })
+        }
+      }
+    })
+  }
+})

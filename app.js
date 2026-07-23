@@ -1,5 +1,6 @@
 // app.js
 const { ENV, DEBUG } = require('./config.js')
+const store = require('./store.js')
 
 App({
   globalData: {
@@ -16,18 +17,21 @@ App({
     // 占位符环境 ID 表示使用本地 mock 调试，无需初始化云开发（避免控制台报 env 不存在）
     if (ENV === 'your-cloud-env-id') {
       if (DEBUG) console.log('[RedEcho] 未配置云环境，使用本地 mock 数据调试')
-      return
+    } else {
+      wx.cloud.init({
+        // 使用你在「云开发控制台 - 设置」中看到的环境 ID
+        env: ENV,
+        // 在用户管理中记录访问用户，便于排查
+        traceUser: true
+      })
+      if (DEBUG) {
+        console.log('[RedEcho] 云开发环境已初始化，env =', ENV)
+      }
     }
 
-    wx.cloud.init({
-      // 使用你在「云开发控制台 - 设置」中看到的环境 ID
-      env: ENV,
-      // 在用户管理中记录访问用户，便于排查
-      traceUser: true
-    })
-
-    if (DEBUG) {
-      console.log('[RedEcho] 云开发环境已初始化，env =', ENV)
+    // 启动分流：已登录工作人员直接进入自己主页（与游客启动进 pages/home/home 对应）
+    if (store.getState().isStaff) {
+      wx.reLaunch({ url: '/pages/staff/home/home' })
     }
   }
 })
