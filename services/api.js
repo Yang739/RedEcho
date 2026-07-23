@@ -42,6 +42,29 @@ function jitter(map) {
   return map.map((o) => ({ ...o, votes: o.votes + Math.floor(Math.random() * 6) }))
 }
 
+// 演出按开始时间排序：date 形如 "2026-07-18 19:30" 或 "2026-07-18"。
+// 用 replace(' ','T') 兼容 iOS 端 Date 解析空格格式可能返回 NaN 的坑。
+function showTimeOf(s) {
+  if (!s || !s.date) return 0
+  const t = new Date(String(s.date).replace(' ', 'T')).getTime()
+  return isNaN(t) ? String(s.date) : t
+}
+function sortShows(list, filter) {
+  const cmp = (a, b) => {
+    const ta = showTimeOf(a), tb = showTimeOf(b)
+    if (typeof ta === 'string' || typeof tb === 'string') {
+      return String(ta) < String(tb) ? -1 : String(ta) > String(tb) ? 1 : 0
+    }
+    return ta - tb
+  }
+  const arr = (list || []).slice()
+  if (filter !== 'all') return arr.sort(cmp)
+  // 「全部」：非已结束按时间在前；已结束单独按时间排在末尾
+  const active = arr.filter((s) => s.status !== 'ended').sort(cmp)
+  const ended = arr.filter((s) => s.status === 'ended').sort(cmp)
+  return active.concat(ended)
+}
+
 module.exports = {
   /* ---------------- 首页 ---------------- */
   getHomeData() {
@@ -61,10 +84,13 @@ module.exports = {
   },
 
   /* ---------------- 演出 ---------------- */
+  // 演出按开始时间排序：date 形如 "2026-07-18 19:30" 或 "2026-07-18"。
+  // 用 replace(' ','T') 兼容 iOS 端 Date 解析空格格式可能返回 NaN 的坑。
   getShows(filter = 'all') {
-    if (IS_CLOUD) return call('getShows', { status: filter })
-    const list = filter === 'all' ? mock.shows : mock.shows.filter((s) => s.status === filter)
-    return delay(list, 360)
+    const raw = IS_CLOUD
+      ? call('getShows', { status: filter })
+      : delay(filter === 'all' ? mock.shows : mock.shows.filter((s) => s.status === filter), 360)
+    return raw.then((list) => sortShows(list, filter))
   },
 
   getShowRoom(showId) {
