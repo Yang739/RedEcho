@@ -29,7 +29,12 @@ Page({
     this.setData({ loading: true })
     api.getShows(this.data.filter)
       .then((list) => this.setData({ list, loading: false }))
-      .catch(() => this.setData({ loading: false }))
+      .catch((err) => {
+        // 诊断用：把真实错误暴露出来，避免静默空白
+        console.error('[getShows] 加载失败:', err)
+        wx.showToast({ title: '演出加载失败: ' + ((err && err.message) || '未知错误').slice(0, 28), icon: 'none' })
+        this.setData({ loading: false })
+      })
   },
 
   onFilter(e) {
