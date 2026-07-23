@@ -28,9 +28,14 @@ Page({
     if (this.unsub) this.unsub()
   },
 
-  // 进入个人资料（修改昵称 / 头像）
+  // 进入头像编辑（仅修改头像）：顶部资料卡「编辑 ›」入口
   onProfile() {
     wx.navigateTo({ url: '/pages/profile/profile' })
+  },
+
+  // 进入个人资料（修改昵称 / 签名 / 性别 / 生日 / 手机 / 密码）：账号卡片「个人资料」入口
+  onInfo() {
+    wx.navigateTo({ url: '/pages/info/info' })
   },
 
   // 进入操作人员入口（登录 / 切换工作人员模式）

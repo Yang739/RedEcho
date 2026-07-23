@@ -8,6 +8,7 @@
     </view>
     <view class="flex-1">
       <view class="profile__name">{{pf.nickname}}</view>
+      <view class="profile__sign" wx:if="{{pf.signature}}">{{pf.signature}}</view>
       <re-tag type="accent" solid>{{user.level}}</re-tag>
     </view>
   </view>

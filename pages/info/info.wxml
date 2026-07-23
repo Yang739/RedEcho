@@ -1,0 +1,38 @@
+<view class="page">
+  <re-card title="基本信息">
+    <view class="form-row">
+      <text class="form-label">昵称</text>
+      <input class="form-input" value="{{nickname}}" bindinput="onNickname" maxlength="20" placeholder="请输入昵称"/>
+    </view>
+    <view class="form-row form-row--top">
+      <text class="form-label">个性签名</text>
+      <textarea class="form-textarea" value="{{signature}}" bindinput="onSignature" maxlength="50" placeholder="一句话介绍自己" auto-height/>
+    </view>
+  </re-card>
+
+  <re-card title="详细信息">
+    <view class="form-row">
+      <text class="form-label">性别</text>
+      <picker class="form-picker" mode="selector" range="{{genders}}" value="{{genderIndex}}" bindchange="onGender">
+        <view class="form-picker__val">{{gender || '未设置'}} ›</view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <text class="form-label">出生日期</text>
+      <picker class="form-picker" mode="date" value="{{birthday}}" start="1900-01-01" end="{{today}}" bindchange="onBirthday">
+        <view class="form-picker__val">{{birthday || '未设置'}} ›</view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <text class="form-label">手机号</text>
+      <input class="form-input" type="number" value="{{phone}}" bindinput="onPhone" maxlength="11" placeholder="请输入手机号"/>
+    </view>
+    <view class="form-row">
+      <text class="form-label">密码</text>
+      <input class="form-input" password value="{{password}}" bindinput="onPassword" placeholder="留空则不修改"/>
+    </view>
+  </re-card>
+
+  <button class="btn btn-primary btn-block pf-save" bindtap="onSave">保存</button>
+  <view class="footer-tip text-3 xs">个人资料仅保存在本设备</view>
+</view>

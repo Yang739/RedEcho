@@ -8,12 +8,6 @@
     <view class="pf-tip text-3 xs">支持从相册 / 相机选择照片，或使用下方预设形象</view>
   </re-card>
 
-  <re-card title="昵称">
-    <view class="form-row">
-      <input class="form-input" value="{{nickname}}" bindinput="onNickname" maxlength="20" placeholder="请输入昵称"/>
-    </view>
-  </re-card>
-
   <re-card title="预设形象">
     <view class="pf-grid">
       <view

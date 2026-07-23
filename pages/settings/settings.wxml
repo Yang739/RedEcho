@@ -14,7 +14,7 @@
   </view>
 
   <re-card title="账号与身份">
-    <view class="row tap" bindtap="onProfile">
+    <view class="row tap" bindtap="onInfo">
       <text class="row__label">个人资料</text>
       <text class="row__arrow">›</text>
     </view>

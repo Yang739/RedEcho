@@ -1,4 +1,4 @@
-// pages/profile/profile.js —— 个人资料（昵称 / 头像）
+// pages/profile/profile.js —— 头像编辑（仅修改头像，昵称等信息在「个人资料」页）
 const store = require('../../store.js')
 
 // 预设形象：emoji + 渐变底色
@@ -15,7 +15,6 @@ const PRESETS = [
 
 Page({
   data: {
-    nickname: '',
     avatarText: '红',
     avatar: '',          // 上传图片的持久化路径（saveFileSync）
     avatarEmoji: '🎯',
@@ -26,20 +25,14 @@ Page({
 
   onLoad() {
     const p = store.getState().profile || {}
-    const nickname = p.nickname || '红色旅人'
     this.setData({
-      nickname,
-      avatarText: p.avatarText || nickname.charAt(0) || '红',
+      // 头像页不改昵称，故 avatarText 沿用当前昵称首字（避免回退成默认值）
+      avatarText: p.avatarText || (p.nickname || '红色旅人').charAt(0) || '红',
       avatar: p.avatar || '',
       avatarEmoji: p.avatarEmoji || '🎯',
       avatarGradient: p.avatarGradient || 'linear-gradient(135deg,#C8161D,#7A0A10)',
       avatarMode: p.avatar ? 'image' : 'emoji'
     })
-  },
-
-  onNickname(e) {
-    const nickname = e.detail.value
-    this.setData({ nickname, avatarText: nickname.charAt(0) || '红' })
   },
 
   onSelectPreset(e) {
@@ -69,14 +62,9 @@ Page({
   },
 
   onSave() {
-    const nickname = (this.data.nickname || '').trim()
-    if (!nickname) {
-      wx.showToast({ title: '昵称不能为空', icon: 'none' })
-      return
-    }
+    // 仅保存头像相关字段（setProfile 合并，不覆盖昵称等其它资料）
     store.setProfile({
-      nickname,
-      avatarText: nickname.charAt(0),
+      avatarText: this.data.avatarText,
       avatar: this.data.avatar,
       avatarEmoji: this.data.avatarEmoji,
       avatarGradient: this.data.avatarGradient

@@ -14,7 +14,7 @@ const POINTS_INIT_KEY = 'rede_points_init' // 迁移标记：旧版曾把种子 
 const SEED_POINTS = 0
 const LOG_MAX = 100               // 明细最多保留条数
 const STAFF_KEY = 'rede_staff'    // 操作人员（场务/演员）登录态
-const PROFILE_KEY = 'rede_profile' // 个人资料（昵称 / 头像）
+const PROFILE_KEY = 'rede_profile' // 个人资料（昵称 / 头像 / 签名 / 性别 / 生日 / 手机 / 密码）
 
 function todayStr() {
   const d = new Date()
@@ -53,14 +53,21 @@ function loadStaff() {
   return v && typeof v === 'object' ? v : null
 }
 
-// 个人资料（昵称 / 头像）：avatar 为上传图片持久化路径；avatarEmoji + avatarGradient 为预设形象
+// 个人资料（昵称 / 头像 / 签名 / 性别 / 生日 / 手机 / 密码）
+// avatar 为上传图片持久化路径；avatarEmoji + avatarGradient 为预设形象
+// signature/gender/birthday/phone/password 为「个人资料」页编辑的扩展字段
 function loadProfile() {
   const def = {
     nickname: '红色旅人',
     avatarText: '红',
     avatar: '',
     avatarEmoji: '🎯',
-    avatarGradient: 'linear-gradient(135deg,#C8161D,#7A0A10)'
+    avatarGradient: 'linear-gradient(135deg,#C8161D,#7A0A10)',
+    signature: '',   // 个性签名
+    gender: '',      // 性别：男 / 女 / 保密
+    birthday: '',    // 出生日期 YYYY-MM-DD
+    phone: '',       // 手机号
+    password: ''     // 登录密码（仅本地演示存储，生产环境切勿明文保存）
   }
   const v = storage.get(PROFILE_KEY, null)
   if (v && typeof v === 'object') return Object.assign({}, def, v)
@@ -144,7 +151,7 @@ module.exports = {
     notify()
   },
 
-  // 更新个人资料（昵称 / 头像）：合并后持久化
+  // 更新个人资料（昵称 / 头像 / 签名 / 性别 / 生日 / 手机 / 密码）：合并后持久化
   setProfile(patch) {
     if (!patch || typeof patch !== 'object') return
     state.profile = Object.assign({}, state.profile, patch)
