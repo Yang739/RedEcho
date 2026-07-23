@@ -27,20 +27,6 @@
     <view class="points__cta">明细 ›</view>
   </view>
 
-  <!-- 数据统计 -->
-  <view class="stats">
-    <view
-      class="stats__item tap"
-      wx:for="{{statsList}}"
-      wx:key="key"
-      bindtap="onStat"
-      data-key="{{item.key}}"
-    >
-      <view class="stats__num">{{item.value}}</view>
-      <view class="stats__label text-3 xs">{{item.label}}</view>
-    </view>
-  </view>
-
   <!-- 服务菜单 -->
   <re-card title="我的服务">
     <view class="menu">

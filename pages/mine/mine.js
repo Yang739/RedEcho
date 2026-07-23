@@ -1,9 +1,6 @@
 // pages/mine/mine.js
 const api = require('../../services/api.js')
 const store = require('../../store.js')
-const favorites = require('../../services/favorites.js')
-const postcards = require('../../services/postcards.js')
-const mall = require('../../services/mall.js')
 
 Page({
   data: {
@@ -11,7 +8,6 @@ Page({
     pf: { nickname: '红色旅人', avatarText: '红', avatar: '', avatarEmoji: '🎯', avatarGradient: 'linear-gradient(135deg,#C8161D,#7A0A10)' },
     points: 0,
     todayGain: 0,
-    statsList: [],
     menus: [
       { key: 'postcards', name: '我的作品' },
       { key: 'mall', name: '积分商城' },
@@ -32,36 +28,13 @@ Page({
     api.getMine().then((d) => {
       this.setData({
         user: d.user,
-        points: d.points,
-        statsList: [
-          { key: 'postcards', label: '作品', value: postcards.getList().length },
-          { key: 'mall', label: '商城', value: mall.getOrders().length },
-          { key: 'favorites', label: '收藏', value: favorites.getList().length }
-        ]
+        points: d.points
       })
     })
   },
 
-  // 回到「我的」时刷新收藏数 / 作品数 / 商城数（从对应页返回后即时更新）
+  // 回到「我的」时刷新 tabBar 选中态
   onShow() {
-    const statsList = this.data.statsList.slice()
-    let changed = false
-    const fIdx = statsList.findIndex((s) => s.key === 'favorites')
-    if (fIdx !== -1 && statsList[fIdx].value !== favorites.getList().length) {
-      statsList[fIdx] = Object.assign({}, statsList[fIdx], { value: favorites.getList().length })
-      changed = true
-    }
-    const pIdx = statsList.findIndex((s) => s.key === 'postcards')
-    if (pIdx !== -1 && statsList[pIdx].value !== postcards.getList().length) {
-      statsList[pIdx] = Object.assign({}, statsList[pIdx], { value: postcards.getList().length })
-      changed = true
-    }
-    const mIdx = statsList.findIndex((s) => s.key === 'mall')
-    if (mIdx !== -1 && statsList[mIdx].value !== mall.getOrders().length) {
-      statsList[mIdx] = Object.assign({}, statsList[mIdx], { value: mall.getOrders().length })
-      changed = true
-    }
-    if (changed) this.setData({ statsList })
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 3 })
     }
@@ -73,13 +46,6 @@ Page({
 
   onPoints() {
     wx.navigateTo({ url: '/pages/points/points' })
-  },
-
-  onStat(e) {
-    const key = e.currentTarget.dataset.key
-    if (key === 'postcards') wx.navigateTo({ url: '/pages/works/works' })
-    else if (key === 'mall') wx.navigateTo({ url: '/pages/mall/mall' })
-    else wx.showToast({ title: '功能开发中', icon: 'none' })
   },
 
   onMenu(e) {
