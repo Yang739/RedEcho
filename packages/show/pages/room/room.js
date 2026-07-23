@@ -14,11 +14,13 @@ Page({
     show: { title: '', segment: '', online: 0, gradient: '', status: '', pollOpen: false },
     poll: { question: '', options: [] },
     emotions: [],
-    branch: { text: '', current: '', locked: false },
+    branch: { text: '', current: '', locked: false, options: [] },
     notices: [],
     messages: [],
     voted: '',
     selectedEmotion: '',
+    branchChoice: '',
+    branchChoiceLabel: '',
     inputValue: '',
     statusBanner: '',
     isEnded: false,
@@ -46,10 +48,17 @@ Page({
       }
       // 邀请码门禁：仅「直播中」场次需要；按场次持久化解锁记录判断，未开始 / 已结束无需门禁
       const unlocked = !!storage.get('rede_invite_unlocked', {})[showId]
-      // 恢复本场已持久化的个人选择（投票 / 情绪），退出重进不再丢失
+      // 恢复本场已持久化的个人选择（投票 / 情绪 / 剧情分支），退出重进不再丢失
       const votes = storage.get('rede_show_votes', {})
       const emos = storage.get('rede_show_emotions', {})
+      const branchMap = storage.get('rede_show_branch', {})
       const myVote = votes[showId] || ''
+      const branchChoice = branchMap[showId] || ''
+      let branchChoiceLabel = ''
+      if (branchChoice && d.branch.options) {
+        const bo = d.branch.options.find((o) => o.id === branchChoice)
+        if (bo) branchChoiceLabel = '你已选择「' + bo.label + '」分支'
+      }
       let pollOpts = d.poll.options
       if (myVote) {
         // 重进后把「我的那一票」补回进度条（mock 降级：云端由原子自增保证持久）
@@ -69,6 +78,8 @@ Page({
         gateNeeded: isLive && !unlocked,
         voted: myVote,
         selectedEmotion: emos[showId] || '',
+        branchChoice,
+        branchChoiceLabel,
         inviteError: ''
       })
       if (awardTip) wx.showToast({ title: awardTip, icon: 'none' })
@@ -117,6 +128,18 @@ Page({
     emos[this.data.showId] = id
     storage.set('rede_show_emotions', emos)
     api.submitEmotion(this.data.showId, id) //  fire-and-forget
+  },
+
+  onBranch(e) {
+    if (this.data.branchChoice) return
+    const id = e.currentTarget.dataset.id
+    const opt = (this.data.branch.options || []).find((o) => o.id === id)
+    if (!opt) return
+    // 按场次持久化剧情分支选择，退出重进仍保留
+    const map = storage.get('rede_show_branch', {})
+    map[this.data.showId] = id
+    storage.set('rede_show_branch', map)
+    this.setData({ branchChoice: id, branchChoiceLabel: '你已选择「' + opt.label + '」分支' })
   },
 
   onInput(e) {

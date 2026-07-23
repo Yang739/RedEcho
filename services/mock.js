@@ -40,9 +40,14 @@ const emotions = [
 ]
 
 const branch = {
-  current: '你已选择「冒险突围」分支',
-  locked: true,
-  text: '枪声响起，主角攥紧胸前的家书，转身没入夜色。这一路，注定九死一生，但火种不能灭。'
+  text: '枪声响起，主角攥紧胸前的家书，转身没入夜色。这一路，注定九死一生，但火种不能灭。',
+  current: '剧情走向，由你的选择决定',
+  locked: false,
+  options: [
+    { id: 'b1', label: '冒险突围' },
+    { id: 'b2', label: '蛰伏待机' },
+    { id: 'b3', label: '寻求外援' }
+  ]
 }
 
 const notices = [

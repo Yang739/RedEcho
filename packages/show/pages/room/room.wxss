@@ -53,6 +53,15 @@
 
 /* 分支 */
 .branch__text { font-size: 28rpx; line-height: 1.7; color: var(--c-text); }
+.branch__opts { display: flex; flex-wrap: wrap; gap: 16rpx; margin-top: 20rpx; }
+.branch__opt {
+  padding: 16rpx 32rpx; border-radius: var(--r-pill);
+  border: 2rpx solid var(--c-border);
+  font-size: 28rpx; font-weight: 600; color: var(--c-text-2);
+  background: var(--c-surface);
+}
+.branch__opt--mine { border-color: var(--c-primary); color: var(--c-primary); }
+.branch__opt--done { color: var(--c-text-3); }
 .branch__state { display: flex; align-items: center; gap: 14rpx; margin-top: 18rpx; }
 
 /* 通知 */
