@@ -89,6 +89,7 @@ function renderPage(p) {
 
 const head =
   '# 源码提交清单（前 30 页 + 后 30 页）\n\n' +
+  '> 软件名称：红韵智演（RedEcho）微信小程序软件　版本号：V1.0.0（须与《软件说明书》《登记申请表》完全一致）\n' +
   '> 依据《计算机软件著作权登记办法》：源程序超过 60 页的，提交前 30 页与后 30 页（每页 50 行）。\n' +
   '> 本清单共 ' + files.length + ' 个源文件，合计 ' + srcLines + ' 行，约 ' + totalPages + ' 页；以下为前 30 页（第 1–' + Math.min(30, totalPages) + ' 页）与后 30 页（第 ' + Math.max(1, totalPages - 29) + '–' + totalPages + ' 页）。\n'
 
