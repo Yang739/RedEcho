@@ -1,0 +1,9 @@
+{
+  "name": "productList",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: productList（积分商城文创目录）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

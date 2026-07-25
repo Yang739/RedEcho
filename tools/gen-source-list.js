@@ -1,20 +1,23 @@
 // tools/gen-source-list.js
-// 生成软著「源码提交清单」：拼接全部 .js / .wxml / .wxss 源码，按「核心层 → 页面层」排序，
-// 使前 30 页覆盖架构核心（store.js / setProfile 等），后 30 页覆盖页面层（含 pages/info、pages/profile）。
-// 用法：node tools/gen-source-list.js > docs/源码提交清单.md
+// 生成软著「源码提交清单」：拼接全部 .js / .wxml / .wxss 源码，按「核心层 → 服务层 → 组件 → 页面层 → 云函数层」排序，
+// 使前 30 页覆盖架构核心（store.js / api.js / config.js 等），后 30 页覆盖页面层与云函数层。
+// 用法：node tools/gen-source-list.js [输出文件名]
+//   不传参 → 写 docs/源码提交清单.md（V1.0：前端 + 全部云函数）
+//   传参   → 写指定文件（如 docs/源码提交清单_V2.md，用于含实时增强增量的 V2.0 清单）
 const fs = require('fs')
 const path = require('path')
 
 const ROOT = path.resolve(__dirname, '..')
-const OUT = 'docs/源码提交清单.md'
+const OUT = process.argv[2] || 'docs/源码提交清单.md'
 const PAGE = 50
 const FRONT_EXT = ['.js', '.wxml', '.wxss']
 
-// 排除目录（非小程序前端源码）
+// 排除目录（非小程序前端/云函数源码）
 const EXCLUDE_DIR = new Set([
-  'node_modules', '.workbuddy', 'cloudfunctions', 'docs',
+  'node_modules', '.workbuddy', 'docs',
   'deploy', 'design', 'images', 'dist', 'miniprogram_npm', 'tools'
 ])
+// 注：cloudfunctions 不再排除 —— 软著 V1.0 须含云端 30 个云函数源码（P1-④）。
 
 // 排序权重：核心配置/状态(0) → 服务层(1) → 组件/自定义 tab(2) → 页面/分包(3) → 其它(4)
 function rankOf(rel) {

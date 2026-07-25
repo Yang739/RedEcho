@@ -74,3 +74,56 @@
 2. 进入「演出」页能列出场次；进入房间能投票、发送情绪。
 3. 「创作」页能生成明信片（文生图为占位，返回配置即可）。
 4. 「我的」页能下单并查到订单。
+
+---
+
+## 集合种子导入
+
+> 本节约等于「云数据库集合创建 + 种子数据导入」的人工步骤。种子文件均为 **JSONL**（每行一个完整 JSON 对象，无顶层数组），位于 `tools/` 下。本轮新增 `polls-seed.json` / `quotes-seed.json` / `users-staff-seed.json` 三个种子（详见《云开发完整性审查报告》）。
+
+### 1. 需创建的 15 个集合
+
+在微信开发者工具「云开发 → 数据库」中新建以下 15 个集合（名称严格一致）：
+
+| 集合名 | 写入方 | 读取方 | 是否需预灌种子 |
+|---|---|---|---|
+| `users` | login/getUser/staffLogin 等 | 多函数（roleOf） | 是（工作人员行） |
+| `shows` | getShows/showControl/pollUpdate/branchLock/inviteSet | getShowRoom/showReview 等 | 是（含 inviteCode） |
+| `polls` | pollVote（原子 _.inc） | getShowRoom/pollVote | 是（每场 open:true） |
+| `vote_records` | pollVote | — | 否 |
+| `pollVotes` | （无写入方，看板读源待修复 P1-⑤） | dashboardShow | 否 |
+| `emotions` | emotionSend | dashboardShow | 否 |
+| `emotion_feedbacks` | submitEmotion | showReview | 否 |
+| `branch_log` | （无写入方，getShowRoom/getBranch 读源待修复 P1-⑤） | getShowRoom/getBranch | 否 |
+| `stage` | videoPush | dashboardShow | 否 |
+| `notices` | noticePush | （房间用硬编码默认） | 否 |
+| `postcards` | postcardGenerate | getUserProfile（计数） | 否 |
+| `orders` | createOrder | getUserProfile/getStatistics/getOrders | 否 |
+| `favorites` | （无云写入方，P2-③） | getUserProfile（计数） | 否 |
+| `mall_orders` | orderRedeem | — | 否 |
+| `quotes` | （无写入方） | showReview（随机采样） | 是 |
+
+### 2. 种子文件 → 目标集合映射
+
+| 种子文件（tools/） | 目标集合 | 说明 |
+|---|---|---|
+| `shows-seed.json`（既有） | `shows` | 4 场 JSONL，每条含 `inviteCode` |
+| `polls-seed.json`（本轮新增） | `polls` | 每场一行 `open:true` 投票文档，`options` 各项 `votes:0` |
+| `quotes-seed.json`（本轮新增） | `quotes` | 4 条金句，回顾页 `aggregate().sample()` 随机抽 |
+| `users-staff-seed.json`（本轮新增） | `users` | 按 `phone` 登录的 admin/field/actor 三行；**不含 `_openid`** |
+
+### 3. 控制台 JSONL 导入步骤
+
+1. 在「云开发 → 数据库 → 对应集合」点击 **「导入」**。
+2. 选择 `tools/` 下对应种子文件，**文件格式选「JSON」**，编码 UTF-8。
+3. `users-staff-seed.json` 现已为纯 JSONL（无注释行），可直接导入；角色链断裂说明见下方第 4 节。
+4. 其余文件均为纯 JSONL，可直接导入。
+5. 重复 1–4 完成 4 个文件导入（`shows` / `polls` / `quotes` / `users`）。
+
+> 字段约束（云数据库）：文档字段名**不能含 `.` 或 `$`**；**不能以 `_` 开头**（除系统保留的 `_id` / `_openid` 外）。本批种子仅用 `phone`/`password`/`role`/`name`/`showId`/`open`/`question`/`options`/`text`/`label`/`votes`/`id` 等常规字段，未带 `_id`，且字段名均无 `.`/`$`、非 `_` 开头，满足约束。
+
+### 4. 角色链注意事项（重要）
+
+- 工作人员按 **`phone` + `password`** 登录（`api.staffLogin` → 云函数 `staffLogin` 查 `users` 集合 `{phone, password, role}`）。本种子满足了「登录查表」。
+- **但**：云模式下所有工作人员**管控**动作（`showControl`/`pollUpdate`/`branchLock`/`inviteSet`/`noticePush`/`videoPush`/`emotionSend`/`dashboardShow`/`orderRedeem`）以 `roleOf(OPENID)`（`users._openid` → `role`）鉴权；`staffLogin` 登录成功时**不回写 `_openid`**，且本种子按 `phone` 建、**不含 `_openid`**（控制台导入文档不会自动获得工作人员的微信 openid）。
+- 结论：**仅灌本种子，云模式工作人员管控仍会 403 失败（角色链断裂）**。要让云模式管控可用，需修改 `cloudfunctions/staffLogin/index.js`，在登录成功时把 `{_openid: OPENID, role, phone, name}` 写回 `users`（详见《云开发完整性审查报告》P1-⑦）。本地 mock 调试不受影响（mock 模式不查云端 `users` 的 `_openid`）。
