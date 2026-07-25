@@ -58,3 +58,10 @@
   background: var(--c-accent-light);
   padding: 4rpx 14rpx; border-radius: var(--r-pill);
 }
+
+/* 底部版权字样：居中，并与「兑换记录」卡片保持间距 */
+.footer-tip {
+  text-align: center;
+  margin-top: 56rpx;
+  padding-bottom: 24rpx;
+}
