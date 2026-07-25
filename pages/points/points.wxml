@@ -1,5 +1,5 @@
 <view class="page">
-  <!-- 头部：当前积分 / 今日获得 -->
+  <!-- 头部：当前积分 / 今日获得 / 经验 -->
   <view class="hd">
     <view class="hd__col">
       <view class="hd__num">{{points}}</view>
@@ -9,6 +9,11 @@
     <view class="hd__col">
       <view class="hd__num">{{todayGain}}</view>
       <view class="hd__label">今日获得</view>
+    </view>
+    <view class="hd__divider"></view>
+    <view class="hd__col">
+      <view class="hd__num">{{levelInfo.exp}}</view>
+      <view class="hd__label">经验 · {{levelInfo.name}}</view>
     </view>
   </view>
 

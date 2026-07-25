@@ -8,6 +8,8 @@
 const storage = require('./services/storage.js')
 
 const POINTS_KEY = 'rede_points'
+const EXP_KEY = 'rede_exp'             // 经验：累计获得的积分（消费不减，只增不减）
+const EXP_INIT_KEY = 'rede_exp_init'  // 迁移标记：首次把积分存量计入经验起点
 const TODAY_KEY = 'rede_today'
 const POINT_LOG_KEY = 'rede_points_log'  // 积分明细（流水）记录
 const POINTS_INIT_KEY = 'rede_points_init' // 迁移标记：旧版曾把种子 1280 写入本地，升级后统一归零
@@ -42,6 +44,19 @@ function loadToday() {
   return 0
 }
 
+// 经验（累计获得的积分）：仅正向奖励累加，消费不减少。
+// 首次迁移时把当前积分存量作为经验起点（存量积分即历史累计获得），避免老用户等级从 0 起跳。
+function loadExp(pointsSnapshot) {
+  if (storage.get(EXP_INIT_KEY, null) !== 'v1') {
+    storage.set(EXP_INIT_KEY, 'v1')
+    const init = typeof pointsSnapshot === 'number' ? pointsSnapshot : 0
+    storage.set(EXP_KEY, init)
+    return init
+  }
+  const v = storage.get(EXP_KEY, null)
+  return typeof v === 'number' ? v : 0
+}
+
 function loadLog() {
   const v = storage.get(POINT_LOG_KEY, [])
   return Array.isArray(v) ? v : []
@@ -74,9 +89,11 @@ function loadProfile() {
   return def
 }
 
+const points0 = loadPoints()
 const state = {
   user: null,        // { openid, nickname, avatar, level, isStaff }
-  points: loadPoints(),         // 当前积分余额（持久化）
+  points: points0,            // 当前积分余额（持久化）
+  exp: loadExp(points0),      // 经验（累计获得的积分，消费不减；持久化）
   isStaff: !!loadStaff(), // 是否为工作人员（场务/演员），随登录态初始化
   staff: loadStaff(),   // 操作人员信息 { phone, name, role, roleName }
   profile: loadProfile(), // 个人资料（昵称 / 头像），持久化
@@ -119,11 +136,13 @@ module.exports = {
   //   { type: 'read'|'show'|'postcard'|'redeem'|'adjust', title: '阅读文章', ref: id }
   addPoints(delta, opts) {
     state.points = Math.max(0, state.points + delta)
-    // 仅正向奖励累计「今日获得」；消费（负向）不影响今日获得
+    // 仅正向奖励累计「今日获得」与「经验」；消费（负向）不影响今日获得、也不扣减经验
     if (delta > 0) {
       ensureToday()
       state.todayGain += delta
       storage.set(TODAY_KEY, { date: state.todayDate, gain: state.todayGain })
+      state.exp = (state.exp || 0) + delta
+      storage.set(EXP_KEY, state.exp)
     }
     storage.set(POINTS_KEY, state.points)
     // 记录积分明细（流水）
@@ -186,10 +205,13 @@ module.exports = {
   reset() {
     state.user = null
     state.points = 0
+    state.exp = 0
     state.isStaff = false
     state.staff = null
     state.loaded = false
     storage.set(POINTS_KEY, 0)
+    storage.set(EXP_KEY, 0)
+    storage.set(EXP_INIT_KEY, 'v1')
     storage.set(STAFF_KEY, null)
     storage.set(TODAY_KEY, { date: todayStr(), gain: 0 })
     notify()

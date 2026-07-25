@@ -33,6 +33,14 @@
 
 .block-mt { margin-top: 24rpx; }
 
+.lv__top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18rpx; }
+.lv__name { font-size: 32rpx; font-weight: 800; color: var(--c-text); }
+.lv__tag { font-size: 24rpx; font-weight: 700; color: var(--c-primary); }
+.lv__bar { height: 16rpx; border-radius: 999rpx; background: var(--c-divider); overflow: hidden; }
+.lv__fill { height: 100%; border-radius: 999rpx; background: linear-gradient(90deg, #E8A33D, #C8161D); }
+.lv__tip { font-size: 24rpx; color: var(--c-text-2); margin-top: 14rpx; }
+.lv__exp { font-size: 22rpx; color: var(--c-text-3); margin-top: 6rpx; }
+
 .menu { display: flex; flex-direction: column; }
 .menu__item {
   display: flex; align-items: center; justify-content: space-between;

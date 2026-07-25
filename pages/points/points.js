@@ -1,5 +1,6 @@
 // pages/points/points.js —— 积分明细（流水）
 const store = require('../../store.js')
+const level = require('../../services/level.js')
 
 function pad(n) { return n < 10 ? '0' + n : '' + n }
 
@@ -37,7 +38,7 @@ function groupLog(log) {
 }
 
 Page({
-  data: { points: 0, todayGain: 0, groups: [] },
+  data: { points: 0, todayGain: 0, levelInfo: { lv: 1, name: '新兵', exp: 0, isMax: false }, groups: [] },
   unsub: null,
 
   onLoad() {
@@ -45,6 +46,7 @@ Page({
       this.setData({
         points: s.points,
         todayGain: s.todayGain,
+        levelInfo: level.calc(s.exp || 0),
         groups: groupLog(s.log || [])
       })
     })

@@ -27,6 +27,24 @@
     <view class="points__cta">明细 ›</view>
   </view>
 
+  <!-- 等级 / 经验 -->
+  <view class="block-mt">
+    <re-card title="我的等级">
+      <view class="lv">
+        <view class="lv__top">
+          <view class="lv__name">{{levelInfo.name}}</view>
+          <view class="lv__tag">Lv.{{levelInfo.lv}}</view>
+        </view>
+        <view class="lv__bar">
+          <view class="lv__fill" style="width:{{levelInfo.pct}}%"></view>
+        </view>
+        <view class="lv__tip" wx:if="{{!levelInfo.isMax}}">距「{{levelInfo.nextName}}」还差 {{levelInfo.gap}} 经验</view>
+        <view class="lv__tip" wx:else>已达最高等级 · 信仰丰碑</view>
+        <view class="lv__exp">累计经验 {{levelInfo.exp}}</view>
+      </view>
+    </re-card>
+  </view>
+
   <!-- 服务菜单 -->
   <view class="block-mt">
     <re-card title="我的服务">

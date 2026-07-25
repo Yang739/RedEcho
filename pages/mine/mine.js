@@ -1,10 +1,12 @@
 // pages/mine/mine.js
 const api = require('../../services/api.js')
 const store = require('../../store.js')
+const level = require('../../services/level.js')
 
 Page({
   data: {
-    user: { nickname: '红色旅人', avatarText: '红', level: '长征先锋' },
+    user: { nickname: '红色旅人', avatarText: '红', level: '新兵' },
+    levelInfo: { lv: 1, name: '新兵', exp: 0, curExp: 0, nextExp: 100, nextName: '宣传员', gap: 100, pct: 0, isMax: false },
     pf: { nickname: '红色旅人', avatarText: '红', avatar: '', avatarEmoji: '🎯', avatarGradient: 'linear-gradient(135deg,#C8161D,#7A0A10)' },
     points: 0,
     todayGain: 0,
@@ -21,14 +23,29 @@ Page({
 
   onLoad() {
     this.unsub = store.subscribe((s) => {
-      if (s.user) this.setData({ user: s.user, points: s.points, todayGain: s.todayGain })
-      else this.setData({ points: s.points, todayGain: s.todayGain })
-      this.setData({ pf: s.profile })
+      const lv = level.calc(s.exp || 0)
+      this.setData({
+        points: s.points,
+        todayGain: s.todayGain,
+        levelInfo: lv,
+        // 等级以本地经验计算为准（覆盖 API 可能返回的硬编码 level）
+        user: { nickname: s.profile.nickname, avatarText: s.profile.avatarText, level: lv.name, isStaff: s.isStaff },
+        pf: s.profile
+      })
     })
     api.getMine().then((d) => {
+      // 仅补充昵称 / 头像 / 工作人员态；等级与积分始终以本地 store 真源为准
+      const lv = level.calc(store.getState().exp || 0)
+      const u = d.user || {}
       this.setData({
-        user: d.user,
-        points: d.points
+        points: store.getState().points,
+        levelInfo: lv,
+        user: {
+          nickname: u.nickname || '红色旅人',
+          avatarText: u.avatarText || '红',
+          level: lv.name,
+          isStaff: !!u.isStaff
+        }
       })
     })
   },
