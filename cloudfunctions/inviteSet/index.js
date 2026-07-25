@@ -11,7 +11,7 @@ const fail = (a, b = 1) => { const code = (typeof a === 'number') ? a : b; const
 
 async function roleOf(openid) {
   if (!openid) return ''
-  const r = await db.collection('users').where({ _openid: openid }).limit(1).get()
+  const r = await db.collection('users').where({ _openid: openid, role: _.in(['field', 'actor', 'admin']) }).limit(1).get()
   return (r.data && r.data[0] && r.data[0].role) || ''
 }
 

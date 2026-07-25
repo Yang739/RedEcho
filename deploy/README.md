@@ -47,8 +47,13 @@
 
 ### 方式一：微信开发者工具（推荐）
 1. 在开发者工具左侧「云开发」面板确认环境已开通。
-2. 右键 `cloudfunctions/` 下**每一个函数目录**（login、getUser、getHomeFeed、getShows、getShowRoom、pollVote、submitEmotion、getBranch、aiLineGenerate、postcardGenerate、createOrder、getOrders、getStatistics）：
-   - 选择 **「上传并部署：云端安装依赖」**（推荐，云端自动 `npm install`）。
+2. 右键 `cloudfunctions/` 下**每一个函数目录**，选择 **「上传并部署：云端安装依赖」**（推荐，云端自动 `npm install`）。全部函数（31 个）须逐个部署，分组如下：
+
+   **① 游客端核心（13）**：login、getUser、getHomeFeed、getShows、getShowRoom、pollVote、submitEmotion、getBranch、aiLineGenerate、postcardGenerate、createOrder、getOrders、getStatistics
+   **② 内容 / 数据（7）**：postcardList、postcardSceneList、showReview、getUserProfile、staffVerify、verifyInvite、productList
+   **③ 工作人员 / 管控（11）— 极易漏部署，必须确认已上传**：staffLogin（角色链回写 `_openid`，未部署会导致所有管控 403）、showControl、createShow、pollUpdate、inviteSet、noticePush、branchLock、videoPush、emotionSend、dashboardShow、orderRedeem
+
+   > ⚠️ 以往部署清单只列了第 ① 组 13 个游客函数，漏掉全部工作人员函数，是「工作人员无操作权限（403）」最常见的根因。请务必把 ③ 组 11 个函数也逐一上传。
 3. 每个云函数为**自包含目录**（公共初始化已内联，无共享 `common/` 模块），请逐个右键上传。
 
 ### 方式二：命令行（Serverless 工具 / miniprogram-ci 暂不直接支持单函数上传）
@@ -62,7 +67,7 @@
 - [ ] **云环境已创建**：在微信开发者工具「云开发」中开通环境，复制环境 ID。
 - [ ] **ENV 已填**：根目录 `config.js` 的 `ENV` 已从占位符 `your-cloud-env-id` 改为真实环境 ID。
 - [ ] **npm 依赖已装**：在 `cloudfunctions/<每个函数>/` 执行 `npm install`（或在开发者工具选「云端安装依赖」）。
-- [ ] **云函数已部署**：全部 17 个函数均已「上传并部署」（见 B）。
+- [ ] **云函数已部署**：全部 31 个函数均已「上传并部署」（见 B，重点确认 ③ 组工作人员/管控函数已上传）。
 - [ ] **私钥已就位**（仅命令行方式）：`deploy/upload.js` 的 `PRIVATE_KEY_PATH` 指向有效私钥。
 - [ ] **`.workbuddy/` 未改动**：部署包中不应包含该目录（已在 `upload.js` 的 ignores 中排除）。
 
@@ -125,5 +130,5 @@
 ### 4. 角色链注意事项（重要）
 
 - 工作人员按 **`phone` + `password`** 登录（`api.staffLogin` → 云函数 `staffLogin` 查 `users` 集合 `{phone, password, role}`）。本种子满足了「登录查表」。
-- **但**：云模式下所有工作人员**管控**动作（`showControl`/`pollUpdate`/`branchLock`/`inviteSet`/`noticePush`/`videoPush`/`emotionSend`/`dashboardShow`/`orderRedeem`）以 `roleOf(OPENID)`（`users._openid` → `role`）鉴权；`staffLogin` 登录成功时**不回写 `_openid`**，且本种子按 `phone` 建、**不含 `_openid`**（控制台导入文档不会自动获得工作人员的微信 openid）。
-- 结论：**仅灌本种子，云模式工作人员管控仍会 403 失败（角色链断裂）**。要让云模式管控可用，需修改 `cloudfunctions/staffLogin/index.js`，在登录成功时把 `{_openid: OPENID, role, phone, name}` 写回 `users`（详见《云开发完整性审查报告》P1-⑦）。本地 mock 调试不受影响（mock 模式不查云端 `users` 的 `_openid`）。
+- **但**：云模式下所有工作人员**管控**动作以 `roleOf(OPENID)`（`users._openid` + `role` → 角色）鉴权。本种子按 `phone` 建、**不含 `_openid`**（控制台导入文档不会自动获得微信 openid）。
+- 结论（代码已修复，关键在于部署）：`staffLogin` 已在登录成功时把 `OPENID` 回写 `users._openid`（commit a8bce65）；所有管控函数的 `roleOf` 也已限定 `role ∈ [field,actor,admin]`，排除「游客无 role 文档」导致的误命中（防双文档坑）。**但这两个修复必须经「上传并部署」到云端才生效**；部署后工作人员须**退出重新登录一次**触发 `_openid` 回写，之后管控才可用。本地 mock 不受影响（mock 不查云端 `users`）。详见《云开发完整性审查报告》P1-⑦。
