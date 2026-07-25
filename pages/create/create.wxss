@@ -24,12 +24,15 @@
 /* 空态：白色卡片，与截图一致 */
 .empty-card {
   margin-top: 8rpx;
-  padding: 44rpx 36rpx;
+  padding: 72rpx 36rpx;
+  min-height: 220rpx;
   background: #fff;
   border-radius: var(--r-lg);
   box-shadow: var(--s-2);
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  text-align: center;
 }
 .empty-card__title {
   font-size: 32rpx;
