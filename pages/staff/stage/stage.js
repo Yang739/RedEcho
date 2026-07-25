@@ -1,14 +1,13 @@
 // pages/staff/stage/stage.js —— 舞台总控（弹幕 / 情绪上屏）
 const api = require('../../../services/api.js')
 const perm = require('../../../services/permission.js')
-const storage = require('../../../services/storage.js')
 
 Page({
   data: {
     showId: '',
     canPush: false,
     emotions: [],
-    danmaku: [],    // 最近上屏弹幕（倒序）
+    danmaku: [],    // 最近上屏弹幕（倒序，来自云端 getShowRoom 的 danmaku 字段）
     input: ''
   },
 
@@ -22,9 +21,8 @@ Page({
   reload() {
     if (!this.data.canPush || !this.data.showId) return
     api.getShowRoom(this.data.showId).then((d) => {
-      this.setData({ emotions: d.emotions || [] })
+      this.setData({ emotions: d.emotions || [], danmaku: d.danmaku || [] })
     })
-    this.loadDanmaku()
   },
 
   // 选择器回调：必须选定一个正在进行的表演才能操作
@@ -32,12 +30,7 @@ Page({
     const show = e.detail
     this.setData({ showId: (show && (show.id || show._id)) || '' })
     if (show) this.reload()
-    else this.setData({ emotions: [] })
-  },
-
-  loadDanmaku() {
-    const stage = (storage.get('rede_stage', {})[this.data.showId]) || { danmaku: [] }
-    this.setData({ danmaku: stage.danmaku.slice(-20).reverse() })
+    else this.setData({ emotions: [], danmaku: [] })
   },
 
   onInput(e) { this.setData({ input: e.detail.value }) },
@@ -48,7 +41,7 @@ Page({
     if (!text) { wx.showToast({ title: '请输入弹幕内容', icon: 'none' }); return }
     api.pushDanmaku(this.data.showId, text).then(() => {
       this.setData({ input: '' })
-      this.loadDanmaku()
+      this.reload()
       wx.showToast({ title: '已上屏', icon: 'success' })
     }).catch((err) => {
       wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })

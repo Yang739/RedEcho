@@ -66,6 +66,12 @@
   padding: 12rpx 22rpx; border-radius: var(--r-pill);
   font-size: 26rpx; max-width: 90%;
 }
+.danmu__item--staff {
+  background: #FBECEC;
+  border-left: 6rpx solid #C8161D;
+  color: #8A0F14;
+  font-weight: 600;
+}
 .room__cta { margin-top: 24rpx; }
 
 /* 状态横幅（即将开始 / 已落幕） */

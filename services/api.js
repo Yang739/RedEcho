@@ -155,11 +155,14 @@ module.exports = {
     show = applyShowConfig(show)            // 应用工作人员改过的 status/inviteCode/pollOpen
     const poll = applyPollConfig(showId)    // 应用工作人员改过的 question/options
     const notices = (readNoticeOverride()[showId]) || mock.notices
+    const stage = (storage.get(STAGE_KEY, {})[showId]) || { danmaku: [] }
+    const danmaku = stage.danmaku.slice(-30).reverse().map((m) => ({ id: m.id, text: m.text, time: m.time }))
     return delay({
       show,
       poll,
       emotions: mock.emotions,
-      notices
+      notices,
+      danmaku
     })
   },
 

@@ -98,8 +98,9 @@
       <!-- 弹幕 -->
       <re-card title="实时弹幕">
         <view class="danmu">
+          <view wx:for="{{danmaku}}" wx:key="id" class="danmu__item danmu__item--staff">{{item.text}}</view>
           <view wx:for="{{messages}}" wx:key="id" class="danmu__item">{{item.text}}</view>
-          <view wx:if="{{!messages.length}}" class="empty">还没有弹幕，来发第一条吧</view>
+          <view wx:if="{{!danmaku.length && !messages.length}}" class="empty">还没有弹幕，来发第一条吧</view>
         </view>
         <view wx:if="{{isEnded}}" class="room__cta btn btn-ghost btn-block tap" bindtap="goReview">查看本场回顾 ›</view>
       </re-card>

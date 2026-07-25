@@ -19,7 +19,8 @@ Page({
     poll: { question: '', options: [] },
     emotions: [],
     notices: [],
-    messages: [],
+    danmaku: [],     // 工作人员推上大屏的弹幕流（来自 getShowRoom）
+    messages: [],    // 游客自己发送的弹幕（本地回显）
     voted: '',
     selectedEmotion: '',
     inputValue: '',
@@ -59,6 +60,7 @@ Page({
         poll: Object.assign({}, d.poll, { options: computePct(pollOpts) }),
         emotions: d.emotions,
         notices: d.notices,
+        danmaku: d.danmaku || [],
         statusBanner: status === 'ended' ? '本场演出已落幕' : '',
         isEnded: status === 'ended',
         isLive,
@@ -99,6 +101,7 @@ Page({
         'poll.options': computePct(pollOpts),
         emotions: d.emotions,
         notices: d.notices || [],
+        danmaku: d.danmaku || [],
         isLive,
         isEnded,
         isUpcoming,

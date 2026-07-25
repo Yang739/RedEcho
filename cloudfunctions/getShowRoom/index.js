@@ -57,12 +57,23 @@ exports.main = async (event, context) => {
       branch = { current: b.current || '', locked: !!b.locked, text: b.text || '' }
     }
 
+    // 现场通知：优先读 notices 集合（按场次倒序），无记录则回退默认提示
+    const nRes = await db.collection('notices').where({ showId }).orderBy('created_at', 'desc').limit(20).get()
+    const notices = (nRes.data && nRes.data.length)
+      ? nRes.data.map((n) => ({ id: n._id, text: n.text, time: n.time }))
+      : NOTICES
+
+    // 弹幕流：读 stage 集合（按场次倒序，limit 30）
+    const stRes = await db.collection('stage').where({ showId }).orderBy('created_at', 'desc').limit(30).get()
+    const danmaku = (stRes.data || []).map((s) => ({ id: s._id, text: s.text, time: s.time }))
+
     return ok({
       show,
       poll,
       emotions: EMOTIONS,
       branch,
-      notices: NOTICES
+      notices,
+      danmaku
     })
   } catch (e) {
     return fail(500, 'getShowRoom failed: ' + e.message)
