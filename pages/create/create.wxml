@@ -10,7 +10,8 @@
   <!-- 我的作品 -->
   <view class="section-title between">
     <text>我的作品</text>
-    <view wx:if="{{hasWorks}}" class="more-link tap" bindtap="onAll">全部 ›</view>
+    <!-- 始终可跳转到作品中心（即便暂无作品也能进入查看/核对），避免"全部"入口随空态一起消失 -->
+    <view class="more-link tap" bindtap="onAll">全部 ›</view>
   </view>
 
   <!-- 无作品：灰色底简洁空态 -->
