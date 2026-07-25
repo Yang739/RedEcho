@@ -14,7 +14,8 @@
 
 .manage__input {
   background: #f5f5f5; border: 1rpx solid #ECE9E4; border-radius: 12rpx;
-  padding: 16rpx 20rpx; font-size: 28rpx; box-sizing: border-box;
+  padding: 28rpx 22rpx; font-size: 30rpx; line-height: 1.5; min-height: 104rpx;
+  box-sizing: border-box;
 }
 .emo { display: flex; flex-wrap: wrap; gap: 16rpx; }
 .emo__item {
