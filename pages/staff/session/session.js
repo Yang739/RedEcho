@@ -95,30 +95,4 @@ Page({
     })
   },
 
-  // 设置 / 重置某场次的邀请码（合并自原独立「邀请码」功能页）
-  onEditInvite(e) {
-    if (!this.data.canControl) return
-    const id = e.currentTarget.dataset.id
-    const show = this.data.shows.find((s) => (s.id || s._id) === id)
-    if (!show) return
-    wx.showModal({
-      title: '设置邀请码',
-      editable: true,
-      placeholderText: '留空则自动生成',
-      content: show.inviteCode || '',
-      success: (r) => {
-        if (!r.confirm) return
-        const code = (r.content || '').trim().toUpperCase()
-        wx.showLoading({ title: '保存中', mask: true })
-        api.setInvite(id, code).then(() => {
-          wx.hideLoading()
-          wx.showToast({ title: '邀请码已更新', icon: 'success' })
-          this.load()
-        }).catch((err) => {
-          wx.hideLoading()
-          wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
-        })
-      }
-    })
-  }
 })

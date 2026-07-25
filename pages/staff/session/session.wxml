@@ -51,8 +51,6 @@
           <view class="srow__status status-val--{{item.status === 'live' ? 'live' : (item.status === 'upcoming' ? 'up' : 'ended')}}">{{item.status === 'live' ? '直播中' : (item.status === 'upcoming' ? '即将开始' : '已结束')}}</view>
         </view>
         <view class="srow__op">
-          <view class="btn btn-ghost btn-sm tap"
-            data-id="{{item.id || item._id}}" bindtap="onEditInvite">改码</view>
           <view class="btn {{item.status === 'live' ? 'btn-ghost' : 'btn-primary'}} btn-sm tap"
             data-id="{{item.id || item._id}}" bindtap="onToggleStatus">{{item.status === 'live' ? '结束' : '开始'}}</view>
         </view>
