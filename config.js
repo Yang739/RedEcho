@@ -8,7 +8,7 @@
 
 module.exports = {
   // TODO: 替换为你的云开发环境 ID
-  ENV: 'your-cloud-env-id',
+  ENV: 'cloud1-d1g61edjla151e7c2',
 
   // 开发调试开关
   DEBUG: true
