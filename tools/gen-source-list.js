@@ -17,7 +17,7 @@ const EXCLUDE_DIR = new Set([
   'node_modules', '.workbuddy', 'docs',
   'deploy', 'design', 'images', 'dist', 'miniprogram_npm', 'tools'
 ])
-// 注：cloudfunctions 不再排除 —— 软著 V1.0 须含云端 30 个云函数源码（P1-④）。
+// 注：cloudfunctions 不再排除 —— 软著 V1.0 须含云端 32 个云函数源码（P1-④）。
 
 // 排序权重：核心配置/状态(0) → 服务层(1) → 组件/自定义 tab(2) → 页面/分包(3) → 其它(4)
 function rankOf(rel) {

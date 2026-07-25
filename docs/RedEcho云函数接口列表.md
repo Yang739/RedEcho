@@ -1,123 +1,128 @@
 # RedEcho 云函数接口列表
 
-> 技术栈：微信小程序 + 微信云开发（云函数 Node.js + 云数据库 + 云存储 + 腾讯云 IM）
+> 技术栈：微信小程序 + 微信云开发（云函数 Node.js + 云数据库 + 云存储 + AIGC）
 > 约定：
 > - 所有云函数统一返回 `{ code: 0, msg: 'ok', data: {...} }`，`code !== 0` 表示错误。
-> - 鉴权：`WX_CONTEXT.OPENID` 取游客身份；工作人员函数需额外校验 `staff_verified` 与 `staff_types`。
-> - 实时类（投票/台词/表情/短片）由云函数调用**腾讯云 IM REST API** 向群组推送，游客端通过 IM SDK 接收，延迟 < 1s。
-> - 标注「定时」的函数由云开发**定时器触发器**驱动。
+> - 鉴权：`WX_CONTEXT.OPENID` 取游客身份；工作人员函数额外校验 `role`（`roleOf` 查 `users._openid` + `role ∈ [field,actor,admin]`），越权返回 `403`。
+> - **实时通道说明（重要）**：V1.0 **未接入**腾讯云 IM / WebSocket，实时性由房间页（`packages/show/pages/room`）以约 **2.6s** 周期轮询云函数 `getShowRoom` 实现——一次拉取演出状态、现场通知（notices）、弹幕流（stage，含工作人员 `source:'staff'` 与游客 `source:'visitor'`）、投票、情绪、剧情分支等全量数据，使场务指令与游客上行在客户端/大屏可见（延迟约 2.6s，属设计内降级方案）。**真·实时（< 1s）由 V2.0 的腾讯云 IM / WebSocket 通道承担**（独立实时服务仓库，不计入本软著小程序端）。
+> - 标注「定时」的函数由云开发**定时器触发器**驱动（V2.0+ 规划）。
 
 ---
 
-## 一、认证与用户
+## 一、已实现云函数（V1.0，共 32 个）
+
+> 下表为 V1.0 已落地、已部署的云函数，命名与 `cloudfunctions/` 目录一一对应，也与《软件说明书》第七章一致。
+
+### 1.1 认证与用户（5）
 
 | 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
 |---|---|---|---|---|
-| `authLogin` | 游客微信手机号一键登录（code2Session + 获取手机号，落库/返回 token） | `code`, `encryptedData`, `iv` | 公开 | 微信登录 API |
-| `staffLogin` | 工作人员登录（手机号+密码 或 手机号+验证码） | `phone`, `password` / `code` | 公开 | 验证码表 |
-| `staffVerify` | 工作人员双因子二次验证（敏感操作前调用） | `phone`, `smsCode` | staff | - |
-| `getUserProfile` | 获取个人中心信息（积分/等级/角色） | - | 登录 | - |
-| `updateUserProfile` | 更新昵称/头像/字号偏好 | `nickname`, `avatarUrl`, `fontScale` | 登录 | 云存储 |
+| `login` | 游客登录态登记（首次自动建用户档案） | `code` | 公开 | 微信登录 API |
+| `staffLogin` | 工作人员登录（手机号 + 密码），成功后回写 `users._openid` | `phone`, `password` | 公开 | `users` 集合 |
+| `staffVerify` | 工作人员 token 校验（敏感操作前调用） | `phone`, `smsCode` | staff | - |
+| `getUser` | 取 / 建用户档案（积分 / 等级 / 角色） | - | 登录 | - |
+| `getUserProfile` | 个人中心信息（档案 + 积分 + 统计 + 订单聚合） | - | 登录 | 云存储（头像） |
 
-## 二、首页资料卡片 / 积分
-
-| 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
-|---|---|---|---|---|
-| `cardList` | 卡片列表（分页/分类/关键词） | `page`, `size`, `tag` | 登录 | - |
-| `cardDetail` | 卡片详情 | `cardId` | 登录 | - |
-| `cardLike` | 点赞/取消点赞 | `cardId`, `action` | 登录 | - |
-| `cardFavorite` | 收藏/取消收藏 | `cardId` | 登录 | - |
-| `reportRead` | 上报阅读完成，发积分（校验每日上限50） | `cardId`, `duration` | 登录 | 积分流水 || `pointsBalance` | 积分余额与等级 | - | 登录 | - |
-| `pointsHistory` | 积分明细（分页） | `page`, `size` | 登录 | - |
-
-## 三、演出场次（游客端）
+### 1.2 首页与内容（1）
 
 | 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
 |---|---|---|---|---|
-| `showList` | 场次列表（按状态筛选：即将/进行中/已结束） | `status`, `page` | 登录 | - |
-| `showDetail` | 场次详情 + 当前环节 + 演员表 | `showId` | 登录 | - |
-| `showJoin` | 游客加入演出（加入 IM 群组） | `showId` | 登录 | 腾讯云 IM |
-| `showReview` | 演出回顾（剧情总结 + 个人选择路径） | `showId` | 登录 | 投票/分支表 |
+| `getHomeFeed` | 首页卡片 + 积分 + 今日积分 + 阅读 + 直播演出聚合 | - | 登录 | - |
 
-## 四、场务演出管理
+### 1.3 演出场次（4）
 
 | 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
 |---|---|---|---|---|
-| `showCreate` | 创建场次（含预设环节/投票配置） | `title`,`theme`,`startTime`,`segments[]` | 场务 | - |
-| `showUpdate` | 编辑场次信息 | `showId`, 字段... | 场务 | - |
-| `showControl` | 环节总控：按序触发 开始投票/播放短片/结束 | `showId`, `segmentId`, `action` | 场务 | IM 推送 |
-| `segmentStart` | 开始某环节 | `segmentId` | 场务 | IM |
-| `segmentEnd` | 结束某环节 | `segmentId` | 场务 | IM |
-| `pollUpdate` | 实时临时修改题目/选项 | `questionId`, `question`, `options` | 场务 | - |
-| `branchLock` | 根据投票锁定剧情分支 | `segmentId`, `branchKey` | 场务 | - |
-| `videoPush` | 上传并推送历史短片给全体游客 | `segmentId`, `fileID`(云存储) | 场务 | 云存储/IM |
-| `activityStart` | 发起现场答题抽奖 | `segmentId`, `question`, `answer` | 场务 | IM |
-| `activityJudge` | 自动判分并发放积分 | `segmentId` | 场务(定时/手动) | 积分流水 |
-| `showHistory` | 历史演出数据（投票详情/分支回放） | `showId`, `page` | 场务 | - |
+| `getShows` | 场次列表（按 status 过滤：即将 / 进行中 / 已结束） | `status`, `page` | 登录 | - |
+| `getShowRoom` | 场次详情 + 当前投票 + 分支 + 情绪类型 + 通知 + 弹幕流（V1.0 轮询核心读源） | `showId` | 登录 | - |
+| `showReview` | 演出回顾（场次 + 我的投票 + 情绪分布 + 金句） | `showId` | 登录 | `polls` / `quotes` |
+| `createShow` | 工作人员新建场次（自动邀请码，默认 `status:'upcoming'`） | `title`, `venue`, `date`, `gradient?`, `segment?`, `inviteCode?` | field / admin | `users`（roleOf） |
 
-## 五、投票互动（实时）
+### 1.4 场务演出控制与现场运营（7）
 
 | 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
 |---|---|---|---|---|
-| `pollStart` | 场务发布投票（推送至 IM 群组） | `segmentId`, `questionId` | 场务 | IM |
-| `pollVote` | 游客限时投票（一人一票校验） | `questionId`, `optionKey` | 登录 | IM 广播 |
-| `pollResult` | 实时结果（柱状图/弹幕数据） | `questionId` | 登录 | - |
-| `emotionSend` | 发送表情/快捷短语（可上大屏） | `showId`, `type`, `content`, `toScreen` | 登录 | IM |
-| `emotionStats` | 表情统计（大屏用） | `showId` | 场务/大屏 | - |
-| `videoGet` | 游客获取当前推送短片地址 | `segmentId` | 登录 | 云存储 |
+| `showControl` | 翻转演出状态（开场 / 散场） | `showId`, `action`(open/close) | 场务 | - |
+| `pollUpdate` | 开关投票 / 改题 / 改选项 | `questionId`, `question`, `options` | 场务 | - |
+| `branchLock` | 根据投票锁定剧情分支走向 | `segmentId`, `branchKey` | 场务 | - |
+| `inviteSet` | 设置 / 重置邀请码（服务端存储，不下发客户端） | `showId`, `inviteCode` | 场务 | - |
+| `verifyInvite` | 邀请码核验（服务端读取，不下发客户端） | `showId`, `code` | 登录 | - |
+| `noticePush` | 推送现场通知（写入 `notices` 集合） | `showId`, `text` | 场务 | - |
+| `videoPush` | 弹幕 / 短片上舞台大屏（写 `stage`，`source:'staff'`） | `showId`, `text` | 场务 | - |
 
-## 六、演员 AI 台词助手
+### 1.5 投票与情绪互动（5）
 
 | 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
 |---|---|---|---|---|
-| `aiLineGenerate` | 实时生成台词建议（结合环节/投票趋势/角色背景，流式） | `showId`, `segmentId`, `actorId` | 演员 | 大模型 API |
-| `aiLineList` | 台词本（历史场次 AI 台词） | `actorId`, `showId` | 演员 | - |
-| `aiLineChoose` | 标记选用台词 | `lineId` | 演员 | - |
-| `aiLineTTS` | 台词 TTS 语音预览（返回音频 fileID） | `text` | 演员 | 语音合成 API |
+| `pollVote` | 游客投票（原子自增 + 一人一票校验） | `questionId`, `optionKey` | 登录 | `polls`（原子更新） |
+| `submitEmotion` | 情绪反馈写库 | `showId`, `type` | 登录 | - |
+| `emotionSend` | 情绪上舞台大屏 | `showId`, `type` | 场务 | - |
+| `danmakuSend` | 游客弹幕上行（游客→大屏，写 `stage`，`source:'visitor'`，≤60 字） | `showId`, `text` | 登录 | - |
+| `getBranch` | 分支进度查询 | `showId` / `segmentId` | 登录 | - |
 
-## 七、AIGC 明信片
+### 1.6 演员 AI 台词（1）
+
+| 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
+|---|---|---|---|---|
+| `aiLineGenerate` | 实时生成台词建议（结合环节 / 投票趋势 / 角色背景，流式；未配密钥时回退示例文本） | `showId`, `segmentId`, `actorId` | 演员 | 大模型 API |
+
+### 1.7 AIGC 明信片（3）
 
 | 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
 |---|---|---|---|---|
 | `postcardSceneList` | 场景模板列表 | - | 登录 | - |
-| `quoteList` | 名言警句库（可按分类） | `category` | 登录 | - |
-| `sensitiveCheck` | 手动输入文本敏感词过滤 | `text` | 登录 | 敏感词服务 |
-| `postcardGenerate` | 调用文生图生成明信片（<10s，后处理），落库排版参数 | `sceneId`, `quote`, `customText`, `orient`, `arrange`, `font`, `position`, `avatarFileID?` | 登录 | 文生图 API |
-| `postcardList` | 我的作品历史 | `page` | 登录 | 云存储 |
-| `postcardShare` | 保存高清图至相册/生成分享卡片 | `postcardId` | 登录 | 云存储 |
+| `postcardGenerate` | 调用文生图生成明信片（后处理合成字体 / 水印 / 留白；未配密钥时回退 CSS 渲染），落库排版参数 | `sceneId`, `quote`, `customText`, `orient`, `arrange`, `font`, `position`, `avatarFileID?` | 登录 | 文生图 API / 云存储 |
+| `postcardList` | 我的明信片历史 | `page` | 登录 | 云存储 |
 
-## 八、周边商城 / 订单
+### 1.8 积分商城与兑换（4）
 
 | 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
 |---|---|---|---|---|
 | `productList` | 商品列表 | `page`, `category` | 登录 | - |
-| `orderCreate` | 创建兑换订单（积分/混合支付，生成核销码） | `productId`, `quantity`, `payType` | 登录 | - |
-| `orderPay` | 微信支付统一下单（预留） | `orderNo` | 登录 | 微信支付 |
-| `orderList` | 积分商城兑换订单 | `status`, `page` | 登录 | - |
+| `createOrder` | 商城下单（生成核销码） | `productId`, `quantity` | 登录 | - |
+| `getOrders` | 积分商城兑换订单 | `status`, `page` | 登录 | - |
 | `orderRedeem` | 现场核销（校验核销码） | `redemptionCode` | 场务 | - |
-| `orderCancel` | 取消/退款 | `orderNo` | 登录/场务 | 微信支付(退款) |
 
-## 九、数据看板（轻量）
-
-| 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
-|---|---|---|---|---|
-| `dashboardDaily` | 当日游客人数/积分发放/热门卡片/兑换Top | `date` | 场务 | 聚合查询 |
-| `dashboardShow` | 单场次运营明细 | `showId` | 场务 | - |
-
-## 十、实时通信 & 定时任务
+### 1.9 数据看板（2）
 
 | 函数名 | 说明 | 主要入参 | 权限 | 外部依赖 |
 |---|---|---|---|---|
-| `imUserSig` | 获取腾讯云 IM 用户签名（游客/演员入群鉴权） | - | 登录 | 腾讯云 IM |
-| `imCallback` | IM 消息回调（落库弹幕/表情/投票确认） | `callbackBody` | 系统 | - |
-| `taskDailyReset` 『定时』 | 每日 0 点重置 `daily_read_pts`，生成 `stat_daily` | - | 系统 | - |
-| `taskShowStatus` 『定时』 | 定时扫描并更新场次状态（即将→进行中→已结束） | - | 系统 | - |
+| `getStatistics` | 运营数据看板聚合（当日游客 / 积分 / 热门卡片 / 兑换 Top） | `date` | 场务 | 聚合查询 |
+| `dashboardShow` | 单场次运营明细（读 `polls` / `stage` / `emotions` 实时票数 / 弹幕 / 情绪） | `showId` | 场务 | - |
 
 ---
 
-## 实时通信架构说明
-- **通道**：腾讯云 IM 群组（每个 `shows.im_group_id` 对应一个群）。
-- **下行（场务→游客）**：`pollStart` / `videoPush` / `segmentStart/End` / `branchLock` / `activityStart` 调用 IM REST 推群消息，游客端监听后渲染投票器、播放短片、切换环节。
-- **上行（游客→场务）**：`pollVote` / `emotionSend` 通过云函数写入 DB 并广播，结果页轮询 `pollResult` 或订阅 IM 系统消息刷新柱状图/弹幕。
-- **演员台词**：`aiLineGenerate` 调用大模型流式输出，结果经 IM 私信推送到演员端。
-- **SLA**：场务指令→游客端 < 1s；投票响应 < 500ms；明信片生成 < 10s。
+## 二、规划接口（V2.0+，未在 V1.0 建目录）
+
+> 以下为早期设计 / 后续版本规划接口，**V1.0 未实现**。其中部分已被 V1.0 以「改名落地」的方式实现，已在备注中标明，避免与上文 32 个已实现函数混淆。
+
+| 原规划名 | 状态 | 备注 |
+|---|---|---|
+| `authLogin` | 待补 | 游客手机号一键登录（V1.0 用 `login` 替代，以 openid 为主身份） |
+| `cardList` / `cardDetail` / `cardLike` / `cardFavorite` | 待补 | 资料卡片此前端本地源（`services/resources.js`）提供，无需云接口 |
+| `reportRead` / `pointsBalance` / `pointsHistory` | 待补 | 积分读写当前由 `getUser` / `getUserProfile` 承载，明细页本地读取 |
+| `updateUserProfile` | 待补 | 资料编辑当前为本地演示存储 |
+| `showList` / `showDetail` / `showJoin` | 待补 | 场次列表由 `getShows` 提供；IM 入群待 V2.0 |
+| `showCreate` | 已落地 | V1.0 实现为 `createShow` |
+| `showUpdate` | 待补 | 场次编辑（V1.0 暂未开放） |
+| `segmentStart` / `segmentEnd` | 待补 | 环节级开关（V1.0 用 `showControl` 做开场 / 散场） |
+| `pollStart` / `pollResult` | 待补 | 投票发布 / 结果由 `pollUpdate` / `getShowRoom` 承担（V1.0 轮询） |
+| `emotionStats` / `videoGet` | 待补 | 大屏情绪统计、短片拉取（V1.0 由 `getShowRoom` / `dashboardShow` 下发） |
+| `aiLineList` / `aiLineChoose` / `aiLineTTS` | 待补 | 台词本 / 选用标记 / TTS（V1.0 仅 `aiLineGenerate`） |
+| `quoteList` / `sensitiveCheck` | 待补 | 名言库 / 敏感词（V1.0 客户端 `sensitive.js` 双校验） |
+| `postcardShare` | 待补 | 分享卡片（V1.0 端上直接保存 / 分享） |
+| `orderCreate` | 已落地 | V1.0 实现为 `createOrder` |
+| `orderPay` / `orderCancel` | 待补 | 微信支付统一下单 / 退款（预留） |
+| `orderList` | 已落地 | V1.0 实现为 `getOrders` |
+| `dashboardDaily` | 待补 | 当日运营明细（V1.0 用 `getStatistics`） |
+| `imUserSig` / `imCallback` | 待补 | 腾讯云 IM 用户签名 / 消息回调（V2.0 实时通道） |
+| `taskDailyReset` 『定时』 | 待补 | 每日 0 点重置与生成统计 |
+| `taskShowStatus` 『定时』 | 待补 | 定时扫描更新场次状态（V1.0 由 `showControl` 手动翻转） |
+
+---
+
+## 三、实时通信架构说明（V1.0 → V2.0）
+
+- **V1.0（云函数轮询，约 2.6s）**：房间页 `setInterval` 周期调用 `getShowRoom` 拉取全量房间状态；场务经 `showControl` / `noticePush` / `videoPush` / `branchLock` 写库，游客经 `pollVote` / `emotionSend` / `submitEmotion` / `danmakuSend` 写库，均由 `getShowRoom` 轮询下发至客户端与工作人员端。指令→客户端可见延迟约 2.6s，属设计内降级方案。
+- **V2.0（腾讯云 IM / WebSocket，目标 < 1s）**：每个场次一个 IM 群组（游客 + 演员 + 场务同群）；下行由云函数调 IM REST 推群消息，上行经 IM 私信 / 系统消息广播。该通道由独立实时服务仓库承担，不计入本软著小程序端代码。
+- **SLA**：V1.0 轮询刷新约 2.6s（指令→客户端可见）；投票响应 < 500ms（原子自增）；明信片生成 < 10s（未配密钥时回退 CSS 渲染）。
