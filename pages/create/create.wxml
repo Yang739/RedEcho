@@ -14,10 +14,10 @@
     <view class="more-link tap" bindtap="onAll">全部 ›</view>
   </view>
 
-  <!-- 无作品：灰色底简洁空态 -->
-  <view wx:if="{{!postcards.length && !loading}}" class="empty tap" bindtap="onStartCreate">
-    <text class="empty__main">还没有明信片哦</text>
-    <text class="empty__link">去创作第一张</text>
+  <!-- 无作品：白色卡片空态 -->
+  <view wx:if="{{!postcards.length && !loading}}" class="empty-card tap" bindtap="onStartCreate">
+    <text class="empty-card__title">暂无作品</text>
+    <text class="empty-card__subtitle">生成第一张明信片，记录你的红色足迹</text>
   </view>
 
   <!-- 有作品：画廊 -->
