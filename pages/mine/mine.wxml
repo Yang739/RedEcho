@@ -1,15 +1,23 @@
 <view class="page">
-  <!-- 个人信息 -->
+  <!-- 个人信息 + 等级 -->
   <view class="profile bg-grid fade-up">
     <view class="profile__avatar" style="{{pf.avatar ? 'background:transparent' : 'background:' + pf.avatarGradient}}">
       <image wx:if="{{pf.avatar}}" class="profile__img" src="{{pf.avatar}}" mode="aspectFill"/>
       <text wx:elif="{{pf.avatarEmoji}}">{{pf.avatarEmoji}}</text>
       <text wx:else>{{pf.avatarText}}</text>
     </view>
-    <view class="flex-1">
-      <view class="profile__name">{{pf.nickname}}</view>
+    <view class="profile__body">
+      <view class="profile__row">
+        <view class="profile__name">{{pf.nickname}}</view>
+        <view class="profile__lvtag">Lv.{{levelInfo.lv}} {{levelInfo.name}}</view>
+      </view>
       <view class="profile__sign" wx:if="{{pf.signature}}">{{pf.signature}}</view>
-      <re-tag type="accent" solid>{{user.level}}</re-tag>
+      <view class="lvbar">
+        <view class="lvbar__fill" style="width:{{levelInfo.pct}}%"></view>
+      </view>
+      <view class="lvbar__tip" wx:if="{{!levelInfo.isMax}}">距「{{levelInfo.nextName}}」还差 {{levelInfo.gap}} 经验</view>
+      <view class="lvbar__tip" wx:else>已达最高等级 · 信仰丰碑</view>
+      <view class="lvbar__exp">累计经验 {{levelInfo.exp}}</view>
     </view>
   </view>
 
@@ -25,24 +33,6 @@
       <view class="points__label">今日获得</view>
     </view>
     <view class="points__cta">明细 ›</view>
-  </view>
-
-  <!-- 等级 / 经验 -->
-  <view class="block-mt">
-    <re-card title="我的等级">
-      <view class="lv">
-        <view class="lv__top">
-          <view class="lv__name">{{levelInfo.name}}</view>
-          <view class="lv__tag">Lv.{{levelInfo.lv}}</view>
-        </view>
-        <view class="lv__bar">
-          <view class="lv__fill" style="width:{{levelInfo.pct}}%"></view>
-        </view>
-        <view class="lv__tip" wx:if="{{!levelInfo.isMax}}">距「{{levelInfo.nextName}}」还差 {{levelInfo.gap}} 经验</view>
-        <view class="lv__tip" wx:else>已达最高等级 · 信仰丰碑</view>
-        <view class="lv__exp">累计经验 {{levelInfo.exp}}</view>
-      </view>
-    </re-card>
   </view>
 
   <!-- 服务菜单 -->

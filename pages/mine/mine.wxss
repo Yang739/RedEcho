@@ -1,8 +1,8 @@
 .page { padding: 20rpx 28rpx calc(120rpx + env(safe-area-inset-bottom)); min-height: 100vh; box-sizing: border-box; }
 
 .profile {
-  display: flex; align-items: center; gap: 24rpx;
-  padding: 40rpx 32rpx; border-radius: var(--r-lg);
+  display: flex; align-items: flex-start; gap: 24rpx;
+  padding: 36rpx 32rpx; border-radius: var(--r-lg);
   background:
     radial-gradient(120% 120% at 85% 0%, rgba(255,255,255,.14), transparent 60%),
     linear-gradient(135deg, #C8161D 0%, #7A0A10 100%);
@@ -33,13 +33,13 @@
 
 .block-mt { margin-top: 24rpx; }
 
-.lv__top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18rpx; }
-.lv__name { font-size: 32rpx; font-weight: 800; color: var(--c-text); }
-.lv__tag { font-size: 24rpx; font-weight: 700; color: var(--c-primary); }
-.lv__bar { height: 16rpx; border-radius: 999rpx; background: var(--c-divider); overflow: hidden; }
-.lv__fill { height: 100%; border-radius: 999rpx; background: linear-gradient(90deg, #E8A33D, #C8161D); }
-.lv__tip { font-size: 24rpx; color: var(--c-text-2); margin-top: 14rpx; }
-.lv__exp { font-size: 22rpx; color: var(--c-text-3); margin-top: 6rpx; }
+.profile__body { flex: 1; min-width: 0; }
+.profile__row { display: flex; align-items: baseline; justify-content: space-between; }
+.profile__lvtag { font-size: 22rpx; font-weight: 700; color: #fff; background: rgba(255,255,255,.22); padding: 4rpx 14rpx; border-radius: 999rpx; flex-shrink: 0; margin-left: 12rpx; }
+.lvbar { height: 14rpx; border-radius: 999rpx; background: rgba(255,255,255,.25); overflow: hidden; margin-top: 18rpx; }
+.lvbar__fill { height: 100%; border-radius: 999rpx; background: linear-gradient(90deg, #FFD27D, #FFE9B0); }
+.lvbar__tip { font-size: 22rpx; color: rgba(255,255,255,.92); margin-top: 12rpx; }
+.lvbar__exp { font-size: 20rpx; color: rgba(255,255,255,.7); margin-top: 4rpx; }
 
 .menu { display: flex; flex-direction: column; }
 .menu__item {
