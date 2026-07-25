@@ -32,11 +32,12 @@ Component({
         this.triggerEvent('change', null)
       })
     },
-    // 根据偏好 id 解析出当前选中的 live 演出
+    // 根据偏好 id 解析出当前选中的 live 演出；id 缺失时回退 _id（新建场次场景）
     resolve(pref) {
       const live = this.data.liveShows
+      const keyOf = (s) => (s && (s.id || s._id)) || ''
       let cur = null
-      if (pref) cur = live.find((s) => s.id === pref) || null
+      if (pref) cur = live.find((s) => keyOf(s) === pref) || null
       if (!cur && live.length) cur = live[0]
       this.setData({ current: cur, none: live.length === 0 })
       this.triggerEvent('change', cur)

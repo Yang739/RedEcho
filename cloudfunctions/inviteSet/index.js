@@ -22,7 +22,11 @@ exports.main = async (event) => {
     const role = await roleOf(OPENID)
     if (!role || ['field', 'admin'].indexOf(role) === -1) return fail(403, '无权限')
     const inviteCode = (code || '').trim().toUpperCase()
-    await db.collection('shows').doc(showId).update({ data: { inviteCode } })
+    // 兼容种子场次（带自定义 id）与新建场次（仅 _id）：先定位真实 _id 再更新
+    const sRes = await db.collection('shows').where(_.or([{ id: showId }, { _id: showId }])).limit(1).get()
+    const realId = sRes.data && sRes.data[0] && sRes.data[0]._id
+    if (!realId) return fail(404, '场次不存在')
+    await db.collection('shows').doc(realId).update({ data: { inviteCode } })
     return ok({ showId, code: inviteCode })
   } catch (e) {
     return fail(500, 'inviteSet failed: ' + e.message)

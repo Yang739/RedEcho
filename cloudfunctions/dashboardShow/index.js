@@ -24,8 +24,9 @@ exports.main = async (event) => {
   try {
     const role = await roleOf(OPENID)
     if (!role || ['field', 'actor', 'admin'].indexOf(role) === -1) return fail(403, '无权限')
-    const showRes = await db.collection('shows').doc(showId).get()
-    const show = showRes.data || {}
+    // 兼容种子场次（带自定义 id）与新建场次（仅 _id）
+    const showRes = await db.collection('shows').where(_.or([{ id: showId }, { _id: showId }])).limit(1).get()
+    const show = (showRes.data && showRes.data[0]) || {}
     // 实时票数：按 showId 查询 open 的 poll（与 pollVote / getShowRoom 同源）。
     let poll = { question: '', options: [] }
     const pRes = await db.collection('polls').where({ showId, open: true }).limit(1).get()

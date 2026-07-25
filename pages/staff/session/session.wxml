@@ -32,7 +32,7 @@
 
       <!-- 场次列表 -->
       <view wx:if="{{!shows.length}}" class="empty">暂无场次，点击「添加场次」新建</view>
-      <view wx:for="{{shows}}" wx:key="id" class="srow">
+      <view wx:for="{{shows}}" wx:key="*this" class="srow">
         <view class="srow__cover" style="background:{{item.gradient}}">
           <view wx:if="{{item.status === 'live'}}" class="live__badge"><view class="live-dot"></view><text>直播中</text></view>
           <view wx:elif="{{item.status === 'upcoming'}}" class="srow__soon">即将开始</view>
@@ -46,7 +46,7 @@
         </view>
         <view class="srow__op">
           <view class="btn {{item.status === 'live' ? 'btn-ghost' : 'btn-primary'}} btn-sm tap"
-            data-id="{{item.id}}" bindtap="onToggleStatus">{{item.status === 'live' ? '结束' : '开始'}}</view>
+            data-id="{{item.id || item._id}}" bindtap="onToggleStatus">{{item.status === 'live' ? '结束' : '开始'}}</view>
         </view>
       </view>
     </re-card>

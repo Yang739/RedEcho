@@ -11,8 +11,9 @@ const fail = (a, b = 1) => { const code = (typeof a === 'number') ? a : b; const
 exports.main = async (event) => {
   const { showId, code } = event
   try {
-    const res = await db.collection('shows').doc(showId).get()
-    const expect = res.data && res.data.inviteCode
+    // 兼容种子场次（带自定义 id）与新建场次（仅 _id）
+    const res = await db.collection('shows').where(_.or([{ id: showId }, { _id: showId }])).limit(1).get()
+    const expect = res.data && res.data[0] && res.data[0].inviteCode
     const okFlag = !!expect && String(code || '').trim().toUpperCase() === String(expect).trim().toUpperCase()
     return ok({ ok: okFlag })
   } catch (e) {

@@ -31,7 +31,12 @@ exports.main = async (event) => {
     const role = await roleOf(OPENID)
     if (!role || ['field', 'admin'].indexOf(role) === -1) return fail(403, '无权限')
     if (!title || !venue || !date) return fail(400, '标题、地点、时间均必填')
+    // 生成自定义 id（与种子场次约定一致）。种子场次带 id（如 "s1"），而若只靠系统 _id，
+    // 下游按 s.id 取 showId 会拿到 undefined，导致工作人员选择场次后操作区不显示。
+    // 故新建场次也显式落库 id，且 id/_id 任一都能被 _.or 查询命中。
+    const id = 'sh_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
     const doc = {
+      id,
       title: String(title).trim(),
       venue: String(venue).trim(),
       date: String(date).trim(),
@@ -43,7 +48,7 @@ exports.main = async (event) => {
       inviteCode: (inviteCode && String(inviteCode).trim().toUpperCase()) || genCode()
     }
     const res = await db.collection('shows').add({ data: doc })
-    return ok({ id: res._id, show: Object.assign({}, doc, { id: res._id }) })
+    return ok({ id, show: Object.assign({}, doc) })
   } catch (e) {
     return fail(500, 'createShow failed: ' + e.message)
   }

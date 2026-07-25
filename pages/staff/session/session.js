@@ -72,7 +72,7 @@ Page({
   onToggleStatus(e) {
     if (!this.data.canControl) return
     const id = e.currentTarget.dataset.id
-    const show = this.data.shows.find((s) => s.id === id)
+    const show = this.data.shows.find((s) => (s.id || s._id) === id)
     if (!show) return
     const next = show.status === 'live' ? 'ended' : 'live'
     const tip = next === 'ended' ? '确认结束本场演出？' : '确认开始本场演出？'

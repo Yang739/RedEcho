@@ -29,7 +29,8 @@ exports.main = async (event, context) => {
   if (!showId) return fail(400, 'missing showId')
 
   try {
-    const sRes = await db.collection('shows').where({ id: showId }).get()
+    // 兼容种子场次（带自定义 id）与新建场次（仅 _id）：按 id 或 _id 命中
+    const sRes = await db.collection('shows').where(_.or([{ id: showId }, { _id: showId }])).limit(1).get()
     const show = sRes.data[0] || null
 
     // 当前投票题目（该场次下 open 的 poll）

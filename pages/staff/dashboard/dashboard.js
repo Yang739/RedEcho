@@ -34,7 +34,7 @@ Page({
   // 选择器回调：切换正在进行的表演后刷新看板
   onShowChange(e) {
     const show = e.detail
-    this.setData({ showId: show ? show.id : '' })
+    this.setData({ showId: (show && (show.id || show._id)) || '' })
     this.refresh()
   },
 

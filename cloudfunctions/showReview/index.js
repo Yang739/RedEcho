@@ -34,8 +34,8 @@ exports.main = async (event, context) => {
   if (!showId) return fail('missing showId', 400)
 
   try {
-    // 场次
-    const sRes = await db.collection('shows').where({ id: showId }).get()
+    // 场次（兼容种子场次自定义 id 与新建场次仅 _id 两种情况）
+    const sRes = await db.collection('shows').where(_.or([{ id: showId }, { _id: showId }])).limit(1).get()
     const show = sRes.data[0] || null
 
     // 我的投票（该用户在该场次的最新一票）

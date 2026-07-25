@@ -38,7 +38,7 @@ Page({
   // 选择器回调：必须选定一个正在进行的表演才能操作
   onShowChange(e) {
     const show = e.detail
-    this.setData({ showId: show ? show.id : '' })
+    this.setData({ showId: (show && (show.id || show._id)) || '' })
     if (show) this.reload()
     else this.setData({ choice: '', locked: '', lockedLabel: '' })
   },

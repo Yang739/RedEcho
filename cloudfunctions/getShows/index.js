@@ -17,7 +17,13 @@ exports.main = async (event, context) => {
       query = query.where({ status })
     }
     const res = await query.get()
-    return ok(res.data)
+    // 归一化 id：种子场次带自定义 id（如 "s1"），而经 createShow 新建的场次只存了 _id、
+    // 没有自定义 id 字段。两种来源并存会导致下游按 s.id 取 showId 时拿到 undefined。
+    // 这里统一把 id 补齐为「自定义 id 优先，否则回退 _id」，使客户端永远拿到可用 id。
+    const list = (res.data || []).map((d) => Object.assign({}, d, {
+      id: (d.id != null && d.id !== '') ? d.id : d._id
+    }))
+    return ok(list)
   } catch (e) {
     return fail(500, 'getShows failed: ' + e.message)
   }
