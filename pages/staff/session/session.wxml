@@ -27,6 +27,11 @@
           <input class="form__input" placeholder="如 2026-07-20 19:30"
             value="{{form.date}}" data-field="date" bindinput="onFormInput" />
         </view>
+        <view class="form__row">
+          <text class="form__label">邀请码</text>
+          <input class="form__input" placeholder="留空则自动生成" maxlength="12"
+            value="{{form.inviteCode}}" data-field="inviteCode" bindinput="onFormInput" />
+        </view>
         <view class="btn btn-primary btn-block tap" bindtap="onCreate">确认添加</view>
       </view>
 
@@ -42,9 +47,12 @@
           <view class="subtitle ellipsis">{{item.title}}</view>
           <view class="text-3 sm">{{item.venue}}</view>
           <view class="text-3 xs" style="margin-top:6rpx">{{item.date}}</view>
+          <view class="text-3 xs" style="margin-top:4rpx">邀请码：{{item.inviteCode || '—'}}</view>
           <view class="srow__status status-val--{{item.status === 'live' ? 'live' : (item.status === 'upcoming' ? 'up' : 'ended')}}">{{item.status === 'live' ? '直播中' : (item.status === 'upcoming' ? '即将开始' : '已结束')}}</view>
         </view>
         <view class="srow__op">
+          <view class="btn btn-ghost btn-sm tap"
+            data-id="{{item.id || item._id}}" bindtap="onEditInvite">改码</view>
           <view class="btn {{item.status === 'live' ? 'btn-ghost' : 'btn-primary'}} btn-sm tap"
             data-id="{{item.id || item._id}}" bindtap="onToggleStatus">{{item.status === 'live' ? '结束' : '开始'}}</view>
         </view>

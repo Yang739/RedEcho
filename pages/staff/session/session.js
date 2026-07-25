@@ -10,7 +10,7 @@ Page({
     canControl: false,
     shows: [],                 // 全部场次（含已结束）
     adding: false,             // 是否展开添加表单
-    form: { title: '', venue: '', date: '' }
+    form: { title: '', venue: '', date: '', inviteCode: '' }
   },
 
   onLoad() {
@@ -35,7 +35,7 @@ Page({
   onToggleAdd() {
     this.setData({
       adding: !this.data.adding,
-      form: { title: '', venue: '', date: '' }
+      form: { title: '', venue: '', date: '', inviteCode: '' }
     })
   },
 
@@ -57,7 +57,9 @@ Page({
     wx.showLoading({ title: '创建中', mask: true })
     // 渐变按现有场次数量轮询取色，保证视觉区分
     const gradient = GRADS[this.data.shows.length % GRADS.length]
-    api.createShow({ title, venue, date, gradient, segment: '未开始' }).then(() => {
+    // 邀请码：留空则云端自动生成（createShow 内 genCode）
+    const inviteCode = (f.inviteCode || '').trim().toUpperCase()
+    api.createShow({ title, venue, date, gradient, segment: '未开始', inviteCode }).then(() => {
       wx.hideLoading()
       wx.showToast({ title: '场次已添加', icon: 'success' })
       this.setData({ adding: false, form: { title: '', venue: '', date: '' } })
@@ -87,6 +89,33 @@ Page({
           wx.showToast({ title: next === 'ended' ? '已结束演出' : '已开始演出', icon: 'success' })
           this.load()
         }).catch((err) => {
+          wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
+        })
+      }
+    })
+  },
+
+  // 设置 / 重置某场次的邀请码（合并自原独立「邀请码」功能页）
+  onEditInvite(e) {
+    if (!this.data.canControl) return
+    const id = e.currentTarget.dataset.id
+    const show = this.data.shows.find((s) => (s.id || s._id) === id)
+    if (!show) return
+    wx.showModal({
+      title: '设置邀请码',
+      editable: true,
+      placeholderText: '留空则自动生成',
+      content: show.inviteCode || '',
+      success: (r) => {
+        if (!r.confirm) return
+        const code = (r.content || '').trim().toUpperCase()
+        wx.showLoading({ title: '保存中', mask: true })
+        api.setInvite(id, code).then(() => {
+          wx.hideLoading()
+          wx.showToast({ title: '邀请码已更新', icon: 'success' })
+          this.load()
+        }).catch((err) => {
+          wx.hideLoading()
           wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
         })
       }

@@ -9,7 +9,6 @@ const perm = require('../../../services/permission.js')
 const FUNC_ITEMS = [
   { key: 'show',   action: 'show_control',  name: '场次管理', desc: '开场 / 散场 / 状态', icon: '🎬', page: '/pages/staff/session/session', needShow: true },
   { key: 'poll',   action: 'poll_manage',   name: '投票发布', desc: '开关投票 / 改题',   icon: '🗳️', page: '/pages/staff/poll/poll',       needShow: true },
-  { key: 'invite', action: 'invite_set',    name: '邀请码',   desc: '设置 / 重置',       icon: '🔑', page: '/pages/staff/invite/invite',   needShow: true },
   { key: 'notice', action: 'notice_push',   name: '现场通知', desc: '推送场务提示',     icon: '📢', page: '/pages/staff/notice/notice',   needShow: true },
   { key: 'branch', action: 'branch_lock',   name: '分支总控', desc: '锁定剧情走向',     icon: '🌿', page: '/pages/staff/branch/branch',   needShow: true },
   { key: 'stage',  action: 'stage_push',    name: '舞台总控', desc: '弹幕 / 情绪上屏',  icon: '🖥️', page: '/pages/staff/stage/stage',     needShow: true },

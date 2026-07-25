@@ -19,7 +19,6 @@
     "pages/staff/dashboard/dashboard",
     "pages/staff/session/session",
     "pages/staff/poll/poll",
-    "pages/staff/invite/invite",
     "pages/staff/notice/notice",
     "pages/staff/branch/branch",
     "pages/staff/stage/stage",
