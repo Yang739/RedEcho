@@ -37,6 +37,24 @@
         <view class="quote__txt">{{card.quotes[0]}}</view>
       </view>
     </block>
+
+    <!-- 相关宣传视频 -->
+    <block wx:if="{{card.video}}">
+      <view class="h">相关宣传视频</view>
+      <view class="video-wrap">
+        <video
+          class="video"
+          src="{{card.video.url}}"
+          poster="{{card.video.poster}}"
+          controls
+          show-center-play-btn
+          enable-progress-gesture
+          binderror="onVideoError"
+        ></video>
+        <view wx:if="{{card.video.title}}" class="video__cap">{{card.video.title}}</view>
+      </view>
+    </block>
+    <view wx:else class="video-empty text-3 xs">该资料暂未配套宣传视频</view>
   </view>
 
   <view class="footer-tip text-3 xs">红韵智演 · 红色旧址沉浸式互动演出</view>

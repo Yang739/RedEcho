@@ -23,6 +23,11 @@ Page({
     }
   },
 
+  // 视频加载失败提示（多为地址不可达或域名未在合法域名列表）
+  onVideoError() {
+    wx.showToast({ title: '视频加载失败，请检查地址或网络', icon: 'none' })
+  },
+
   // 切换收藏状态
   onToggleFav() {
     const id = this.data.card && this.data.card.id

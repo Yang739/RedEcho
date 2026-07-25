@@ -69,6 +69,23 @@
   margin-top: 6rpx;
 }
 
+/* 相关宣传视频 */
+.video-wrap { margin-top: 4rpx; }
+.video {
+  width: 100%; height: 400rpx; display: block;
+  background: #000; border-radius: var(--r-md, 16rpx);
+}
+.video__cap {
+  font-size: 24rpx; color: var(--c-text-2, #666);
+  line-height: 1.5; margin-top: 14rpx;
+}
+.video-empty {
+  margin-top: 8rpx; padding: 44rpx 0;
+  text-align: center;
+  background: var(--c-surface, #fff);
+  border-radius: var(--r-md, 16rpx);
+}
+
 .empty-page { padding-top: 200rpx; text-align: center; }
 .footer-tip { text-align: center; padding: 40rpx 0 10rpx; }
 
