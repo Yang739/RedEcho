@@ -308,11 +308,18 @@ module.exports = {
 
   /* ---------------- 工作人员模式（双轨） ---------------- */
   // 登录：mock 比对 DEMO_ACCOUNTS；云模式走 staffLogin 云函数（返回 {role, roleName, name}）
+  // 注意：call() 在云模式成功时 resolve 的是业务数据（无 ok 字段），
+  // 而页面层 staff.js 依赖 { ok, msg } 形态判断成败。故此处统一包成 {ok,...}，
+  // 否则云模式即便密码正确也会被误判为「账号或密码错误」（r.ok 恒为 undefined）。
   staffLogin(phone, pwd) {
-    if (IS_CLOUD) return call('staffLogin', { phone, pwd })
-    const acc = DEMO_ACCOUNTS[phone]
-    if (!acc || pwd !== DEMO_PWD) return delay({ ok: false, msg: '演示账号或密码错误' }, 200)
-    return delay({ ok: true, name: acc.name, role: acc.role, roleName: acc.roleName }, 200)
+    if (!IS_CLOUD) {
+      const acc = DEMO_ACCOUNTS[phone]
+      if (!acc || pwd !== DEMO_PWD) return delay({ ok: false, msg: '演示账号或密码错误' }, 200)
+      return delay({ ok: true, name: acc.name, role: acc.role, roleName: acc.roleName }, 200)
+    }
+    return call('staffLogin', { phone, pwd })
+      .then((d) => ({ ok: true, name: d.name, role: d.role, roleName: d.roleName }))
+      .catch((e) => ({ ok: false, msg: e.message || '账号或密码错误' }))
   },
 
   // 校验工作人员 token（云模式由 staffVerify 校验；mock 直接通过）
