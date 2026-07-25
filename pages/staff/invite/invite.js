@@ -11,12 +11,25 @@ Page({
   },
 
   onLoad(options) {
-    const showId = options.id || 's1'
+    const showId = options.id || ''
     this.setData({ showId, canSet: perm.staffCan('invite_set') })
-    if (!this.data.canSet) return
-    api.getShowRoom(showId).then((d) => {
+    this.reload()
+  },
+
+  // 选定正在进行的表演后载入数据
+  reload() {
+    if (!this.data.canSet || !this.data.showId) return
+    api.getShowRoom(this.data.showId).then((d) => {
       this.setData({ inviteCode: d.show.inviteCode || '' })
     })
+  },
+
+  // 选择器回调：必须选定一个正在进行的表演才能操作
+  onShowChange(e) {
+    const show = e.detail
+    this.setData({ showId: show ? show.id : '' })
+    if (show) this.reload()
+    else this.setData({ inviteCode: '' })
   },
 
   onInput(e) { this.setData({ input: e.detail.value }) },

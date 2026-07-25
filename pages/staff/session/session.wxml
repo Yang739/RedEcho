@@ -1,32 +1,57 @@
 <view class="page">
   <view class="hero">场次管理</view>
-  <view class="sub">开场 / 散场 / 状态切换</view>
+  <view class="sub">添加场次 · 开场 / 散场</view>
 
-  <view wx:if="{{!canControl}}" class="deny">你当前身份无开场 / 散场权限（仅场务 / 管理员可操作）</view>
+  <view wx:if="{{!canControl}}" class="deny">你当前身份无场次管理权限（仅场务 / 管理员可操作）</view>
 
   <block wx:else>
-    <re-card title="当前场次">
-      <view class="show">
-        <view class="show__cover" style="background:{{show.gradient}}">
-          <view wx:if="{{show.status === 'live'}}" class="live__badge"><view class="live-dot"></view><text>直播中</text></view>
-          <view wx:elif="{{show.status === 'upcoming'}}" class="show__soon">即将开始</view>
+    <re-card title="全部场次">
+      <view class="toolbar">
+        <view class="btn btn-ghost btn-sm tap" bindtap="onToggleAdd">{{adding ? '收起' : '添加场次'}}</view>
+      </view>
+
+      <!-- 添加场次表单 -->
+      <view wx:if="{{adding}}" class="form">
+        <view class="form__row">
+          <text class="form__label">标题</text>
+          <input class="form__input" placeholder="如《星火》沉浸式实景演出"
+            value="{{form.title}}" data-field="title" bindinput="onFormInput" />
+        </view>
+        <view class="form__row">
+          <text class="form__label">地点</text>
+          <input class="form__input" placeholder="如 红船剧场 · 主舞台"
+            value="{{form.venue}}" data-field="venue" bindinput="onFormInput" />
+        </view>
+        <view class="form__row">
+          <text class="form__label">时间</text>
+          <input class="form__input" placeholder="如 2026-07-20 19:30"
+            value="{{form.date}}" data-field="date" bindinput="onFormInput" />
+        </view>
+        <view class="btn btn-primary btn-block tap" bindtap="onCreate">确认添加</view>
+      </view>
+
+      <!-- 场次列表 -->
+      <view wx:if="{{!shows.length}}" class="empty">暂无场次，点击「添加场次」新建</view>
+      <view wx:for="{{shows}}" wx:key="id" class="srow">
+        <view class="srow__cover" style="background:{{item.gradient}}">
+          <view wx:if="{{item.status === 'live'}}" class="live__badge"><view class="live-dot"></view><text>直播中</text></view>
+          <view wx:elif="{{item.status === 'upcoming'}}" class="srow__soon">即将开始</view>
+          <view wx:else class="srow__ended">已结束</view>
         </view>
         <view class="flex-1">
-          <view class="subtitle ellipsis">{{show.title}}</view>
-          <view class="text-3 sm">{{show.venue}}</view>
-          <view class="text-3 xs" style="margin-top:6rpx">{{show.date}}</view>
+          <view class="subtitle ellipsis">{{item.title}}</view>
+          <view class="text-3 sm">{{item.venue}}</view>
+          <view class="text-3 xs" style="margin-top:6rpx">{{item.date}}</view>
+          <view class="srow__status status-val--{{item.status === 'live' ? 'live' : (item.status === 'upcoming' ? 'up' : 'ended')}}">{{item.status === 'live' ? '直播中' : (item.status === 'upcoming' ? '即将开始' : '已结束')}}</view>
+        </view>
+        <view class="srow__op">
+          <view class="btn {{item.status === 'live' ? 'btn-ghost' : 'btn-primary'}} btn-sm tap"
+            data-id="{{item.id}}" bindtap="onToggleStatus">{{item.status === 'live' ? '结束' : '开始'}}</view>
         </view>
       </view>
-
-      <view class="status-row">
-        <text class="status-label">当前状态</text>
-        <text class="status-val {{show.status === 'live' ? 'status-val--live' : (show.status === 'upcoming' ? 'status-val--up' : 'status-val--ended')}}">{{show.status === 'live' ? '直播中' : (show.status === 'upcoming' ? '即将开始' : '已结束')}}</text>
-      </view>
-
-      <view class="btn btn-primary btn-block tap" bindtap="onToggle">{{show.status === 'live' ? '结束演出' : '开始演出'}}</view>
     </re-card>
 
-    <view class="tip">开场后观众可进入互动；散场后进入剧情回顾。</view>
+    <view class="tip">开始后观众可进入互动；散场后进入剧情回顾。</view>
   </block>
 
   <view class="footer-tip text-3 xs">红韵智演 · 工作人员端</view>

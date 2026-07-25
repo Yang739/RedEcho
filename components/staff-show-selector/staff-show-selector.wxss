@@ -1,0 +1,19 @@
+.ss { margin-bottom: 20rpx; }
+.ss__none {
+  background: #fff7f7; border: 1rpx solid #f3c9c9; color: #C8161D;
+  border-radius: 16rpx; padding: 24rpx; font-size: 26rpx; line-height: 1.6; text-align: center;
+}
+.ss__bar {
+  display: flex; align-items: center; gap: 16rpx;
+  background: #fff; border-radius: 16rpx; padding: 24rpx 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,.04);
+}
+.ss__label {
+  font-size: 24rpx; color: #999; flex-shrink: 0;
+  padding: 4rpx 14rpx; background: #fdeaea; color: #C8161D; border-radius: 999rpx;
+}
+.ss__value {
+  flex: 1; font-size: 30rpx; font-weight: 700; color: #222;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ss__caret { font-size: 26rpx; color: #C8161D; flex-shrink: 0; }

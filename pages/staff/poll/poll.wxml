@@ -5,27 +5,31 @@
   <view wx:if="{{!canManage}}" class="deny">你当前身份无投票管理权限（仅场务 / 管理员可操作）</view>
 
   <block wx:else>
-    <re-card title="投票通道">
-      <view class="between">
-        <text class="manage__label">当前状态：{{pollOpen ? '开启' : '关闭'}}</text>
-        <view class="btn btn-sm btn-primary tap" bindtap="onToggle">{{pollOpen ? '关闭投票' : '开启投票'}}</view>
-      </view>
-    </re-card>
+    <staff-show-selector value="{{showId}}" bind:change="onShowChange" />
+    <block wx:if="{{showId}}">
+      <re-card title="投票通道">
+        <view class="between">
+          <text class="manage__label">当前状态：{{pollOpen ? '开启' : '关闭'}}</text>
+          <view class="btn btn-sm btn-primary tap" bindtap="onToggle">{{pollOpen ? '关闭投票' : '开启投票'}}</view>
+        </view>
+      </re-card>
 
-    <view class="section-title">题目与选项</view>
-    <re-card title="编辑">
-      <view class="field">
-        <text class="field__label">投票题目</text>
-        <input class="field__input" value="{{question}}" bindinput="onQuestion" placeholder="输入投票题目" />
-      </view>
-      <view wx:for="{{options}}" wx:key="id" class="field">
-        <text class="field__label">选项 {{index + 1}}（当前 {{item.pct}}%）</text>
-        <input class="field__input" value="{{optionInputs[index]}}" data-index="{{index}}" bindinput="onOption" placeholder="选项内容" />
-      </view>
-      <view class="btn btn-primary btn-block tap" bindtap="onSave">保存修改</view>
-    </re-card>
+      <view class="section-title">题目与选项</view>
+      <re-card title="编辑">
+        <view class="field">
+          <text class="field__label">投票题目</text>
+          <input class="field__input" value="{{question}}" bindinput="onQuestion" placeholder="输入投票题目" />
+        </view>
+        <view wx:for="{{options}}" wx:key="id" class="field">
+          <text class="field__label">选项 {{index + 1}}（当前 {{item.pct}}%）</text>
+          <input class="field__input" value="{{optionInputs[index]}}" data-index="{{index}}" bindinput="onOption" placeholder="选项内容" />
+        </view>
+        <view class="btn btn-primary btn-block tap" bindtap="onSave">保存修改</view>
+      </re-card>
 
-    <view class="tip">修改后观众端实时刷新题目与选项；票数统计基于最新选项。</view>
+      <view class="tip">修改后观众端实时刷新题目与选项；票数统计基于最新选项。</view>
+    </block>
+    <view wx:else class="tip">请先在上方选择「正在进行的表演」再发布投票</view>
   </block>
 
   <view class="footer-tip text-3 xs">红韵智演 · 工作人员端</view>

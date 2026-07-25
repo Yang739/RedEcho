@@ -5,40 +5,44 @@
   <view wx:if="{{!canView}}" class="deny">你当前身份无数据看板权限（仅工作人员可查看）</view>
 
   <block wx:else>
-    <!-- 在线人数 -->
-    <view class="stat">
-      <view class="stat__num">{{online}}</view>
-      <view class="stat__label text-3 xs">当前在线人数</view>
-    </view>
+    <staff-show-selector value="{{showId}}" bind:change="onShowChange" />
+    <block wx:if="{{showId}}">
+      <!-- 在线人数 -->
+      <view class="stat">
+        <view class="stat__num">{{online}}</view>
+        <view class="stat__label text-3 xs">当前在线人数</view>
+      </view>
 
-    <!-- 票数分布 -->
-    <view class="section-title">剧情投票 · 实时分布</view>
-    <re-card title="{{poll.question || '投票'}}">
-      <view wx:if="{{!poll.options.length}}" class="empty">暂无投票数据</view>
-      <view wx:for="{{poll.options}}" wx:key="id" class="bar">
-        <view class="bar__label">{{item.label}}</view>
-        <view class="bar__track">
-          <view class="bar__fill" style="width:{{item.pct}}%"></view>
+      <!-- 票数分布 -->
+      <view class="section-title">剧情投票 · 实时分布</view>
+      <re-card title="{{poll.question || '投票'}}">
+        <view wx:if="{{!poll.options.length}}" class="empty">暂无投票数据</view>
+        <view wx:for="{{poll.options}}" wx:key="id" class="bar">
+          <view class="bar__label">{{item.label}}</view>
+          <view class="bar__track">
+            <view class="bar__fill" style="width:{{item.pct}}%"></view>
+          </view>
+          <view class="bar__pct">{{item.pct}}%</view>
         </view>
-        <view class="bar__pct">{{item.pct}}%</view>
-      </view>
-    </re-card>
+      </re-card>
 
-    <!-- 情绪占比 -->
-    <view class="section-title">此刻心情 · 占比</view>
-    <re-card title="情绪反馈">
-      <view class="emo">
-        <view wx:for="{{emotions}}" wx:key="id" class="emo__item" style="border-color:{{item.color}};color:{{item.color}}">{{item.label}}</view>
-      </view>
-      <view class="tip">情绪按类型实时统计，详细占比见弹幕大屏</view>
-    </re-card>
+      <!-- 情绪占比 -->
+      <view class="section-title">此刻心情 · 占比</view>
+      <re-card title="情绪反馈">
+        <view class="emo">
+          <view wx:for="{{emotions}}" wx:key="id" class="emo__item" style="border-color:{{item.color}};color:{{item.color}}">{{item.label}}</view>
+        </view>
+        <view class="tip">情绪按类型实时统计，详细占比见弹幕大屏</view>
+      </re-card>
 
-    <!-- 弹幕流 -->
-    <view class="section-title">弹幕流</view>
-    <re-card title="实时弹幕">
-      <view wx:if="{{!danmaku.length}}" class="empty">暂无弹幕</view>
-      <view wx:for="{{danmaku}}" wx:key="id" class="danmu__item">{{item.text}}</view>
-    </re-card>
+      <!-- 弹幕流 -->
+      <view class="section-title">弹幕流</view>
+      <re-card title="实时弹幕">
+        <view wx:if="{{!danmaku.length}}" class="empty">暂无弹幕</view>
+        <view wx:for="{{danmaku}}" wx:key="id" class="danmu__item">{{item.text}}</view>
+      </re-card>
+    </block>
+    <view wx:else class="tip">请先在上方选择「正在进行的表演」再查看看板</view>
   </block>
 
   <view class="footer-tip text-3 xs">红韵智演 · 工作人员端</view>

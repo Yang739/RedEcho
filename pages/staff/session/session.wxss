@@ -9,27 +9,44 @@
 
 .tip { font-size: 24rpx; color: #999; margin-top: 16rpx; }
 .footer-tip { text-align: center; margin-top: 40rpx; }
-.empty { color: #999; font-size: 26rpx; padding: 20rpx 0; text-align: center; }
+.empty { color: #999; font-size: 26rpx; padding: 40rpx 0; text-align: center; }
 
-/* 场次信息 */
-.show { display: flex; align-items: center; }
-.show__cover {
-  width: 140rpx; height: 140rpx; border-radius: 16rpx; flex-shrink: 0; margin-right: 24rpx;
+/* 工具栏 */
+.toolbar { display: flex; justify-content: flex-end; margin-bottom: 8rpx; }
+
+/* 添加表单 */
+.form { margin-top: 16rpx; padding-top: 20rpx; border-top: 1rpx solid #f0f0f0; }
+.form__row { display: flex; align-items: center; padding: 16rpx 0; }
+.form__label { width: 96rpx; font-size: 28rpx; color: #666; flex-shrink: 0; }
+.form__input {
+  flex: 1; height: 72rpx; background: #f7f7f7; border-radius: 12rpx;
+  padding: 0 20rpx; font-size: 28rpx; box-sizing: border-box;
+}
+
+/* 场次行 */
+.srow { display: flex; align-items: center; padding: 22rpx 0; border-top: 1rpx solid #f0f0f0; }
+.srow:first-of-type { border-top: none; }
+.srow__cover {
+  width: 132rpx; height: 132rpx; border-radius: 16rpx; flex-shrink: 0; margin-right: 22rpx;
   position: relative; display: flex; align-items: flex-end; padding: 10rpx; box-sizing: border-box;
 }
-.show__soon { color: #fff; font-size: 22rpx; opacity: .9; }
+.srow__soon { color: #fff; font-size: 22rpx; opacity: .9; }
+.srow__ended { color: #fff; font-size: 22rpx; opacity: .85; background: rgba(0,0,0,.3); padding: 4rpx 12rpx; border-radius: 20rpx; }
+.srow__status { font-size: 24rpx; font-weight: 700; margin-top: 10rpx; }
+.srow__op { flex-shrink: 0; padding-left: 18rpx; }
 
-.status-row { display: flex; align-items: center; justify-content: space-between; margin-top: 24rpx; }
-.status-label { font-size: 28rpx; color: #666; }
-.status-val { font-size: 30rpx; font-weight: 700; }
+/* 状态文字色（与详情页一致） */
 .status-val--live { color: #E23744; }
 .status-val--up { color: #E8A33D; }
 .status-val--ended { color: #999; }
 
-/* 直播徽标（与房间页一致） */
+/* 直播徽标（全局已有 .live__badge/.live-dot，此处仅保证存在） */
 .live__badge {
   display: inline-flex; align-items: center; gap: 8rpx;
   background: rgba(0,0,0,.35); color: #fff; font-size: 22rpx;
   padding: 6rpx 16rpx; border-radius: 40rpx; white-space: nowrap;
 }
 .live-dot { width: 12rpx; height: 12rpx; border-radius: 50%; background: #ff5a5a; box-shadow: 0 0 8rpx #ff5a5a; }
+
+.sm { font-size: 26rpx; }
+.xs { font-size: 22rpx; }

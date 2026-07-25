@@ -22,6 +22,7 @@ Page({
     staff: { name: '', roleName: '', role: '' },
     greeting: '你好',
     currentShow: null,     // 当前 live/upcoming 场次
+    liveShowId: '',        // 正在进行的（live）演出 id：其它功能执行前必须先有它
     canShowControl: false, // 是否有开场/散场权限
     funcs: [],             // 按权限过滤后的功能项
     notices: []
@@ -71,12 +72,13 @@ Page({
     const pick = (list) => {
       const live = list.find((s) => s.status === 'live')
       const up = list.find((s) => s.status === 'upcoming')
-      return live || up || null
+      return { cur: live || up || null, liveId: live ? live.id : '' }
     }
     api.getShows('all').then((list) => {
-      const cur = pick(list)
+      const { cur, liveId } = pick(list)
       this.setData({
         currentShow: cur,
+        liveShowId: liveId,
         canShowControl: perm.staffCan('show_control')
       })
       if (cur) {
@@ -93,8 +95,17 @@ Page({
   onFunc(e) {
     const item = e.currentTarget.dataset.item
     if (!item || !item.page) return
+    // 「场次管理」始终可达（用于添加 / 开始演出）；其它功能执行前必须先有正在进行的表演
+    if (item.needShow && item.key !== 'show') {
+      if (!this.data.liveShowId) {
+        wx.showToast({ title: '请先在场次管理开始一场正在进行的表演', icon: 'none' })
+        return
+      }
+      wx.navigateTo({ url: `${item.page}?id=${this.data.liveShowId}` })
+      return
+    }
     const url = item.needShow
-      ? `${item.page}?id=${(this.data.currentShow && this.data.currentShow.id) || 's1'}`
+      ? `${item.page}?id=${(this.data.currentShow && this.data.currentShow.id) || ''}`
       : item.page
     wx.navigateTo({ url })
   },

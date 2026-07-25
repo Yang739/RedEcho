@@ -1,0 +1,9 @@
+{
+  "name": "createShow",
+  "version": "1.0.0",
+  "description": "RedEcho cloud function: createShow",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

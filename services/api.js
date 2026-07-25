@@ -80,6 +80,9 @@ const DEMO_PWD = '123456'
 const SHOW_CFG_KEY = 'rede_show_config'
 const NOTICE_KEY = 'rede_notices'
 const STAGE_KEY = 'rede_stage'
+const SHOWS_LOCAL_KEY = 'rede_shows'   // 本地新建的场次（mock 模式持久化）
+
+function readLocalShows() { return storage.get(SHOWS_LOCAL_KEY, []) }
 
 function readShowConfig() { return storage.get(SHOW_CFG_KEY, {}) }
 function writeShowConfig(map) { storage.set(SHOW_CFG_KEY, map) }
@@ -138,15 +141,17 @@ module.exports = {
   // 演出按开始时间排序：date 形如 "2026-07-18 19:30" 或 "2026-07-18"。
   // 用 replace(' ','T') 兼容 iOS 端 Date 解析空格格式可能返回 NaN 的坑。
   getShows(filter = 'all') {
-    const raw = IS_CLOUD
-      ? call('getShows', { status: filter })
-      : delay(filter === 'all' ? mock.shows : mock.shows.filter((s) => s.status === filter), 360)
-    return raw.then((list) => sortShows(list, filter))
+    if (IS_CLOUD) return call('getShows', { status: filter }).then((list) => sortShows(list, filter))
+    // mock 模式：合并本地新建场次，使「添加场次」即时可见
+    const raw = sortShows(mock.shows.concat(readLocalShows()), filter)
+    return delay(raw, 360)
   },
 
   getShowRoom(showId) {
     if (IS_CLOUD) return call('getShowRoom', { showId })
-    let show = mock.shows.find((s) => s.id === showId) || mock.shows[0]
+    let show = mock.shows.find((s) => s.id === showId)
+      || readLocalShows().find((s) => s.id === showId)
+      || mock.shows[0]
     show = applyShowConfig(show)            // 应用工作人员改过的 status/inviteCode/pollOpen
     const poll = applyPollConfig(showId)    // 应用工作人员改过的 question/options
     const notices = (readNoticeOverride()[showId]) || mock.notices
@@ -323,6 +328,20 @@ module.exports = {
     cfg[showId] = Object.assign({}, cfg[showId], { status })
     writeShowConfig(cfg)
     return delay({ ok: true, showId, status }, 200)
+  },
+
+  // 新建演出场次（添加场次）：云模式写 shows 集合；mock 落地本地，供列表/房间读取
+  createShow(payload) {
+    if (IS_CLOUD) return call('createShow', payload)
+    const list = readLocalShows()
+    const id = 's' + Date.now()
+    const show = Object.assign({
+      id, status: 'upcoming', pollOpen: false, online: 0, segment: '未开始',
+      inviteCode: 'NEW' + Math.floor(Math.random() * 900 + 100)
+    }, payload)
+    list.unshift(show)
+    storage.set(SHOWS_LOCAL_KEY, list)
+    return delay({ id, show }, 200)
   },
 
   // 投票管控：patch = { pollOpen?, question?, options? }

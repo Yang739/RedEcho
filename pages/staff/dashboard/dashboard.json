@@ -2,6 +2,7 @@
   "navigationBarTitleText": "数据看板",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "re-card": "/components/re-card/re-card"
+    "re-card": "/components/re-card/re-card",
+    "staff-show-selector": "/components/staff-show-selector/staff-show-selector"
   }
 }

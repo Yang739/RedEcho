@@ -18,14 +18,29 @@ Page({
   },
 
   onLoad(options) {
-    const showId = options.id || 's1'
+    const showId = options.id || ''
     this.setData({ showId, canLock: perm.staffCan('branch_lock') })
-    if (!this.data.canLock) return
-    const cfg = (storage.get('rede_show_config', {})[showId]) || {}
+    this.reload()
+  },
+
+  // 选定正在进行的表演后载入锁定状态
+  reload() {
+    if (!this.data.canLock || !this.data.showId) return
+    const cfg = (storage.get('rede_show_config', {})[this.data.showId]) || {}
     if (cfg.branch) {
       const label = (this.data.branchOptions.find((o) => o.id === cfg.branch) || {}).label || ''
       this.setData({ choice: cfg.branch, locked: cfg.branch, lockedLabel: label })
+    } else {
+      this.setData({ choice: '', locked: '', lockedLabel: '' })
     }
+  },
+
+  // 选择器回调：必须选定一个正在进行的表演才能操作
+  onShowChange(e) {
+    const show = e.detail
+    this.setData({ showId: show ? show.id : '' })
+    if (show) this.reload()
+    else this.setData({ choice: '', locked: '', lockedLabel: '' })
   },
 
   onPick(e) {

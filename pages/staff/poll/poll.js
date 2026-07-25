@@ -18,10 +18,15 @@ Page({
   },
 
   onLoad(options) {
-    const showId = options.id || 's1'
+    const showId = options.id || ''
     this.setData({ showId, canManage: perm.staffCan('poll_manage') })
-    if (!this.data.canManage) return
-    api.getShowRoom(showId).then((d) => {
+    this.reload()
+  },
+
+  // 选定正在进行的表演后载入数据
+  reload() {
+    if (!this.data.canManage || !this.data.showId) return
+    api.getShowRoom(this.data.showId).then((d) => {
       this.setData({
         pollOpen: d.show.pollOpen,
         question: d.poll.question,
@@ -29,6 +34,14 @@ Page({
         optionInputs: d.poll.options.map((o) => o.label)
       })
     })
+  },
+
+  // 选择器回调：必须选定一个正在进行的表演才能操作
+  onShowChange(e) {
+    const show = e.detail
+    this.setData({ showId: show ? show.id : '' })
+    if (show) this.reload()
+    else this.setData({ pollOpen: false, question: '', options: [], optionInputs: [] })
   },
 
   onToggle() {

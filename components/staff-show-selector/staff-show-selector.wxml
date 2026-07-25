@@ -1,0 +1,12 @@
+<view class="ss">
+  <block wx:if="{{none}}">
+    <view class="ss__none">当前没有正在进行的表演，请先在「场次管理」中开始一场</view>
+  </block>
+  <block wx:else>
+    <view class="ss__bar tap" bindtap="onPick">
+      <text class="ss__label">正在进行的表演</text>
+      <text class="ss__value">{{current ? current.title : '请选择'}}</text>
+      <text class="ss__caret">▾</text>
+    </view>
+  </block>
+</view>

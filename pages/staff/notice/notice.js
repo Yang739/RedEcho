@@ -11,12 +11,25 @@ Page({
   },
 
   onLoad(options) {
-    const showId = options.id || 's1'
+    const showId = options.id || ''
     this.setData({ showId, canPush: perm.staffCan('notice_push') })
-    if (!this.data.canPush) return
-    api.getShowRoom(showId).then((d) => {
+    this.reload()
+  },
+
+  // 选定正在进行的表演后载入数据
+  reload() {
+    if (!this.data.canPush || !this.data.showId) return
+    api.getShowRoom(this.data.showId).then((d) => {
       this.setData({ notices: d.notices || [] })
     })
+  },
+
+  // 选择器回调：必须选定一个正在进行的表演才能操作
+  onShowChange(e) {
+    const show = e.detail
+    this.setData({ showId: show ? show.id : '' })
+    if (show) this.reload()
+    else this.setData({ notices: [] })
   },
 
   now() {

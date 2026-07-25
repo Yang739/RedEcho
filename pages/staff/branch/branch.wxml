@@ -5,24 +5,28 @@
   <view wx:if="{{!canLock}}" class="deny">你当前身份无分支锁定权限（仅场务 / 管理员可操作）</view>
 
   <block wx:else>
-    <view class="section-title">选择剧情分支</view>
-    <re-card title="分支">
-      <view class="branch__opts">
-        <view wx:for="{{branchOptions}}" wx:key="id" class="branch__opt tap {{choice === item.id ? 'branch__opt--mine' : ''}}" bindtap="onPick" data-id="{{item.id}}">{{item.label}}</view>
-      </view>
-      <view class="btn btn-primary btn-block tap" style="margin-top:24rpx" bindtap="onLock">锁定</view>
-    </re-card>
+    <staff-show-selector value="{{showId}}" bind:change="onShowChange" />
+    <block wx:if="{{showId}}">
+      <view class="section-title">选择剧情分支</view>
+      <re-card title="分支">
+        <view class="branch__opts">
+          <view wx:for="{{branchOptions}}" wx:key="id" class="branch__opt tap {{choice === item.id ? 'branch__opt--mine' : ''}}" bindtap="onPick" data-id="{{item.id}}">{{item.label}}</view>
+        </view>
+        <view class="btn btn-primary btn-block tap" style="margin-top:24rpx" bindtap="onLock">锁定</view>
+      </re-card>
 
-    <view class="section-title">当前锁定</view>
-    <re-card title="状态">
-      <view wx:if="{{locked}}" class="locked-text">
-        <text class="locked-label">已锁定：</text>
-        <text class="locked-val">{{lockedLabel}}</text>
-      </view>
-      <view wx:else class="empty">尚未锁定分支</view>
-    </re-card>
+      <view class="section-title">当前锁定</view>
+      <re-card title="状态">
+        <view wx:if="{{locked}}" class="locked-text">
+          <text class="locked-label">已锁定：</text>
+          <text class="locked-val">{{lockedLabel}}</text>
+        </view>
+        <view wx:else class="empty">尚未锁定分支</view>
+      </re-card>
 
-    <view class="tip">锁定后观众端将沿该分支推进剧情。</view>
+      <view class="tip">锁定后观众端将沿该分支推进剧情。</view>
+    </block>
+    <view wx:else class="tip">请先在上方选择「正在进行的表演」再锁定分支</view>
   </block>
 
   <view class="footer-tip text-3 xs">红韵智演 · 工作人员端</view>
