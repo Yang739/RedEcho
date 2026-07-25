@@ -21,20 +21,21 @@
 .works-grid { margin-top: 8rpx; }
 /* 画廊卡片外观统一由 app.wxss .pc-cell / .pc-frame 提供 */
 
-/* 空态：白色卡片；标题贴左上角，副标题在卡片内上下左右居中 */
+/* 空态：复用 re-card（兑换记录）卡片样式；标题贴左上角，副标题卡片内上下左右居中 */
 .empty-card {
   position: relative;
   margin-top: 8rpx;
   min-height: 220rpx;
-  background: #fff;
-  border-radius: var(--r-lg);
-  box-shadow: var(--s-2);
+  background: var(--c-surface);
+  border-radius: var(--r-md);
+  box-shadow: var(--s-1);
+  padding: 28rpx;
 }
 .empty-card__title {
   position: absolute;
   top: 24rpx;
   left: 28rpx;
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: 700;
   color: var(--c-text);
   line-height: 1.4;
