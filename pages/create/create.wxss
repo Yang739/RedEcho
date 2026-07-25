@@ -21,7 +21,7 @@
 .works-grid { margin-top: 8rpx; }
 /* 画廊卡片外观统一由 app.wxss .pc-cell / .pc-frame 提供 */
 
-/* 空态：白色卡片，与截图一致 */
+/* 空态：白色卡片，与截图一致；文字左上角对齐 */
 .empty-card {
   margin-top: 8rpx;
   padding: 72rpx 36rpx;
@@ -31,8 +31,6 @@
   box-shadow: var(--s-2);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  text-align: center;
 }
 .empty-card__title {
   font-size: 32rpx;
