@@ -30,11 +30,20 @@ Page({
     if (!this.data.canPush) return
     const text = (this.data.input || '').trim()
     if (!text) { wx.showToast({ title: '请输入通知内容', icon: 'none' }); return }
-    api.pushNotice(this.data.showId, text).then(() => {
-      const notices = this.data.notices.slice()
-      notices.unshift({ id: 'n' + Date.now(), text, time: this.now() })
-      this.setData({ notices, input: '' })
-      wx.showToast({ title: '已推送', icon: 'success' })
-    })
+    wx.showLoading({ title: '推送中', mask: true })
+    api.pushNotice(this.data.showId, text)
+      .then(() => {
+        wx.hideLoading()
+        const notices = this.data.notices.slice()
+        notices.unshift({ id: 'n' + Date.now(), text, time: this.now() })
+        this.setData({ notices, input: '' })
+        wx.showToast({ title: '已推送', icon: 'success' })
+      })
+      .catch((err) => {
+        wx.hideLoading()
+        const msg = (err && (err.msg || err.errMsg)) || '推送失败'
+        // 管控云函数返回 403（角色链未打通）时明确提示，避免静默「无反应」
+        wx.showToast({ title: msg.indexOf('403') >= 0 || msg.indexOf('无权限') >= 0 ? '操作失败：无权限' : msg, icon: 'none' })
+      })
   }
 })

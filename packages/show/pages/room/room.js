@@ -69,8 +69,9 @@ Page({
         selectedEmotion: emos[showId] || '',
         inviteError: ''
       })
-      // 模拟实时：仅直播且投票开启时轮询结果（降级路径；wss 接入后由 socketClient 替代，见 RedEcho×RPC集成设计）
-      if (d.show.pollOpen) {
+      // 模拟实时（降级路径；wss 接入后由 socketClient 替代，见 RedEcho×RPC集成设计）：
+      // 直播 / 即将开始 时轮询房间全量状态，使工作人员「指令下发」在游客端可见效。
+      if (isLive || isUpcoming) {
         this.timer = setInterval(() => this.tick(), 2600)
       }
     })
@@ -80,13 +81,31 @@ Page({
     if (this.timer) clearInterval(this.timer)
   },
 
+  // 轮询刷新房间全量状态（降级实时通道）：保留「我的那一票」本地补丁，
+  // 刷新投票结果 / 现场通知 / 情绪 / 演出状态，使工作人员指令下发在游客端可见效。
   tick() {
-    api.pollResult(this.data.showId).then((opts) => {
-      // 轮询刷新时也保留「我的那一票」（mock 降级：云端由服务端票数保证）
-      const list = this.data.voted
-        ? opts.map((o) => o.id === this.data.voted ? Object.assign({}, o, { votes: o.votes + 1 }) : o)
-        : opts
-      this.setData({ 'poll.options': computePct(list) })
+    api.getShowRoom(this.data.showId).then((d) => {
+      const show = d.show
+      const isLive = show.status === 'live'
+      const isEnded = show.status === 'ended'
+      const isUpcoming = show.status === 'upcoming'
+      // 投票结果：保留本地已投标记（mock 降级：云端由服务端票数保证）
+      let pollOpts = d.poll.options
+      if (this.data.voted) {
+        pollOpts = pollOpts.map((o) => o.id === this.data.voted ? Object.assign({}, o, { votes: o.votes + 1 }) : o)
+      }
+      this.setData({
+        show,
+        'poll.options': computePct(pollOpts),
+        emotions: d.emotions,
+        notices: d.notices || [],
+        isLive,
+        isEnded,
+        isUpcoming,
+        statusBanner: isEnded ? '本场演出已落幕' : '',
+        // 直播中且未解锁 → 继续展示邀请码门禁；已解锁后随指令刷新
+        gateNeeded: isLive && !this.data.unlocked
+      })
     })
   },
 
