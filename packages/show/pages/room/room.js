@@ -42,12 +42,8 @@ Page({
       const status = d.show.status
       const isLive = status === 'live'
       const isUpcoming = status === 'upcoming'
-      // 仅「直播中」的演出计为参与并发 +5（同一场只加一次）；即将开始 / 已结束不发放
-      let awardTip = ''
-      if (isLive && rewards.awardShow(showId)) {
-        awardTip = '参与演出 +5 积分'
-      }
-      // 邀请码门禁：仅「直播中」场次需要；按场次持久化解锁记录判断，未开始 / 已结束无需门禁
+      // 邀请码门禁：仅「直播中」场次需要；按场次持久化解锁记录判断，未开始 / 已结束无需门禁。
+      // 注：参与演出 +5 积分不再于进房时发放，改为「邀请码核验通过（解锁互动）后」才发，避免未解锁即加分（见 onUnlock）。
       const unlocked = !!storage.get('rede_invite_unlocked', {})[showId]
       // 恢复本场已持久化的个人选择（投票 / 情绪），退出重进不再丢失
       const votes = storage.get('rede_show_votes', {})
@@ -73,7 +69,6 @@ Page({
         selectedEmotion: emos[showId] || '',
         inviteError: ''
       })
-      if (awardTip) wx.showToast({ title: awardTip, icon: 'none' })
       // 模拟实时：仅直播且投票开启时轮询结果（降级路径；wss 接入后由 socketClient 替代，见 RedEcho×RPC集成设计）
       if (d.show.pollOpen) {
         this.timer = setInterval(() => this.tick(), 2600)
@@ -142,8 +137,10 @@ Page({
         const map = storage.get('rede_invite_unlocked', {})
         map[this.data.showId] = true
         storage.set('rede_invite_unlocked', map)
+        // 邀请码核验通过（解锁互动）后才发放「参与演出 +5 积分」；awardShow 内部去重，仅首次返回 true
+        const awarded = rewards.awardShow(this.data.showId)
         this.setData({ unlocked: true, gateNeeded: false, inviteError: '' })
-        wx.showToast({ title: '已解锁互动', icon: 'success' })
+        wx.showToast({ title: awarded ? '已解锁互动，参与演出 +5 积分' : '已解锁互动', icon: 'success' })
       } else {
         this.setData({ inviteError: '邀请码不正确' })
       }
