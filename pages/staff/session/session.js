@@ -32,6 +32,8 @@ Page({
         api.setShowStatus(this.data.showId, next).then(() => {
           this.setData({ 'show.status': next })
           wx.showToast({ title: next === 'ended' ? '已结束演出' : '已开始演出', icon: 'success' })
+        }).catch((err) => {
+          wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
         })
       }
     })

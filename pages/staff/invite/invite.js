@@ -28,6 +28,8 @@ Page({
     api.setInvite(this.data.showId, code).then(() => {
       this.setData({ inviteCode: code, input: '' })
       wx.showToast({ title: '邀请码已更新', icon: 'success' })
+    }).catch((err) => {
+      wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
     })
   }
 })

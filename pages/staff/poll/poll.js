@@ -37,6 +37,8 @@ Page({
     api.setPoll(this.data.showId, { pollOpen: open }).then(() => {
       this.setData({ pollOpen: open })
       wx.showToast({ title: open ? '投票已开启' : '投票已关闭', icon: 'none' })
+    }).catch((err) => {
+      wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
     })
   },
 
@@ -56,6 +58,8 @@ Page({
     api.setPoll(this.data.showId, { question: this.data.question.trim(), options }).then(() => {
       this.setData({ options: computePct(options) })
       wx.showToast({ title: '投票已更新', icon: 'success' })
+    }).catch((err) => {
+      wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
     })
   }
 })

@@ -37,6 +37,8 @@ Page({
       this.setData({ input: '' })
       this.loadDanmaku()
       wx.showToast({ title: '已上屏', icon: 'success' })
+    }).catch((err) => {
+      wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
     })
   },
 
@@ -44,6 +46,8 @@ Page({
     if (!this.data.canPush) return
     api.pushEmotion(this.data.showId, e.currentTarget.dataset.type).then(() => {
       wx.showToast({ title: '情绪已上屏', icon: 'none' })
+    }).catch((err) => {
+      wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
     })
   }
 })

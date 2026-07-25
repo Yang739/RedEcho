@@ -39,6 +39,8 @@ Page({
       const label = (this.data.branchOptions.find((o) => o.id === this.data.choice) || {}).label || ''
       this.setData({ locked: this.data.choice, lockedLabel: label })
       wx.showToast({ title: '分支已锁定', icon: 'success' })
+    }).catch((err) => {
+      wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
     })
   }
 })

@@ -116,6 +116,8 @@ Page({
         api.setShowStatus(cur.id, next).then(() => {
           wx.showToast({ title: toEnded ? '已结束演出' : '已开始演出', icon: 'success' })
           this.loadShow()
+        }).catch((err) => {
+          wx.showToast({ title: '操作失败：' + (err && err.message ? err.message : '无权限'), icon: 'none' })
         })
       }
     })
