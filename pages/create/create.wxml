@@ -14,8 +14,8 @@
     <view class="more-link tap" bindtap="onAll">全部 ›</view>
   </view>
 
-  <!-- 无作品：白色卡片空态 -->
-  <view wx:if="{{!postcards.length && !loading}}" class="empty-card tap" bindtap="onStartCreate">
+  <!-- 无作品：白色卡片空态（纯展示，不可点击） -->
+  <view wx:if="{{!postcards.length && !loading}}" class="empty-card">
     <text class="empty-card__title">暂无作品</text>
     <text class="empty-card__subtitle">生成第一张明信片，记录你的红色足迹</text>
   </view>
