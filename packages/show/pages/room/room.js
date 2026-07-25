@@ -19,8 +19,7 @@ Page({
     poll: { question: '', options: [] },
     emotions: [],
     notices: [],
-    danmaku: [],     // 工作人员推上大屏的弹幕流（来自 getShowRoom）
-    messages: [],    // 游客自己发送的弹幕（本地回显）
+    danmaku: [],     // 弹幕流（来自 getShowRoom：工作人员 + 游客上行，source 区分）
     voted: '',
     selectedEmotion: '',
     inputValue: '',
@@ -172,9 +171,15 @@ Page({
   onSend() {
     const text = (this.data.inputValue || '').trim()
     if (!text) return
-    // 弹幕本地预览：真实上行与房间广播将在 wss 阶段接入（见 RedEcho×RPC集成设计 R-T1/R-T5），此处仅本地回显兜底
-    const msg = { id: 'm' + Date.now(), text, time: this.now() }
-    this.setData({ messages: this.data.messages.concat(msg), inputValue: '' })
+    // 游客弹幕上行：写入云端 stage 集合，经 getShowRoom 轮询下发到大屏 / 工作人员端 / 其他游客。
+    // 先乐观预插一条（临时 id），待下一次 tick() 拉取云端数据覆盖，避免重复且即时可见。
+    api.danmakuSend(this.data.showId, text).then(() => {
+      const msg = { id: 'm' + Date.now(), text, time: this.now(), source: 'visitor' }
+      this.setData({ danmaku: [msg].concat(this.data.danmaku), inputValue: '' })
+      wx.showToast({ title: '弹幕已发送', icon: 'success' })
+    }).catch((err) => {
+      wx.showToast({ title: '发送失败：' + (err && err.message ? err.message : '请重试'), icon: 'none' })
+    })
   },
 
   // 演出已结束 → 跳转本场回顾

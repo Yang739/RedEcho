@@ -11,7 +11,8 @@ cloudfunctions/
 ├── getUser/            # 取/建用户档案 —— 已实现
 ├── getHomeFeed/        # 首页卡片 + 积分 + 今日积分 + 阅读 + 直播演出 —— 已实现
 ├── getShows/           # 演出列表（按 status 过滤） —— 已实现
-├── getShowRoom/        # 场次详情 + 当前投票 + 分支 + 情绪类型 + 通知 —— 已实现
+├── getShowRoom/        # 场次详情 + 当前投票 + 分支 + 情绪类型 + 通知 + 弹幕流 —— 已实现
+├── danmakuSend/        # 游客弹幕上行（游客→大屏，任意登录用户可写，source:'visitor'） —— 已建
 ├── pollVote/           # 游客投票（原子自增 + 一人一票校验） —— 已实现
 ├── submitEmotion/      # 情绪反馈写库 —— 已实现
 ├── getBranch/          # 分支进度 —— 已实现
@@ -119,7 +120,8 @@ npm install
 | ⬜ 待补 | segmentEnd | 结束某环节 |
 | 🟢 已建 | pollUpdate | 开关投票/改题/改选项 |
 | 🟢 已建 | branchLock | 锁定剧情分支走向 |
-| 🟢 已建 | videoPush | 弹幕上舞台大屏 |
+| 🟢 已建 | videoPush | 弹幕上舞台大屏（工作人员，source:'staff'） |
+| 🟢 已建 | danmakuSend | 游客弹幕上行（游客→大屏，source:'visitor'） |
 | ⬜ 待补 | activityStart | 发起现场答题抽奖 |
 | ⬜ 待补 | activityJudge | 自动判分并发放积分 |
 | ⬜ 待补 | showHistory | 历史演出数据 |

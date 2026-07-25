@@ -416,6 +416,22 @@ module.exports = {
     return delay({ ok: true }, 200)
   },
 
+  // 游客弹幕上行（游客→大屏）：云模式走 danmakuSend；mock 落地本地 stage 仓库
+  danmakuSend(showId, text) {
+    if (IS_CLOUD) return call('danmakuSend', { showId, text })
+    const stage = storage.get(STAGE_KEY, {})
+    const d = stage[showId] || { danmaku: [], emotions: [] }
+    d.danmaku = d.danmaku.concat({
+      id: 'm' + Date.now(),
+      text,
+      time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+      source: 'visitor'
+    })
+    stage[showId] = d
+    storage.set(STAGE_KEY, stage)
+    return delay({ ok: true }, 200)
+  },
+
   // 订单核销：按核销码查找本地订单，置「已核销」
   redeemOrder(code) {
     if (IS_CLOUD) return call('orderRedeem', { code })

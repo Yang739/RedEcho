@@ -23,7 +23,7 @@ exports.main = async (event) => {
     if (!role || ['field', 'admin'].indexOf(role) === -1) return fail(403, '无权限')
     const d = new Date()
     await db.collection('stage').add({
-      data: { showId, text, time: d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'), created_at: d.getTime() }
+      data: { showId, text, time: d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'), created_at: d.getTime(), source: 'staff' }
     })
     return ok({ ok: true })
   } catch (e) {

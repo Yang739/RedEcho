@@ -65,7 +65,7 @@ exports.main = async (event, context) => {
 
     // 弹幕流：读 stage 集合（按场次倒序，limit 30）
     const stRes = await db.collection('stage').where({ showId }).orderBy('created_at', 'desc').limit(30).get()
-    const danmaku = (stRes.data || []).map((s) => ({ id: s._id, text: s.text, time: s.time }))
+    const danmaku = (stRes.data || []).map((s) => ({ id: s._id, text: s.text, time: s.time, source: s.source || 'staff' }))
 
     return ok({
       show,
