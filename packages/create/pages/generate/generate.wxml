@@ -44,7 +44,7 @@
         bindtap="onSelectScene"
         data-id="{{item.id}}"
       >
-        <view class="scene__cover" style="background:{{item.gradient}}"></view>
+        <view class="scene__cover" style="background-image:{{item.gradient}}"></view>
         <view class="scene__name">{{item.name}}</view>
         <view class="scene__desc text-3 xs ellipsis">{{item.desc}}</view>
       </view>

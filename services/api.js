@@ -282,14 +282,37 @@ module.exports = {
 
   /* ---------------- 积分商城 ---------------- */
   // 文创产品目录：云模式回退本地静态目录（便于无后端时预览）
+  // 注意：productList 云函数返回的是 { products: [...] }，此处必须拆成数组再交给页面，
+  // 否则页面 wx:for 拿到的是对象、渲染不出任何商品卡（连带色块一起"消失"）。
   getProducts() {
-    if (IS_CLOUD) return call('productList', {}).catch(() => mall.getProducts())
+    if (IS_CLOUD) {
+      return call('productList', {})
+        .then((d) => (d && Array.isArray(d.products) && d.products.length ? d.products : mall.getProducts()))
+        .catch(() => mall.getProducts())
+    }
     return delay(mall.getProducts(), 200)
   },
 
   // 我的兑换（积分商城订单）
+  // 注意：云端 orders 集合（createOrder 写入）用的是 redemptionCode / price，
+  // 而页面按 code / total / gradient 渲染，这里统一做字段映射，
+  // 否则云模式下核销码与消耗积分为空、色块也没有渐变（缺 gradient 时由 WXSS 兜底色接住）。
   getMallOrders() {
-    if (IS_CLOUD) return call('getOrders', {})
+    if (IS_CLOUD) {
+      return call('getOrders', {}).then((list) =>
+        (Array.isArray(list) ? list : []).map((o) => ({
+          id: o._id || o.id,
+          title: o.title,
+          status: o.status,
+          code: o.code || o.redemptionCode || '',
+          total: o.total !== undefined ? o.total : ((o.price || 0) * (o.qty || 1)),
+          gradient:
+            o.gradient ||
+            ((mall.getProducts().find((p) => p.id === o.productId) || {}).gradient) ||
+            ''
+        }))
+      )
+    }
     return delay(mall.getOrders(), 200)
   },
 

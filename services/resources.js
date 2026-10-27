@@ -15,11 +15,6 @@
 //   facts   详情页「关键要点」列表
 //   body    详情页正文段落列表
 //   quotes  名言/金句（spirit 类用）
-//   video   相关宣传视频（详情页「相关宣传视频」区块）
-//           —— 形如 { url, poster?, title? }；为 null 表示暂无配套宣传片
-//           —— 填网络视频地址即可在详情页播放；真云须在小程序后台把视频域名加入
-//              「downloadFile 合法域名」（本地 DevTools 可勾选"不校验合法域名"调试）
-//           —— 素材集中维护于本文件底部 PROMO_VIDEOS 映射，按 card.id 关联
 
 const GRAD = {
   red: 'linear-gradient(135deg,#C8161D 0%,#7A0A10 100%)',
@@ -634,16 +629,4 @@ const cards = [
   }
 ]
 
-// 相关宣传视频素材（按 card.id 关联；仅代表性卡片填示例，其余留空即显示"暂未配套宣传视频"）
-// 说明：示例 url 为公开测试视频，仅用于验证播放器；上线前请替换为各资料的真实宣传片地址，
-// 并在小程序后台「开发 → 开发管理 → 服务器域名 → downloadFile 合法域名」中加入对应视频域名。
-const PROMO_VIDEOS = {
-  h4:      { url: 'https://media.w3.org/2010/05/sintel/trailer.mp4', title: '湘南起义·演示宣传片（请替换为真实素材）' },
-  'yz-e1': { url: 'https://media.w3.org/2010/05/sintel/trailer.mp4', title: '宜章年关暴动·演示宣传片（请替换为真实素材）' },
-  'yz-s2': { url: 'https://media.w3.org/2010/05/sintel/trailer.mp4', title: '宜章县湘南起义纪念馆·演示宣传片（请替换为真实素材）' }
-}
-
-// 将视频素材合并进卡片（不改原始卡片结构，便于后续迁云）
-const cardsWithVideo = cards.map((c) => Object.assign({}, c, { video: PROMO_VIDEOS[c.id] || null }))
-
-module.exports = { GRAD, CATEGORIES, cards: cardsWithVideo }
+module.exports = { GRAD, CATEGORIES, cards }

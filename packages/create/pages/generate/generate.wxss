@@ -69,7 +69,7 @@
   box-shadow: var(--s-1); border: 3rpx solid transparent; box-sizing: border-box;
 }
 .scene--on { border-color: var(--c-primary, #C8161D); }
-.scene__cover { height: 160rpx; }
+.scene__cover { width: 100%; height: 160rpx; background-color: var(--c-primary, #C8161D); background-repeat: no-repeat; background-size: 100% 100%; }
 .scene__name { font-size: 27rpx; font-weight: 700; padding: 14rpx 18rpx 4rpx; }
 .scene__desc { padding: 0 18rpx 16rpx; }
 

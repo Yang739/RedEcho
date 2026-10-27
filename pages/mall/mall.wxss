@@ -16,13 +16,21 @@
 .mall-hero__num { font-size: 60rpx; font-weight: 800; line-height: 1; }
 .mall-hero__lbl { font-size: 26rpx; opacity: .9; }
 
-/* 产品网格 */
+/* 产品网格：两列等宽
+   说明：原先使用 display:grid + grid-template-columns:1fr 1fr，但小程序各基础库 / iOS / Android
+   渲染内核对 grid 的支持差异较大，列宽 / 间距计算不可靠，一旦降级为块级布局，仅声明了 height 的
+   .prod__cover 就会宽度塌陷或整行铺满，表现为「色块渲染出错」。
+   这里改回本项目已验证的 flex 两列写法（与 pages/staff/home/home.wxss 同型：
+   容器 gap + 子项 width: calc((100% - gap) / 2)），子项宽度由自身 calc 决定，
+   不依赖 grid 列宽，也不会出现「卡片自带背景吃掉内边距沟槽、两卡相接」的问题。 */
 .grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 20rpx;
 }
 .prod {
+  box-sizing: border-box;    /* 关键：width 含 padding / border，否则两列被撑破换行成单列 */
+  width: calc((100% - 20rpx) / 2);
   background: var(--c-surface);
   border-radius: var(--r-md);
   overflow: hidden;
@@ -30,7 +38,11 @@
   display: flex; flex-direction: column;
 }
 .prod__cover {
+  width: 100%;                          /* 显式给宽：不再依赖父容器布局，杜绝宽度塌陷 */
   height: 200rpx;
+  background-color: var(--c-primary);   /* 兜底：渐变未生效时仍是不透明红，不露页面底色 */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 .prod__body { padding: 18rpx 18rpx 20rpx; display: flex; flex-direction: column; flex: 1; }
 .prod__name { font-size: 28rpx; font-weight: 700; }
@@ -52,6 +64,9 @@
 .ord + .ord { border-top: 1rpx solid var(--c-divider); }
 .ord__cover {
   width: 88rpx; height: 88rpx; border-radius: var(--r-sm); flex-shrink: 0;
+  background-color: var(--c-primary);   /* 兜底：同商品卡色块 */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 .ord__status {
   font-size: 22rpx; color: var(--c-accent);
