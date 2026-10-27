@@ -37,7 +37,10 @@
   "simulatorPluginLibVersion": {},
   "packOptions": {
     "ignore": [
-      { "type": "folder", "value": "design" }
+      { "type": "folder", "value": "design" },
+      { "type": "folder", "value": "docs" },
+      { "type": "folder", "value": "tools" },
+      { "type": "folder", "value": "deploy" }
     ],
     "include": []
   },
