@@ -28,7 +28,7 @@
     >
       <view class="show__cover" style="background:{{item.gradient}}">
         <view wx:if="{{item.status === 'live'}}" class="live__badge">
-          <view class="live-dot"></view><text>直播中</text>
+          <view class="dot--on"></view><text>演出中</text>
         </view>
       </view>
       <view class="show__body flex-1">

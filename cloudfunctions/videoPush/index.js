@@ -1,5 +1,5 @@
 // 云函数：videoPush
-// 职责：工作人员把弹幕推上舞台大屏（舞台总控）。
+// 职责：工作人员把留言推上舞台大屏（现场互动）。
 // 权限：field / admin。读取集合：users、stage
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })

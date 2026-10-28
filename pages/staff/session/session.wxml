@@ -39,7 +39,7 @@
       <view wx:if="{{!shows.length}}" class="empty">暂无场次，点击「添加场次」新建</view>
       <view wx:for="{{shows}}" wx:key="*this" class="srow">
         <view class="srow__cover" style="background:{{item.gradient}}">
-          <view wx:if="{{item.status === 'live'}}" class="live__badge"><view class="live-dot"></view><text>直播中</text></view>
+          <view wx:if="{{item.status === 'live'}}" class="live__badge"><view class="dot--on"></view><text>演出中</text></view>
           <view wx:elif="{{item.status === 'upcoming'}}" class="srow__soon">即将开始</view>
           <view wx:else class="srow__ended">已结束</view>
         </view>
@@ -48,7 +48,7 @@
           <view class="text-3 sm">{{item.venue}}</view>
           <view class="text-3 xs" style="margin-top:6rpx">{{item.date}}</view>
           <view class="text-3 xs" style="margin-top:4rpx">邀请码：{{item.inviteCode || '—'}}</view>
-          <view class="srow__status status-val--{{item.status === 'live' ? 'live' : (item.status === 'upcoming' ? 'up' : 'ended')}}">{{item.status === 'live' ? '直播中' : (item.status === 'upcoming' ? '即将开始' : '已结束')}}</view>
+          <view class="srow__status status-val--{{item.status === 'live' ? 'live' : (item.status === 'upcoming' ? 'up' : 'ended')}}">{{item.status === 'live' ? '演出中' : (item.status === 'upcoming' ? '即将开始' : '已结束')}}</view>
         </view>
         <view class="srow__op">
           <view class="btn {{item.status === 'live' ? 'btn-ghost' : 'btn-primary'}} btn-sm tap"

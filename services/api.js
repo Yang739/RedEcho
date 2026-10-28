@@ -38,7 +38,7 @@ function delay(data, ms = 420) {
   return new Promise((resolve) => setTimeout(() => resolve(JSON.parse(JSON.stringify(data))), ms))
 }
 
-// 模拟「实时」数据的小幅波动（用于投票/在线人数等演示）
+// 模拟「实时」数据的小幅波动（用于投票/在场人数等演示）
 function jitter(map) {
   return map.map((o) => ({ ...o, votes: o.votes + Math.floor(Math.random() * 6) }))
 }
@@ -168,7 +168,7 @@ module.exports = {
 
   // 邀请码核验：演示用本地比对 mock.shows.inviteCode；
   // 生产环境应改为服务端校验（云函数 verifyInvite），且邀请码不应下发到客户端。
-  // 房间页据此解锁互动（弹幕 / 投票 / 情绪 / 分支）；实时校验后端由用户后续接入。
+  // 房间页据此解锁互动（观众留言 / 投票 / 情绪 / 分支）；实时校验后端由用户后续接入。
   verifyInvite(showId, code) {
     if (IS_CLOUD) return call('verifyInvite', { showId, code })
     const show = mock.shows.find((s) => s.id === showId)
@@ -417,7 +417,7 @@ module.exports = {
     return delay({ ok: true, showId, branchId }, 200)
   },
 
-  // 弹幕上大屏（舞台总控）
+  // 观众留言上大屏（现场互动）
   pushDanmaku(showId, text) {
     if (IS_CLOUD) return call('videoPush', { showId, text })
     const stage = storage.get(STAGE_KEY, {})
@@ -428,7 +428,7 @@ module.exports = {
     return delay({ ok: true }, 200)
   },
 
-  // 情绪上大屏（舞台总控）
+  // 情绪上大屏（现场互动）
   pushEmotion(showId, type) {
     if (IS_CLOUD) return call('emotionSend', { showId, type })
     const stage = storage.get(STAGE_KEY, {})
@@ -439,7 +439,7 @@ module.exports = {
     return delay({ ok: true }, 200)
   },
 
-  // 游客弹幕上行（游客→大屏）：云模式走 danmakuSend；mock 落地本地 stage 仓库
+  // 游客留言上行（游客→大屏）：云模式走 danmakuSend；mock 落地本地 stage 仓库
   danmakuSend(showId, text) {
     if (IS_CLOUD) return call('danmakuSend', { showId, text })
     const stage = storage.get(STAGE_KEY, {})
@@ -467,7 +467,7 @@ module.exports = {
     return delay({ ok: true, order: list[idx] }, 200)
   },
 
-  // 数据看板聚合：投票实时分布 + 情绪类型 + 弹幕流 + 在线人数
+  // 数据看板聚合：投票实时分布 + 情绪类型 + 留言流 + 在场人数
   getDashboard(showId) {
     if (IS_CLOUD) return call('dashboardShow', { showId })
     const poll = applyPollConfig(showId)

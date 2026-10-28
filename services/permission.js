@@ -23,7 +23,7 @@ const POLICY = {
   notice_push:   [ROLE.FIELD, ROLE.ADMIN],            // 推送现场通知
   order_redeem:  [ROLE.FIELD, ROLE.ADMIN],            // 订单核销
   branch_lock:   [ROLE.FIELD, ROLE.ADMIN],            // 锁定剧情分支
-  stage_push:    [ROLE.FIELD, ROLE.ADMIN],            // 弹幕 / 情绪上大屏
+  stage_push:    [ROLE.FIELD, ROLE.ADMIN],            // 观众留言 / 情绪汇聚
   view_data:     [ROLE.FIELD, ROLE.ACTOR, ROLE.ADMIN], // 数据看板（只读）
   admin:         [ROLE.ADMIN]                          // 人员管理（预留，本次不实现）
 }

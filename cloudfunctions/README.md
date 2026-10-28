@@ -9,10 +9,10 @@
 cloudfunctions/
 ├── login/              # 游客登录态登记（首次自动建用户档案）—— 已实现
 ├── getUser/            # 取/建用户档案 —— 已实现
-├── getHomeFeed/        # 首页卡片 + 积分 + 今日积分 + 阅读 + 直播演出 —— 已实现
+├── getHomeFeed/        # 首页卡片 + 积分 + 今日积分 + 阅读 + 演出进行中的场次 —— 已实现
 ├── getShows/           # 演出列表（按 status 过滤） —— 已实现
-├── getShowRoom/        # 场次详情 + 当前投票 + 分支 + 情绪类型 + 通知 + 弹幕流 —— 已实现
-├── danmakuSend/        # 游客弹幕上行（游客→大屏，任意登录用户可写，source:'visitor'） —— 已建
+├── getShowRoom/        # 场次详情 + 当前投票 + 分支 + 情绪类型 + 通知 + 留言流 —— 已实现
+├── danmakuSend/        # 观众留言上行（游客→大屏，任意登录用户可写，source:'visitor'） —— 已建
 ├── pollVote/           # 游客投票（原子自增 + 一人一票校验） —— 已实现
 ├── submitEmotion/      # 情绪反馈写库 —— 已实现
 ├── getBranch/          # 分支进度 —— 已实现
@@ -24,7 +24,7 @@ cloudfunctions/
 ├── verifyInvite/       # 邀请码核验（服务端读取，不下发客户端） —— 已建（桩）
 ├── noticePush/         # 推送现场通知 —— 已建（桩）
 ├── branchLock/         # 锁定剧情分支走向 —— 已建（桩）
-├── videoPush/          # 弹幕上舞台大屏 —— 已建（桩）
+├── videoPush/          # 留言上舞台大屏 —— 已建（桩）
 ├── emotionSend/        # 情绪上舞台大屏 —— 已建（桩）
 ├── orderRedeem/        # 现场核销文创订单 —— 已建（桩）
 ├── dashboardShow/      # 单场次数据看板聚合 —— 已建（桩）
@@ -86,7 +86,7 @@ npm install
 |---|---|---|
 | ✅ 已实现 | login | 游客登录态登记，首次自动建用户 |
 | ✅ 已实现 | getUser | 取/建用户档案（积分/等级/角色） |
-| ✅ 已实现 | getHomeFeed | 首页卡片+积分+今日积分+阅读+直播演出 |
+| ✅ 已实现 | getHomeFeed | 首页卡片+积分+今日积分+阅读+演出中的场次 |
 | ✅ 已实现 | getShows | 演出列表（按 status 过滤） |
 | ✅ 已实现 | getShowRoom | 场次详情+当前投票+分支+情绪+通知 |
 | ✅ 已实现 | pollVote | 游客投票（原子自增+一人一票） |
@@ -120,13 +120,13 @@ npm install
 | ⬜ 待补 | segmentEnd | 结束某环节 |
 | 🟢 已建 | pollUpdate | 开关投票/改题/改选项 |
 | 🟢 已建 | branchLock | 锁定剧情分支走向 |
-| 🟢 已建 | videoPush | 弹幕上舞台大屏（工作人员，source:'staff'） |
-| 🟢 已建 | danmakuSend | 游客弹幕上行（游客→大屏，source:'visitor'） |
+| 🟢 已建 | videoPush | 留言上舞台大屏（工作人员，source:'staff'） |
+| 🟢 已建 | danmakuSend | 观众留言上行（游客→大屏，source:'visitor'） |
 | ⬜ 待补 | activityStart | 发起现场答题抽奖 |
 | ⬜ 待补 | activityJudge | 自动判分并发放积分 |
 | ⬜ 待补 | showHistory | 历史演出数据 |
 | ⬜ 待补 | pollStart | 场务发布投票（推 IM 群） |
-| ⬜ 待补 | pollResult | 实时投票结果（柱状图/弹幕） |
+| ⬜ 待补 | pollResult | 实时投票结果（柱状图/留言） |
 | 🟢 已建 | emotionSend | 情绪上舞台大屏 |
 | ⬜ 待补 | emotionStats | 表情统计（大屏用） |
 | ⬜ 待补 | videoGet | 游客获取当前推送短片地址 |

@@ -1,5 +1,5 @@
 // 云函数：dashboardShow
-// 职责：聚合数据看板（实时票数分布 + 情绪 + 弹幕流 + 在线人数）。
+// 职责：聚合数据看板（实时票数分布 + 情绪 + 留言流 + 在场人数）。
 // 权限：field / actor / admin（只读）。读取集合：shows、polls、emotions、stage
 // P1-⑤ 读源修复：实时票数存于 polls 集合 options[].votes（pollVote 原子自增），
 // 旧实现误读孤儿集合 pollVotes（无人写入）导致看板票数恒为 0；
@@ -37,7 +37,7 @@ exports.main = async (event) => {
         options: (p.options || []).map((o) => Object.assign({}, o, { votes: o.votes || 0 }))
       }
     }
-    // 情绪 / 弹幕
+    // 情绪 / 留言
     const emotions = await db.collection('emotions').where({ showId }).get()
     const stage = await db.collection('stage').where({ showId }).limit(30).orderBy('created_at', 'desc').get()
     return ok({

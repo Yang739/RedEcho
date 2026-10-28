@@ -76,8 +76,8 @@
     </view>
   </re-card>
 
-  <!-- 正在直播 -->
-  <view class="section-title" wx:if="{{home.liveShow}}">正在直播</view>
+  <!-- 正在演出 -->
+  <view class="section-title" wx:if="{{home.liveShow}}">正在演出</view>
   <view
     wx:if="{{home.liveShow}}"
     class="live tap"
@@ -85,11 +85,11 @@
     data-id="{{home.liveShow.id}}"
   >
     <view class="live__cover" style="background:{{home.liveShow.gradient}}">
-      <view class="live__badge"><view class="live-dot"></view><text>直播中</text></view>
+      <view class="live__badge"><view class="dot--on"></view><text>演出中</text></view>
     </view>
     <view class="live__info flex-1">
       <view class="subtitle ellipsis">{{home.liveShow.title}}</view>
-      <view class="text-3 sm">{{home.liveShow.segment}} · {{home.liveShow.online}} 人在线</view>
+      <view class="text-3 sm">{{home.liveShow.segment}} · {{home.liveShow.online}} 人在场</view>
     </view>
     <view class="live__arrow">进入 ›</view>
   </view>

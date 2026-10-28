@@ -16,7 +16,7 @@
     <block wx:if="{{currentShow}}">
       <view class="cur">
         <view class="cur__cover" style="background:{{currentShow.gradient}}">
-          <view wx:if="{{currentShow.status === 'live'}}" class="live__badge"><view class="live-dot"></view><text>直播中</text></view>
+          <view wx:if="{{currentShow.status === 'live'}}" class="live__badge"><view class="dot--on"></view><text>演出中</text></view>
           <view wx:elif="{{currentShow.status === 'upcoming'}}" class="cur__soon">即将开始</view>
         </view>
         <view class="cur__body flex-1">

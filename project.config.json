@@ -40,7 +40,8 @@
       { "type": "folder", "value": "design" },
       { "type": "folder", "value": "docs" },
       { "type": "folder", "value": "tools" },
-      { "type": "folder", "value": "deploy" }
+      { "type": "folder", "value": "deploy" },
+      { "type": "folder", "value": ".workbuddy" }
     ],
     "include": []
   },

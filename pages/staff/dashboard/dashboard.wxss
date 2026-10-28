@@ -31,7 +31,7 @@
 }
 .tip { font-size: 24rpx; color: #999; margin-top: 16rpx; }
 
-/* 弹幕 */
+/* 现场留言 */
 .danmu__item {
   display: inline-block; background: #f5f5f5; border-radius: 40rpx;
   padding: 12rpx 22rpx; font-size: 26rpx; margin: 0 12rpx 12rpx 0;

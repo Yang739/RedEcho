@@ -143,22 +143,13 @@ page {
   100% { background-position: -200% 0; }
 }
 
-/* ---------- 直播脉冲点 ---------- */
-.live-dot {
+/* ---------- 演出进行中状态点（静态圆点，无呼吸/脉冲动画） ---------- */
+.dot--on {
   width: 16rpx; height: 16rpx; border-radius: 50%;
   background: var(--c-live);
-  position: relative;
-}
-.live-dot::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background: var(--c-live); animation: pulse-ring 1.6s ease-out infinite;
-}
-@keyframes pulse-ring {
-  0% { transform: scale(1); opacity: .7; }
-  100% { transform: scale(3.2); opacity: 0; }
 }
 
-/* 直播徽标（胶囊） */
+/* 演出状态徽标（胶囊） */
 .live__badge {
   display: inline-flex; align-items: center; gap: 8rpx;
   background: rgba(0, 0, 0, .45); color: #fff;
@@ -242,5 +233,4 @@ page {
     animation-iteration-count: 1 !important;
     transition-duration: .001ms !important;
   }
-  .live-dot::after { animation: none; }
 }

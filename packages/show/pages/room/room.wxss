@@ -58,7 +58,7 @@
 .notice__item { display: flex; gap: 16rpx; font-size: 26rpx; }
 .notice__time { color: var(--c-text-3); flex-shrink: 0; }
 
-/* 弹幕 */
+/* 现场留言 */
 .danmu { display: flex; flex-direction: column; gap: 12rpx; }
 .danmu__item {
   align-self: flex-start;

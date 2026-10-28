@@ -1,16 +1,16 @@
 <view class="page">
   <view class="hero">数据看板</view>
-  <view wx:if="{{canView}}" class="sub">实时票数 / 情绪 / 弹幕 · 每 3 秒刷新</view>
+  <view wx:if="{{canView}}" class="sub">实时票数 / 情绪 / 观众留言 · 每 3 秒刷新</view>
 
   <view wx:if="{{!canView}}" class="deny">你当前身份无数据看板权限（仅工作人员可查看）</view>
 
   <block wx:else>
     <staff-show-selector value="{{showId}}" bind:change="onShowChange" />
     <block wx:if="{{showId}}">
-      <!-- 在线人数 -->
+      <!-- 在场人数 -->
       <view class="stat">
         <view class="stat__num">{{online}}</view>
-        <view class="stat__label text-3 xs">当前在线人数</view>
+        <view class="stat__label text-3 xs">当前在场人数</view>
       </view>
 
       <!-- 票数分布 -->
@@ -32,13 +32,13 @@
         <view class="emo">
           <view wx:for="{{emotions}}" wx:key="id" class="emo__item" style="border-color:{{item.color}};color:{{item.color}}">{{item.label}}</view>
         </view>
-        <view class="tip">情绪按类型实时统计，详细占比见弹幕大屏</view>
+        <view class="tip">情绪按类型实时统计，详细占比见现场大屏</view>
       </re-card>
 
-      <!-- 弹幕流 -->
-      <view class="section-title">弹幕流</view>
-      <re-card title="实时弹幕">
-        <view wx:if="{{!danmaku.length}}" class="empty">暂无弹幕</view>
+      <!-- 留言流 -->
+      <view class="section-title">留言流</view>
+      <re-card title="现场留言">
+        <view wx:if="{{!danmaku.length}}" class="empty">暂无留言</view>
         <view wx:for="{{danmaku}}" wx:key="id" class="danmu__item">{{item.text}}</view>
       </re-card>
     </block>

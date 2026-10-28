@@ -1,5 +1,5 @@
 // 云函数：getHomeFeed
-// 职责：返回首页卡片列表 + 用户积分 + 今日获得积分 + 阅读进度 + 直播中的演出。
+// 职责：返回首页卡片列表 + 用户积分 + 今日获得积分 + 阅读进度 + 演出进行中的场次。
 // 读取集合：cards / users / points_logs / shows（集合名全项目统一小写驼峰）。
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
@@ -57,7 +57,7 @@ exports.main = async (event, context) => {
       reading = []
     }
 
-    // 直播中的演出（取第一个 live）
+    // 演出进行中的场次（取第一个 live）
     const sRes = await db
       .collection('shows')
       .where({ status: 'live' })

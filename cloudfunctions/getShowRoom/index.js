@@ -63,7 +63,7 @@ exports.main = async (event, context) => {
       ? nRes.data.map((n) => ({ id: n._id, text: n.text, time: n.time }))
       : NOTICES
 
-    // 弹幕流：读 stage 集合（按场次倒序，limit 30）
+    // 留言流：读 stage 集合（按场次倒序，limit 30）
     const stRes = await db.collection('stage').where({ showId }).orderBy('created_at', 'desc').limit(30).get()
     const danmaku = (stRes.data || []).map((s) => ({ id: s._id, text: s.text, time: s.time, source: s.source || 'staff' }))
 

@@ -1,4 +1,4 @@
-// pages/staff/stage/stage.js —— 舞台总控（弹幕 / 情绪上屏）
+// pages/staff/stage/stage.js —— 现场互动（观众留言 / 情绪汇聚）
 const api = require('../../../services/api.js')
 const perm = require('../../../services/permission.js')
 
@@ -7,7 +7,7 @@ Page({
     showId: '',
     canPush: false,
     emotions: [],
-    danmaku: [],    // 最近上屏弹幕（倒序，来自云端 getShowRoom 的 danmaku 字段）
+    danmaku: [],    // 最近上屏留言（倒序，来自云端 getShowRoom 的 danmaku 字段）
     input: ''
   },
 
@@ -17,7 +17,7 @@ Page({
     this.reload()
   },
 
-  // 选定正在进行的表演后载入情绪与弹幕
+  // 选定正在进行的表演后载入情绪与留言
   reload() {
     if (!this.data.canPush || !this.data.showId) return
     api.getShowRoom(this.data.showId).then((d) => {
@@ -38,7 +38,7 @@ Page({
   onPushDanmaku() {
     if (!this.data.canPush) return
     const text = (this.data.input || '').trim()
-    if (!text) { wx.showToast({ title: '请输入弹幕内容', icon: 'none' }); return }
+    if (!text) { wx.showToast({ title: '请输入留言内容', icon: 'none' }); return }
     api.pushDanmaku(this.data.showId, text).then(() => {
       this.setData({ input: '' })
       this.reload()

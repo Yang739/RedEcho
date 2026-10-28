@@ -1,6 +1,6 @@
 // packages/show/pages/room/room.js
-// 游客 / 观众端演出房间：邀请码核验 + 投票 / 情绪 / 现场通知 / 弹幕互动。
-// 注：工作人员管控（开场散场 / 投票发布 / 邀请码 / 现场通知 / 分支总控 / 舞台总控）
+// 游客 / 观众端演出房间：邀请码核验 + 投票 / 情绪 / 现场通知 / 留言互动。
+// 注：工作人员管控（开场散场 / 投票发布 / 邀请码 / 现场通知 / 分支总控 / 现场互动）
 // 已拆分为独立子页面（pages/staff/session、poll、invite、notice、branch、stage），
 // 本房间页不再承载 manage=1 管控态。
 const api = require('../../../../services/api.js')
@@ -19,16 +19,16 @@ Page({
     poll: { question: '', options: [] },
     emotions: [],
     notices: [],
-    danmaku: [],     // 弹幕流（来自 getShowRoom：工作人员 + 游客上行，source 区分）
+    danmaku: [],     // 留言流（来自 getShowRoom：工作人员 + 游客上行，source 区分）
     voted: '',
     selectedEmotion: '',
     inputValue: '',
     statusBanner: '',
     isEnded: false,
-    isLive: false,      // 是否直播中
+    isLive: false,      // 是否演出中
     isUpcoming: false,  // 是否未开始
     unlocked: false,    // 本场邀请码是否已核验解锁互动
-    gateNeeded: false,  // 是否需要邀请码门禁（仅直播中 且 未解锁）
+    gateNeeded: false,  // 是否需要邀请码门禁（仅演出中 且 未解锁）
     inviteInput: '',
     inviteError: ''
   },
@@ -42,7 +42,7 @@ Page({
       const status = d.show.status
       const isLive = status === 'live'
       const isUpcoming = status === 'upcoming'
-      // 邀请码门禁：仅「直播中」场次需要；按场次持久化解锁记录判断，未开始 / 已结束无需门禁。
+      // 邀请码门禁：仅「演出中」场次需要；按场次持久化解锁记录判断，未开始 / 已结束无需门禁。
       // 注：参与演出 +5 积分不再于进房时发放，改为「邀请码核验通过（解锁互动）后」才发，避免未解锁即加分（见 onUnlock）。
       const unlocked = !!storage.get('rede_invite_unlocked', {})[showId]
       // 恢复本场已持久化的个人选择（投票 / 情绪），退出重进不再丢失
@@ -71,7 +71,7 @@ Page({
         inviteError: ''
       })
       // 模拟实时（降级路径；wss 接入后由 socketClient 替代，见 RedEcho×RPC集成设计）：
-      // 直播 / 即将开始 时轮询房间全量状态，使工作人员「指令下发」在游客端可见效。
+      // 演出中 / 即将开始 时轮询房间全量状态，使工作人员「指令下发」在游客端可见效。
       if (isLive || isUpcoming) {
         this.timer = setInterval(() => this.tick(), 2600)
       }
@@ -105,7 +105,7 @@ Page({
         isEnded,
         isUpcoming,
         statusBanner: isEnded ? '本场演出已落幕' : '',
-        // 直播中且未解锁 → 继续展示邀请码门禁；已解锁后随指令刷新
+        // 演出中且未解锁 → 继续展示邀请码门禁；已解锁后随指令刷新
         gateNeeded: isLive && !this.data.unlocked
       })
     })
@@ -171,12 +171,12 @@ Page({
   onSend() {
     const text = (this.data.inputValue || '').trim()
     if (!text) return
-    // 游客弹幕上行：写入云端 stage 集合，经 getShowRoom 轮询下发到大屏 / 工作人员端 / 其他游客。
+    // 观众留言上行：写入云端 stage 集合，经 getShowRoom 轮询下发到大屏 / 工作人员端 / 其他游客。
     // 先乐观预插一条（临时 id），待下一次 tick() 拉取云端数据覆盖，避免重复且即时可见。
     api.danmakuSend(this.data.showId, text).then(() => {
       const msg = { id: 'm' + Date.now(), text, time: this.now(), source: 'visitor' }
       this.setData({ danmaku: [msg].concat(this.data.danmaku), inputValue: '' })
-      wx.showToast({ title: '弹幕已发送', icon: 'success' })
+      wx.showToast({ title: '留言已发送', icon: 'success' })
     }).catch((err) => {
       wx.showToast({ title: '发送失败：' + (err && err.message ? err.message : '请重试'), icon: 'none' })
     })

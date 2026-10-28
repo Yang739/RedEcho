@@ -11,7 +11,7 @@ const FUNC_ITEMS = [
   { key: 'poll',   action: 'poll_manage',   name: '投票发布', desc: '开关投票 / 改题',   icon: '🗳️', page: '/pages/staff/poll/poll',       needShow: true },
   { key: 'notice', action: 'notice_push',   name: '现场通知', desc: '推送场务提示',     icon: '📢', page: '/pages/staff/notice/notice',   needShow: true },
   { key: 'branch', action: 'branch_lock',   name: '分支总控', desc: '锁定剧情走向',     icon: '🌿', page: '/pages/staff/branch/branch',   needShow: true },
-  { key: 'stage',  action: 'stage_push',    name: '舞台总控', desc: '弹幕 / 情绪上屏',  icon: '🖥️', page: '/pages/staff/stage/stage',     needShow: true },
+  { key: 'stage',  action: 'stage_push',    name: '现场互动', desc: '观众留言 / 情绪汇聚',  icon: '🖥️', page: '/pages/staff/stage/stage',     needShow: true },
   { key: 'redeem', action: 'order_redeem',  name: '订单核销', desc: '扫码核销文创',     icon: '✅', page: '/pages/staff/redeem/redeem',   needShow: false },
   { key: 'board',  action: 'view_data',     name: '数据看板', desc: '实时票数 / 情绪',  icon: '📊', page: '/pages/staff/dashboard/dashboard', needShow: true }
 ]

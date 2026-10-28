@@ -6,10 +6,10 @@
       <view class="between">
         <view class="room__title ellipsis">{{show.title}}</view>
         <view wx:if="{{show.status === 'live'}}" class="live__badge">
-          <view class="live-dot"></view><text>直播中</text>
+          <view class="dot--on"></view><text>演出中</text>
         </view>
       </view>
-      <view class="room__seg">{{show.segment}} · {{show.online}} 人在线</view>
+      <view class="room__seg">{{show.segment}} · {{show.online}} 人在场</view>
     </view>
   </view>
 
@@ -28,7 +28,7 @@
       <view class="room__banner">演出尚未开始，开场前请留意现场通知</view>
     </block>
 
-    <!-- 邀请码核验：直播中且尚未解锁 -->
+    <!-- 邀请码核验：演出中且尚未解锁 -->
     <re-card wx:if="{{gateNeeded}}" title="演出现场邀请码">
       <view class="invite__hint">本场互动需核验演出现场邀请码。邀请码由现场工作人员或舞台大屏给出，请在现场获取后输入。</view>
       <view class="invite__row">
@@ -45,7 +45,7 @@
       <view wx:if="{{inviteError}}" class="invite__err">{{inviteError}}</view>
     </re-card>
 
-    <!-- 互动区：直播中 且 已解锁（未开始 / 已结束不渲染） -->
+    <!-- 互动区：演出中 且 已解锁（未开始 / 已结束不渲染） -->
     <block wx:if="{{!gateNeeded && isLive}}">
 
       <!-- 实时投票 -->
@@ -95,11 +95,11 @@
         </view>
       </re-card>
 
-      <!-- 弹幕 -->
-      <re-card title="实时弹幕">
+      <!-- 现场留言 -->
+      <re-card title="现场留言">
         <view class="danmu">
           <view wx:for="{{danmaku}}" wx:key="id" class="danmu__item {{item.source === 'staff' ? 'danmu__item--staff' : ''}}">{{item.text}}</view>
-          <view wx:if="{{!danmaku.length}}" class="empty">还没有弹幕，来发第一条吧</view>
+          <view wx:if="{{!danmaku.length}}" class="empty">还没有留言，写下此刻的感受吧</view>
         </view>
         <view wx:if="{{isEnded}}" class="room__cta btn btn-ghost btn-block tap" bindtap="goReview">查看本场回顾 ›</view>
       </re-card>
@@ -108,11 +108,11 @@
     </block>
   </view>
 
-  <!-- 底部弹幕输入：仅直播中已解锁时显示 -->
+  <!-- 底部留言输入：仅演出中已解锁时显示 -->
   <view class="room__foot" wx:if="{{!gateNeeded && isLive}}" style="padding-bottom:calc(16rpx + var(--safe-bottom))">
     <input
       class="room__input"
-      placeholder="发条弹幕，与现场共鸣…"
+      placeholder="写下此刻的感受，与现场共鸣…"
       value="{{inputValue}}"
       bindinput="onInput"
       confirm-type="send"

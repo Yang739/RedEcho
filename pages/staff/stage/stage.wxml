@@ -1,15 +1,15 @@
 <view class="page">
-  <view class="hero">舞台总控</view>
-  <view class="sub">弹幕 / 情绪上屏</view>
+  <view class="hero">现场互动</view>
+  <view class="sub">现场留言 / 情绪汇聚</view>
 
-  <view wx:if="{{!canPush}}" class="deny">你当前身份无舞台总控权限（仅场务 / 管理员可操作）</view>
+  <view wx:if="{{!canPush}}" class="deny">你当前身份无现场互动权限（仅场务 / 管理员可操作）</view>
 
   <block wx:else>
     <staff-show-selector value="{{showId}}" bind:change="onShowChange" />
     <block wx:if="{{showId}}">
-      <view class="section-title">弹幕上屏</view>
-      <re-card title="推送弹幕">
-        <input class="manage__input" placeholder="输入弹幕内容" value="{{input}}" bindinput="onInput" />
+      <view class="section-title">留言上屏</view>
+      <re-card title="推送留言">
+        <input class="manage__input" placeholder="输入留言内容" value="{{input}}" bindinput="onInput" />
         <view class="btn btn-primary btn-block tap" style="margin-top:20rpx" bindtap="onPushDanmaku">上屏</view>
       </re-card>
 
@@ -20,9 +20,9 @@
         </view>
       </re-card>
 
-      <view class="section-title">最近弹幕</view>
+      <view class="section-title">最近留言</view>
       <re-card title="记录">
-        <view wx:if="{{!danmaku.length}}" class="empty">暂无弹幕上屏</view>
+        <view wx:if="{{!danmaku.length}}" class="empty">暂无留言上屏</view>
         <view wx:for="{{danmaku}}" wx:key="id" class="danmu__item">{{item.text}}</view>
       </re-card>
     </block>
